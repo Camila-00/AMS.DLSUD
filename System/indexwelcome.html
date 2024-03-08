@@ -1,0 +1,121 @@
+<!DOCTYPE html> <!--transform this to EJS, from startpage.ejs-->
+<html>
+<head>
+    <title>Asset Management System</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('assets/ictc.png'); 
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            width: 450px;
+            height: 500px;
+            border-radius: 5px;
+            animation: fadeIn 1s ease-in-out; 
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .btn {
+            display: block;
+            width: 300px;
+            height: 50px;
+            margin: 28px auto;
+            padding: 12px 80px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-family: 'Open Sans', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            text-decoration: none; 
+        }
+
+        .btn a {
+            text-decoration: none;
+            color: inherit; 
+        }
+
+        .btn-green {
+            background-color: #1db954;
+            color: #ffffff;
+        }
+
+        .btn-outline-green {
+            background-color: transparent;
+            color: #1db954;
+            border: 2px solid #1db954;
+            margin-bottom: 40px;
+        }
+
+        .divider {
+            margin: 20px 0;
+            position: relative;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 16px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            display: block;
+            border-top: 1px solid #cccccc;
+            width: 40%;
+            position: absolute;
+            top: 50%;
+        }
+
+        .divider::before {
+            right: 5%;
+        }
+
+        .divider::after {
+            left: 5%;
+        }
+
+        .get-started {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 36px;
+            color: #000000;
+            margin-top: 40px;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+        }
+    </style>
+
+    <!-- montserrat font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+
+    <!-- open sans font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">  
+
+</head>
+<body>
+    <div class="container">
+        <div class="get-started">Get Started</div>
+        <a href="indexlogin.html" style="text-decoration: none;"><button class="btn btn-green">Custodian Login</button></a>
+        <!--<a href="/faculty" style="text-decoration: none;"><button class="btn btn-green">Faculty Login</button></a>-->
+        <a href="borrow.html" style="text-decoration: none;"><button class="btn btn-green">Borrower</button></a>
+        <!--<div class="divider">or</div>
+        <a href="regis.ejs" style="text-decoration: none;"><button class="btn btn-outline-green">Create Account</button></a>-->
+    </div>
+</body>
+</html>

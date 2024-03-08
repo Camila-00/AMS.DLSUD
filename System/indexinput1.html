@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Input System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+
+body {
+            font-family: Arial, sans-serif;
+            background-image: url('bgictc.png'); /* Replace with your background image URL */
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        
+        .sidebar {
+            background-color: #f2f2f2;
+            padding: 20px;
+            height: 100vh;
+            width: 100px; /* Set the width of the hidden sidebar */
+            position: fixed;
+            top: 0;
+            left: -50px; /* Hide the sidebar off-screen */
+            transition: left 0.3s ease; /* Add transition effect */
+            
+        }
+
+        .sidebar:hover {
+            left: 0; /* Show the sidebar on hover */
+        }
+
+        .main-content {
+            margin-left: 0; /* Adjust this to your sidebar width */
+            padding: 20px;
+            transition: margin-left 0.3s ease; /* Add transition effect */
+        }
+
+        .sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar li {
+        margin-bottom: 10px;
+        overflow: hidden; /* Hide the text by default */
+        transition: margin-left 0.3s ease; /* Add transition effect */
+    }
+
+    .sidebar a {
+        text-decoration: none;
+        color: transparent; /* Make the text transparent by default */
+    }
+
+    .sidebar:hover li {
+        margin-left: 0; /* Show the text on hover */
+        overflow: visible; /* Show the text on hover */
+    }
+
+    .sidebar:hover a {
+        color: #333; /* Change text color on hover */
+    }
+
+    </style>
+</head>
+<body>
+ <div class="sidebar">
+    <ul>
+        <li><a href="indexfacultyhomepage.html">Home</a></li>
+        <li class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="reportsDropdown" data-bs-toggle="sidebar" data-bs-target="dropdown-menu" aria-expanded="false">
+                Reports
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+                <li><a class="dropdown-item" href="indexfacultyreport.html">Data</a></li>
+                <li><a class="dropdown-item" href="indexfacultyreportinput.html">Input</a></li>
+            </ul>
+        </li>
+        
+        <li><a href="indexwelcome.html">Logout</a></li>
+        <li><a href="mainboard.html">Renting</a></li>
+    </ul>
+</div>
+
+<div class="main-content">
+    <div class="container mt-5">
+        <h1>Asset Input System</h1>
+        <form id="assetForm">
+            <div class="mb-3">
+                <label for="room">Room:</label>
+                <select class="form-control" id="room" name="room" required>
+                    <option value="201">201</option>
+                    <option value="202">202</option>
+                    <option value="203">203</option>
+                    <option value="204">204</option>
+                    <option value="205">205</option>
+                    <option value="206">206</option>
+                    <option value="207">207</option>
+                    <option value="208">208</option>
+                    <option value="209">209</option>
+                    <option value="210">210</option>
+                    <option value="211">211</option>
+                    <option value="212">212</option>
+                    <option value="213">213</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="location">Location:</label>
+                <input type="text" class="form-control" id="location" name="location" required>
+            </div>
+            <div class="mb-3">
+                <label for="category">Category #:</label>
+                <input type="text" class="form-control" id="category" name="category" required>
+            </div>
+            <div>
+                <label for="bundle">Bundle:</label>
+                <input type="checkbox" id="bundleCheckbox" name="bundle">
+                <label for="bundleCheckbox">Yes</label> 
+            </div>
+            <div class="mb-3">
+                <label for="item_description">Item Description:</label>
+                <input type="text" class="form-control" id="item_description" name="item_description" required>
+            </div>
+            <div class="mb-3">
+                <label for="property_number">Property Number:</label>
+                <input type="text" class="form-control" id="property_number" name="property_number" required>
+            </div>
+            <div class="mb-3">
+                <label for="serial_number">Serial Number:</label>
+                <input type="text" class="form-control" id="serial_number" name="serial_number" required>
+            </div>
+            <div class="mb-3">
+                <label for="unit_cost">Unit Cost:</label>
+                <input type="text" class="form-control" id="unit_cost" name="unit_cost" required>
+            </div>
+            <div class="mb-3">
+                <label for="rdf_number">RDF Number:</label>
+                <input type="text" class="form-control" id="rdf_number" name="rdf_number">
+            </div>
+            <div class="mb-3">
+                <label for="rtf_number">RTF Number:</label>
+                <input type="text" class="form-control" id="rtf_number" name="rtf_number">
+            </div>
+            <div class="mb-3">
+                <label for="unit_status">Status:</label>
+                <input type="text" class="form-control" id="unit_status" name="unit_status" required>
+            </div>
+            <div class="mb-3">
+                <label for="accountability">Accountability:</label>
+                <input type="text" class="form-control" id="accountability" name="accountability" required>
+            </div>
+            <button type="submit" class="btn btn-custom">Add Asset</button>
+            <button type="button" id="resetButton" class="btn btn-custom">Clear</button>
+<!--<button class="btn btn-custom" onclick="window.location.href='indexfacultyreportinput.html'">Reports</button>indexfacultyreport.html-->
+<!--<button class="btn btn-custom" onclick="window.location.href='indexfacultyhomepage.html'">Dashboard</button>-->
+
+</form>
+            <div id="successMessage" class="alert alert-success" style="display: none;">Data stored successfully.</div>
+            <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+        var dropdowns = document.querySelectorAll('.dropdown-toggle');
+        dropdowns.forEach(function (dropdown) {
+            dropdown.addEventListener('click', function () {
+                dropdown.nextElementSibling.classList.toggle('show');
+            });
+        });
+    });
+
+        document.addEventListener("DOMContentLoaded", async function() {
+            fetchData();
+            const assetForm = document.getElementById("assetForm");
+            const successMessage = document.getElementById("successMessage");
+            const errorMessage = document.getElementById("errorMessage");
+            const assetTableBody = document.getElementById("assetTableBody");
+    
+            assetForm.addEventListener("submit", async function(event) {
+                event.preventDefault(); // Prevent the default form submission
+    
+                // Retrieve user input
+                const room = document.getElementById("room").value;
+                const location = document.getElementById("location").value;
+                const category = document.getElementById("category").value;
+                const item_description = document.getElementById("item_description").value;
+                const property_number = document.getElementById("property_number").value;
+                const serial_number = document.getElementById("serial_number").value;
+                const unit_cost = document.getElementById("unit_cost").value;
+                const rdf_number = document.getElementById("rdf_number").value;
+                const rtf_number = document.getElementById("rtf_number").value;
+                const unit_status = document.getElementById("unit_status").value;
+                const accountability = document.getElementById("accountability").value;
+                const bundleCheckbox = document.getElementById("bundleCheckbox");
+                const bundle = bundleCheckbox.checked ? "Yes" : "No";
+                try {
+                    // Send a POST request to your server to handle input
+                    const response = await fetch("/indexinput1", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ room, location, category, item_description, bundle, property_number, serial_number, unit_cost, rdf_number, rtf_number, unit_status, accountability }), // Include "server" in the request body
+                    });
+                    if (response.ok) {
+                        console.log("Success");
+                        successMessage.style.display = "block";
+                        assetForm.reset();
+                        successMessage.style.opacity = "1";
+                        setTimeout(function () {
+                            successMessage.style.opacity = "0";
+                            setTimeout(function () {
+                        successMessage.style.display = "none";
+                    }, 300); // Adjust this time to match your transition duration
+                }, 2000);
+                    } else {
+                        console.error("Failed to submit asset.");
+                        errorMessage.textContent = "Failed to submit asset.";
+                        errorMessage.style.display = "block";
+                    }
+                } catch (error) {
+                    console.error("Error during asset submission:", error);
+                    errorMessage.textContent = "An error occurred.";
+                    errorMessage.style.display = "block";
+                }
+            });
+    
+            const resetButton = document.getElementById("resetButton");
+    
+            resetButton.addEventListener("click", function () {
+                assetForm.reset();
+                assetTableBody.innerHTML = "";
+                successMessage.style.display = "none";
+                errorMessage.style.display = "none"; // Fix the syntax error here
+            });
+        });
+    
+        // Function to fetch and display data from the server
+        async function fetchData() {
+            // Your fetch data function remains the same
+        }
+    
+        // Call the fetchData function when the page loads
+        document.addEventListener("DOMContentLoaded", function() {
+            fetchData();
+        });
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

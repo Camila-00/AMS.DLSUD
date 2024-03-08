@@ -1,0 +1,310 @@
+<!DOCTYPE html> <!--transform this to EJS, from MainScreen.ejs-->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Management</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Custom CSS */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navbar styling */
+        .navbar {
+            background-color: #f8f9fa;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .dropdown-menu {
+            background-color: #f8f9fa;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            background-color: #333333;
+            color: white;
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-x: hidden;
+            padding-top: 60px;
+            transition: 0.3s;
+            z-index: 900;
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            display: block;
+            transition: 0.3s;
+            color: white;
+        }
+
+        .sidebar a:hover {
+            background-color: #11950092;
+        }
+
+        /* Page content */
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="MainScreen.ejs">ICTC Asset Management</a>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Sample
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="#">Dashboard</a>
+        <a href="#" class="asset-link">Asset</a>
+        <a href="#">Report</a>
+    </div>
+
+    <!-- Page content -->
+    <div class="content">
+        <div id="toggle-button" onclick="toggleNav()">&#9776;</div>
+
+        <h1>Faculty Dashboard</h1>
+        <input type="text" id="searchInput" placeholder="Filter">
+        <button class="report-button" onclick="printData()">Print Table</button>
+
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Room</th>
+                    <th>Location</th>
+                    <th>Category</th>
+                    <th>Item Description</th>
+                    <th>Bundle</th>
+                    <th>Property Number</th>
+                    <th>Serial Number</th>
+                    <th>Unit Cost</th>
+                    <th>RDF Number</th>
+                    <th>RTF Number</th>
+                    <th>Status</th>
+                    <th>Accountability</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="data-table">
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bootstrap JS (optional, for dropdown functionality) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+         function toggleNav() {
+            var sidebar = document.getElementById("sidebar");
+            var content = document.getElementById("content");
+            if (sidebar.style.left === "0px") {
+                sidebar.style.left = "-250px";
+                content.style.marginLeft = "0";
+            } else {
+                sidebar.style.left = "0px";
+                content.style.marginLeft = "250px";
+            }
+        }
+    
+        function toggleHomeSubmenu() {
+            var homeSubmenu = document.getElementById("home-submenu");
+            var reportsSubmenu = document.getElementById("rooms-submenu");
+            
+            homeSubmenu.style.display = (homeSubmenu.style.display === "block") ? "none" : "block";
+            reportsSubmenu.style.display = "none";
+        }
+    
+        function toggleReportsSubmenu() {
+            var homeSubmenu = document.getElementById("home-submenu");
+            var reportsSubmenu = document.getElementById("rooms-submenu");
+    
+            reportsSubmenu.style.display = (reportsSubmenu.style.display === "block") ? "none" : "block";
+            homeSubmenu.style.display = "none";
+        }
+
+        async function fetchData() {
+            try {
+        const response = await fetch('/data');
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data. Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Fetched data:', data);
+
+        const tableBody = document.getElementById('data-table');
+        tableBody.innerHTML = ''; // Clear existing data
+
+        data.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.room}</td>
+                        <td>${item.location}</td>
+                        <td>${item.category}</td>
+                        <td>${item.item_description}</td>
+                        <td>${item.bundle}</td>
+                        <td>${item.property_number}</td>
+                        <td>${item.serial_number}</td>
+                        <td>${item.unit_cost}</td>
+                        <td>${item.rdf_number}</td>
+                        <td>${item.rtf_number}</td>
+                        <td>${item.unit_status}</td>
+                        <td>${item.accountability}</td>
+                        <td>
+                            <button onclick="updateRow(${index})">Update</button>
+                            <button onclick="deleteRow(${index})">Delete</button>
+                        </td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        async function updateRow(rowIndex) {
+            try {
+                const response = await fetch(`/assetsupdate/${rowIndex}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        // Include fields you want to update and their new values
+                        // Example: field1: 'new value 1', field2: 'new value 2', ...
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    console.log('Update successful:', result);
+                    // You can update the UI here if needed
+                } else {
+                    console.error('Update failed:', result.message);
+                }
+            } catch (error) {
+                console.error('Error during update:', error);
+            }
+        }
+
+        async function deleteRow(rowIndex) {
+            try {
+                const response = await fetch(`/assetdelete/${rowIndex}`, {
+                    method: 'DELETE',
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    console.log('Delete successful:', result);
+                    // You can update the UI here if needed
+                } else {
+                    console.error('Delete failed:', result.message);
+                }
+            } catch (error) {
+                console.error('Error during delete:', error);
+            }
+        }
+
+        function printData() {
+            const printContent = document.getElementById('data-table').cloneNode(true);
+
+            const cells = printContent.getElementsByTagName('td');
+            for (let i = 0; i < cells.length; i++) {
+                const cell = cells[i];
+                cell.style = '';
+            }
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.open();
+            printWindow.document.write('<html><head><title>Print</title></head><body>');
+            printWindow.document.write('<h1>Faculty Dashboard - Table</h1>');
+            printWindow.document.write('<table border="1">');
+            printWindow.document.write(printContent.innerHTML);
+            printWindow.document.write('</table>');
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+
+            printWindow.onload = function () {
+                printWindow.print();
+                printWindow.onafterprint = function () {
+                    printWindow.close();
+                };
+            };
+        }
+
+        function disableBackButton() {
+            window.history.pushState(null, "", window.location.href);
+            window.onpopstate = function () {
+                window.history.pushState(null, "", window.location.href);
+            };
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('searchInput').addEventListener('input', function () {
+                const filterValue = this.value.toLowerCase();
+                const rows = document.getElementById('data-table').getElementsByTagName('tr');
+
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    const cells = row.getElementsByTagName('td');
+                    let shouldShow = false;
+
+                    for (let j = 0; j < cells.length; j++) {
+                        const cell = cells[j];
+                        if (cell.innerHTML.toLowerCase().indexOf(filterValue) > -1) {
+                            shouldShow = true;
+                            break;
+                        }
+                    }
+
+                    if (shouldShow) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+
+            fetchData();
+            disableBackButton();
+        });
+    </script>
+</body>
+
+</html>

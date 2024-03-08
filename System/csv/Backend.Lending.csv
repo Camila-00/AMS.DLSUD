@@ -1,0 +1,2 @@
+_id,name,email,dept,student_office_id,asset_type,barcode,borrow_date,return_date,status
+654b57192ea78ae316591c80,Angelo Joseph Ramirez,school.angeloramirez@gmail.com,CSCS,2324234234234,Laptop,434234234234,2023-11-08,2023-11-15,Active

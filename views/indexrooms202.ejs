@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICTC Asset Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.6.0/pagination.css"
+    integrity="sha512-TH+vnrhByFI2RzNvaHSqt6EwoJ9Bp+yGAGTWp84qTuTx315ebnypxtyGHpli55Rm4N4J+N/0W9xAL2b5RZ2ZSA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.js"></script>
+
+   <style>
+
+.update-button {
+        background-color: transparent;
+        color: #28a745; /* Green */
+        border: 2px solid transparent;
+        border-radius: 4px;
+        padding: 8px 16px;
+        cursor: pointer;
+        margin-right: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .update-button:hover {
+        background-color: #28a745; /* Green */
+        color: #fff; /* White text color on hover */
+        border-color: #28a745; /* Green border on hover */
+    }
+
+    .delete-button {
+        background-color: transparent;
+        color: #dc3545; /* Red */
+        border: 2px solid transparent;
+        border-radius: 4px;
+        padding: 8px 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .delete-button:hover {
+        background-color: #dc3545; /* Red */
+        color: #fff; /* White text color on hover */
+        border-color: #dc3545; /* Red border on hover */
+    }
+    /* Navbar styling */
+    .navbar {
+        background-color: #f8f9fa; /* Change to desired color */
+        z-index: 1000; /* Ensure it stays on top */
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .dropdown-menu {
+        background-color: #f8f9fa; /* Change to desired color */
+    }
+
+    
+    #asset-content202 table {
+        width: 99%;
+        max-width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        margin-left: 5px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        overflow-x: auto; /* Allow horizontal scroll */
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    #asset-content202 h1 { 
+        margin-left: 10px;
+    }
+
+    #asset-content202 th,
+    #asset-content202 td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        font-size: 15px;
+    }
+
+    #asset-content202 th {
+        background-color: #f2f2f2;
+    }
+
+    #searchInput202 {
+        margin-left: 10px; /* Adjust as needed */
+    }
+
+    .print-table { 
+        background-color: #1db954; /* Same green color as the Print Table button */
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 6px 15px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-left: 5px;    
+    }
+
+    .print-table:hover {
+        background-color: #14843a; /* Darker green on hover */
+    }
+
+    #welcomeText {
+        font-weight: bold;
+    }
+
+    #authUsers {
+        text-transform: capitalize; /* Capitalize the first letter of the username */
+    }
+
+    /* Pagination styling */
+    #pagination {
+        display: block;
+            width: 440px;
+            margin: 10px auto;
+            align-content: center;
+    }
+
+    #pagination a {
+        display: inline-block;
+        padding: 5px 10px;
+        margin-right: 5px;
+        background-color: #f8f9fa;
+        border: 1px solid #ccc;
+        text-decoration: none;
+        color: #333;
+    }
+
+    #pagination a.active {
+        background-color: #00a100;
+        color: #fff;
+    }
+
+    .pagination a:hover:not(.active) {
+        background-color: #ddd;
+    }
+
+   </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="indexcustodianhomepage.ejs">
+            ICTC Asset Management
+        </a>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span id="welcomeText">Welcome, </span><span id="authUsers">Admin</span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="indexwelcomepage.ejs">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<!-- Asset content -->
+<div class="content" id="asset-content202">
+    <h1>ICTC 202 Asset Table</h1>
+    <input type="text" id="searchInput202" placeholder="Filter">
+    <button class="print-table" onclick="printAssetTable()">Print Table</button>
+
+    <table>
+        <thead>
+            <tr>                   
+                <th>Room</th>
+                <th>Location</th>
+                <th>Category</th>
+                <th>Item Description</th>
+                <th>Serial Number</th>
+                <th>Unit Cost</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="data-table">
+        </tbody>
+    </table>
+
+    <!-- Pagination HTML -->
+    <div id="pagination"></div>
+</div>
+
+ <!-- Modal -->
+ <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Row Details</h5>
+          <!-- Close button (x) -->
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Modal content will be filled dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+        
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+// Define showModalWithData globally
+async function showModalWithData(row) {
+    try {
+        const response = await fetch('/data/dBoard202');
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data. Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Fetched data:', data);
+
+        // Get modal element
+        const modal = document.getElementById('exampleModal');
+        // Set modal title
+        modal.querySelector('.modal-title').textContent = 'Row Details';
+        // Get modal body container
+        const modalBody = modal.querySelector('.modal-body');
+        // Clear existing data
+        modalBody.innerHTML = '';
+
+        // Find the index of the row in the fetched data
+        const rowIndex = Array.from(row.parentNode.children).indexOf(row);
+        const rowData = data[rowIndex];
+
+        // Custom field names
+        const fieldNames = {
+            "room": "Room",
+            "location": "Location",
+            "category": "Category",
+            "item_description": "Item Description",
+            "property_number": "Property Number",
+            "serial_number": "Serial Number",
+            "unit_cost": "Unit Cost",
+            "rdf_number": "RDF Number",
+            "rtf_number": "Rtf Number",
+            "asset_status": "Status",
+            "accountability": "Accountability",
+            "action": "Action",
+            "barcode": "Barcode"
+        };
+
+        // Assuming data is the array containing table row data
+        const dataList = document.createElement('ul');
+        dataList.classList.add('list-group');
+
+        // Iterate over the row data and create list items
+        for (const [key, value] of Object.entries(rowData)) {
+            // Skip _id field
+            if (key === '_id') continue;
+            const customFieldName = fieldNames[key] || key;
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item');
+            listItem.innerHTML = `<strong>${customFieldName}:</strong> ${value}`;
+            dataList.appendChild(listItem);
+        }
+
+        // Append the list to the modal body
+        modalBody.appendChild(dataList);
+
+        // Show modal
+        $(modal).modal('show');
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+           
+           
+            
+        
+            async function fetchData(pageNumber, itemsPerPage) {
+                try {
+                    const response = await fetch('/data/dBoard202');
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch data. Status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    console.log('Fetched data:', data);
+        
+                    const startIndex = (pageNumber - 1) * itemsPerPage;
+                    const endIndex = Math.min(startIndex + itemsPerPage, data.length);
+                    const currentPageData = data.slice(startIndex, endIndex);
+        
+                    populatePage(currentPageData);
+                    createPagination(data.length, itemsPerPage, pageNumber);
+        
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            }
+        
+            function populatePage(assetsList) {
+    const tableBody = document.getElementById('data-table');
+    tableBody.innerHTML = ''; // Clear existing data
+
+    assetsList.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.room}</td>
+            <td>${item.location}</td>
+            <td>${item.category}</td>
+            <td>${item.item_description}</td>
+            <td>${item.serial_number}</td>
+            <td>${item.unit_cost}</td>
+            <td>${item.asset_status}</td>
+            <td>
+                <button class="update-button">Update</button>
+                <button class="delete-button">Delete</button>
+            </td>
+        `;
+
+        // Add click event listener to the row
+        row.addEventListener('click', function() {
+            showModalWithData(row);
+        });
+
+        // Add click event listener to the update button
+        const updateButton = row.querySelector('.update-button');
+        updateButton.addEventListener('click', function(event) {
+            event.stopPropagation(); // Prevent row click event from firing
+            const statusCell = row.querySelector('td:nth-child(7)');
+            const currentStatus = statusCell.textContent.trim(); // Get the current status
+
+            // Create custom modal HTML
+            const modalHTML = `
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update Status</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <select id="statusSelect" class="form-control">
+                        <option value="Good/Instock">Good/Instock</option>
+                        <option value="Not Working">Not Working</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="updateStatusBtn">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+`;
+
+// Append the modal HTML to the document body
+document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+// Show the modal
+$('#updateModal').modal('show');
+
+// Add event listener to close button
+document.querySelector('.modal-footer .btn-secondary').addEventListener('click', () => {
+    $('#updateModal').modal('hide');
+});
+
+// Add event listener to close button
+document.querySelector('.modal .close').addEventListener('click', () => {
+    $('#updateModal').modal('hide');
+});
+
+// Add event listener to modal hidden event
+$('#updateModal').on('hidden.bs.modal', function () {
+    // Do something when modal is hidden
+});
+
+            // Add event listener to the update status button
+            document.getElementById('updateStatusBtn').addEventListener('click', function() {
+                const selectedStatus = document.getElementById('statusSelect').value;
+                statusCell.textContent = selectedStatus;
+                $('#updateModal').modal('hide');
+
+                // Here you can include logic to update the status in your backend or wherever it's stored
+                console.log("Selected:", selectedStatus);
+            });
+        });
+
+        tableBody.appendChild(row);
+    });
+}
+
+
+        
+            function createPagination(totalItems, itemsPerPage, currentPage) {
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                const pagination = document.getElementById('pagination');
+                pagination.innerHTML = '';
+        
+                for (let i = 1; i <= totalPages; i++) {
+                    const pageLink = document.createElement('a');
+                    pageLink.href = '#';
+                    pageLink.textContent = i;
+                    if (i === currentPage) {
+                        pageLink.classList.add('active');
+                    }
+                    pageLink.addEventListener('click', function() {
+                        fetchData(i, itemsPerPage);
+                    });
+                    pagination.appendChild(pageLink);
+                }
+            }
+        
+            const itemsPerPage = 10;
+            fetchData(1, itemsPerPage);
+        
+            // for filter
+            document.getElementById('searchInput202').addEventListener('input', function () {
+                const filterValue = this.value.toLowerCase();
+                const rows = document.getElementById('data-table').getElementsByTagName('tr');
+        
+                for (let i = 0; i < rows.length; i++) { // Corrected loop condition
+                    const row = rows[i];
+                    const cells = row.getElementsByTagName('td');
+                    let shouldShow = false;
+        
+                    for (let j = 0; j < cells.length; j++) { // Corrected loop condition
+        
+                        const cell = cells[j];
+                        if (cell.innerHTML.toLowerCase().indexOf(filterValue) > -1) {
+                            shouldShow = true;
+                            break;
+                        }
+                    }
+        
+                    if (shouldShow) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        
+            // print table button function
+            function printAssetTable() {
+                const tableData = [];
+                const tableRows = document.getElementById('data-table').getElementsByTagName('tr');
+        
+                for (let i = 0; i < tableRows.length; i++) { // Corrected loop condition
+                    const row = tableRows[i];
+                    const rowData = [];
+                    const cells = row.getElementsByTagName('td');
+        
+                    for (let j = 0; j < cells.length; j++) { // Corrected loop condition
+                        rowData.push(cells[j].innerText);
+                    }
+        
+                    tableData.push(rowData.join(','));
+                }
+        
+                console.log('Asset Data:', tableData);
+                downloadCSV('asset_data.csv', tableData);
+                return tableData;
+            }
+        
+            function printAssetStatusReport() {
+                const tableData = [];
+                const tableRows = document.getElementById('report-data-table').getElementsByTagName('tr');
+        
+                for (let i = 0; i < tableRows.length; i++) { // Corrected loop condition
+                    const row = tableRows[i];
+                    const rowData = [];
+                    const cells = row.getElementsByTagName('td');
+        
+                    for (let j = 0; j < cells.length; j++) { // Corrected loop condition
+                        rowData.push(cells[j].innerText);
+                    }
+        
+                    tableData.push(rowData.join(','));
+                }
+        
+                console.log('Asset Status Report Data:', tableData);
+                downloadCSV('asset_status_report.csv', tableData);
+                return tableData;
+            }
+        
+            function downloadCSV(fileName, tableData) {
+                const csvContent = tableData.join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+        
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }
+        
+            // print table button function
+            function printAssetTable() {
+                const tableData = [];
+                const tableRows = document.getElementById('data-table').getElementsByTagName('tr');
+        
+                for (let i = 0; i < tableRows.length; i++) { // Corrected loop condition
+                    const row = tableRows[i];
+                    const rowData = [];
+                    const cells = row.getElementsByTagName('td');
+        
+                    for (let j = 0; j < cells.length; j++) { // Corrected loop condition
+                        rowData.push(cells[j].innerText);
+                    }
+        
+                    tableData.push(rowData.join(','));
+                }
+        
+                console.log('Asset Data:', tableData);
+                downloadCSV('asset_data.csv', tableData);
+                return tableData;
+            }
+        
+        });
+
+        async function fetchData() {
+        try {
+            const response = await fetch('/data/dBoard202');
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data. Status: ${response.status}`);
+            }
+            const data = await response.json();
+            console.log('Fetched data:', data);
+            return data;
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            return [];
+        }
+    }
+
+    async function filterAndPopulateTable(filterValue, pageNumber, itemsPerPage) {
+        const data = await fetchData();
+
+        // Filter data based on the search input
+        const filteredData = data.filter(item => {
+            return Object.values(item).some(value =>
+                typeof value === 'string' && value.toLowerCase().includes(filterValue)
+            );
+        });
+
+        // Paginate the filtered data
+        const startIndex = (pageNumber - 1) * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
+        const currentPageData = filteredData.slice(startIndex, endIndex);
+
+        const tableBody = document.getElementById('data-table');
+        tableBody.innerHTML = ''; // Clear existing data
+
+        currentPageData.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.room}</td>
+                <td>${item.location}</td>
+                <td>${item.category}</td>
+                <td>${item.item_description}</td>
+                <td>${item.serial_number}</td>
+                <td>${item.unit_cost}</td>
+                <td>${item.asset_status}</td>
+                <td>
+                    <button class="update-button">Update</button>
+                    <button class="delete-button">Delete</button>
+                </td>
+            `;
+
+            // Add click event listener to the row
+            row.addEventListener('click', function () {
+                showModalWithData(row);
+            });
+
+            tableBody.appendChild(row);
+        });
+
+        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+        if (totalPages > 0) {
+            const currentPage = Math.min(pageNumber, totalPages);
+            createPagination(filteredData.length, itemsPerPage, currentPage);
+        }
+    }
+
+    function createPagination(totalItems, itemsPerPage, currentPage) {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageLink = document.createElement('a');
+            pageLink.href = '#';
+            pageLink.textContent = i;
+            if (i === currentPage) {
+                pageLink.classList.add('active');
+            }
+            pageLink.addEventListener('click', function () {
+                filterAndPopulateTable(document.getElementById('searchInput202').value.trim().toLowerCase(), i, itemsPerPage);
+            });
+            pagination.appendChild(pageLink);
+        }
+    }
+
+    // Initialize table with first page data
+    const itemsPerPage = 10;
+    filterAndPopulateTable('', 1, itemsPerPage);
+
+    // Event listener for search input
+    document.getElementById('searchInput202').addEventListener('input', function () {
+        filterAndPopulateTable(this.value.trim().toLowerCase(), 1, itemsPerPage);
+    });
+
+
+
+        </script>
+</body>
+</html>

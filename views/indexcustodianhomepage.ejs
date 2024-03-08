@@ -1,0 +1,1311 @@
+<!DOCTYPE html> <!--MAINSCREEN.EJS-->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
+    <title>Asset Management</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <style>
+      
+ /* New styles for the update button */
+ 
+ td button.update-button {
+        background-color: #1db954;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    td button.update-button:hover {
+        background-color: #14843a;
+    }
+
+    h1 {
+        padding-left: 10px;
+    }
+
+    /* New styles for the delete button */
+    td button.delete-button {
+        background-color: #D95353;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    td button.delete-button:hover {
+        background-color: #a63434;
+    }
+
+    #searchInput {
+        margin-left: 10px; /* Adjust as needed */
+    }
+    #barcodeInput {
+        margin-left: 10px; /* Adjust as needed */
+    }
+
+    /* Add padding to the left of the print table button */
+    .report-button {
+        margin-left: 5px; /* Adjust as needed */
+    }
+
+        /* Custom CSS */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navbar styling */
+        .navbar {
+            background-color: #f8f9fa; /* Change to desired color */
+            z-index: 1000; /* Ensure it stays on top */
+
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .dropdown-menu {
+            background-color: #f8f9fa; /* Change to desired color */
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+        background-color: #333333;
+        color: white;
+        height: 100vh;
+        width: 150px; /* Adjusted sidebar width */
+        position: fixed;
+        top: 0;
+        left: 0;
+        overflow-x: hidden;
+        padding-top: 60px;
+        transition: 0.3s;
+        z-index: 900;
+        margin-top: 20px;
+    }
+
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            display: block;
+            transition: 0.3s;
+            color: white; /* Text color */
+        }
+
+        .sidebar a:hover {
+            background-color: #11950092; /* Change hover background color */
+        }
+
+        /* Page content */
+        .content {
+        padding: 20px;
+        transition: margin-left 0.3s;
+        padding-left: 150px; /* Adjusted content padding */
+    }
+
+        /* Table styling */
+        table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        margin-left: 10px ;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        overflow-x: auto; /* Add horizontal scrollbar if necessary */
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    th, td {
+        padding: 5px; /* Adjusted padding */
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        white-space: nowrap; /* Prevent text wrapping */
+        
+    }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Add these styles to your existing styles in the head of your HTML document */
+
+/* Report content styling */
+#report-content {
+    padding: 20px;
+    animation: fadeIn 0.5s ease-in-out;
+    margin-left: 0; /* Adjusted margin to accommodate the sidebar width */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    max-width: 97%; /* Set a maximum width */
+
+}
+
+
+.report-actions {
+    margin-bottom: 20px;
+    display: flex; /* Use flexbox to align items horizontally */
+    align-items: center; /* Center items vertically within the flex container */
+}
+
+#report-content .add-button {
+    background-color: #1db954;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 135px;
+}
+
+.add-button:hover {
+    background-color: #14843a;
+}
+
+.filter-button {
+    background-color: #ddd;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-left: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter-button:hover {
+    background-color: #ccc;
+}
+
+.report-table {
+    width: 95%; /* Set the width to 100% to take the full width of the available space */
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-left: 135px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.report-table th,
+.report-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+
+}
+
+.report-table th {
+    background-color: #f2f2f2;
+}
+#report-content h1 {
+    margin-left: 125px;
+}
+
+#asset-content table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-left: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow-x: auto; /* Allow horizontal scroll */
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+#asset-content th,
+#asset-content td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 10px;
+}
+
+#asset-content th {
+    background-color: #f2f2f2;
+}
+
+
+/* Add button styling */
+.add-button {
+    background-color: #1db954; /* Same green color as the Print Table button */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 5px; /* Adjust the margin as needed */
+}
+
+.add-button:hover {
+    background-color: #14843a; /* Darker green on hover */
+}
+.report-button{ background-color: #1db954; /* Same green color as the Print Table button */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 5px;}
+
+    .report-button:hover {
+    background-color: #14843a; /* Darker green on hover */
+}
+
+/* Additional styles for Add Asset page */
+#add-asset-content {
+    animation: fadeIn 0.5s ease-in-out;
+    margin-left: 0; /* Adjusted margin to accommodate the sidebar width */
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    margin-left: 5px;
+}
+
+.form-container label {
+    margin-bottom: 5px;
+}
+
+.form-container input,
+.form-container select {
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+/* Add button styling */
+.add-button {
+    background-color: #1db954; /* Same green color as the Print Table button */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 66px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-button:hover {
+    background-color: #14843a; /* Darker green on hover */
+}
+
+/* Borrower table styling */
+#borrower-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+#borrower-content th,
+#borrower-content td {
+    padding: 15px; /* Increased padding for better readability */
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 12px;
+}
+
+#borrower-content th {
+    background-color: #f2f2f2;
+}
+
+/* Borrower content animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.room-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 20px 20px 10px;
+    overflow-y: auto;
+    max-height: 300px;
+    width: 1356px;
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    position: relative;
+    height: 150px;
+}
+
+.room-row {
+    display: flex;
+    margin-top: 15px;
+    flex-direction: row;
+    justify-content: space-around; /* Changed to space-around */
+    align-items: center;
+    width: 100%; /* Added to ensure full width */
+}
+
+.room {
+    background-color: #087830;
+    color: #fff;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex: 1; /* Added to ensure equal spacing */
+    text-align: center; 
+}
+
+.room:hover {
+    background-color: #1db954;
+    color: black;
+    text-decoration: none;
+}
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply animation to the room container */
+.room-container {
+    animation: fadeInUp 0.5s ease-in-out;
+}
+
+
+/* Borrowers box styling */
+.borrowers-container {
+    display: flex; /* Set display to flex to enable flexbox layout */
+    justify-content: space-around; /* Adjust as needed */
+}
+
+.borrowers-box {
+    flex: 0.5; /* Half the size of the room container */
+    margin-left: 10px; /* Add space between the containers */
+    margin-top: 20px; /* Add margin at the top for separation */
+    background-color: #61616c; /* Light gray background */
+    border: 1px solid #ddd; /* Border for a simple box */
+    border-radius: 5px; /* Rounded corners */
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: left;
+    max-height: 200px; /* Set a maximum height for the container */
+    width: 200px; /* Set a fixed width for the container */
+    height: 150px;
+    overflow-y: auto; /* Add scroll wheel for overflow */
+    position: relative; /* To position the Borrowers Number box */
+}
+
+.borrowers-box p {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 20px;
+    margin-left: 10px;
+    color: white;
+}
+
+.borrowers-counter {
+    font-size: 50px;
+    margin-top: 5px;
+    margin-left: 10px;
+    color: white;
+}
+
+.borrowers-box-2 {
+    flex: 0.5; /* Half the size of the room container */
+    margin-left: 10px; /* Add space between the containers */
+    margin-top: 20px; /* Add margin at the top for separation */
+    background-color: #61616c; /* Light gray background */
+    border: 1px solid #ddd; /* Border for a simple box */
+    border-radius: 5px; /* Rounded corners */
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: left;
+    max-height: 200px; /* Set a maximum height for the container */
+    width: 200px; /* Set a fixed width for the container */
+    overflow-y: auto; /* Add scroll wheel for overflow */
+    position: relative; /* To position the Borrowers Number box */
+}
+
+.borrowers-box-2 p {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 20px;
+    margin-left: 10px;
+    color: white;
+}
+
+.borrowers-counter-2 {
+    font-size: 50px;
+    margin-top: 5px;
+    margin-left: 10px;
+    color: white;
+}
+
+#report-form-content {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+#report-form-content .form-container textarea {
+    resize: vertical; /* Allow vertical resizing of the textarea */
+}
+
+#report-form-content .add-button {
+    margin-top: 10px; /* Adjust the margin as needed */
+}
+
+/* Report content styling */
+#report-content {
+    padding: 20px;
+    animation: fadeIn 0.5s ease-in-out;
+    margin-left: 0; /* Adjusted margin to accommodate the sidebar width */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+#welcomeText {
+    font-weight: bold;
+}
+#authUsers {
+    text-transform: capitalize; /* Capitalize the first letter of the username */
+}
+
+.return-button {
+        background-color: rgb(0, 207, 0);
+        color: white;
+        border: none;
+        padding: 5px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .return-button:hover {
+        background-color: rgb(0, 158, 0);
+    }
+
+    .return-button:hover {
+        animation: pulse 0.5s infinite alternate;
+    }
+
+       
+           </style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="indexcustodianhomepage.ejs">ICTC Asset Management</a>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span id="welcomeText">Welcome, </span><span id="authUsers">Admin</span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="indexwelcomepage.ejs">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="#" onclick="showDashboard()">Dashboard</a>
+        <a href="#" onclick="showReport()">Report</a>
+        <a href="#" class="borrower-link" onclick="showBorrowerContent()">Borrower</a>
+    </div>
+
+        <!-- Page content -->
+        <div class="content" id="dashboard-content" style="display: none;"> <!--TRANSFER FUNCTIONALITY FOR PRINT AND FILTER-->
+            <h1>Dashboard Content</h1>
+            <button class="add-button" id="addAssetButton">Add Asset</button>
+
+             <!-- Borrowers Number Box -->
+             <div class="borrowers-container">
+                <div class="borrowers-box">
+                    <div id="totalassetscount" class="borrowers-counter"></div>
+                    <p>Total Assets</p>
+                </div>
+            
+                <div class="borrowers-box-2">
+                    <div id="reportcounter" class="borrowers-counter"></div>
+                    <p>Total Reports</p>
+                </div>
+            
+                <div class="borrowers-box">
+                    <div id="borroweditem" class="borrowers-counter"></div>
+                    <p>Borrowed Items</p>
+                </div>
+            </div>
+
+            <!-- Vertical container for clickable rooms -->
+            <div class="room-container">
+                <div class="room-row">
+                    <a href="indexrooms201.ejs" class="room">ICT 201</a>
+                    <a class="room" href="indexrooms202.ejs">ICT 202</a>
+                    <a class="room" href="indexrooms202.ejs">ICT 203</a>
+                    <a class="room" href="indexrooms202.ejs">ICT 204</a>
+                    <a class="room" href="indexrooms202.ejs">ICT 205</a>
+                    <a class="room" href="indexrooms202.ejs">ICT 206</a>
+                </div>
+                <div class="room-row">
+                    <a class="room" href="indexrooms202.ejs">ICT 207</a>
+                    <a class="room" href="indexrooms202.ejs">ICT 208</a>
+                    <a class="room" href="indexrooms202.ejs">ICT 209</a>
+                    <a class="room" href="indexrooms202.ejs">ICT 210</a>
+                    <a class="room" href="indexrooms202.ejs">ICT 211</a>
+                    <a class="room" href="indexrooms202.ejs">ICT 212</a>
+                </div>
+            </div>
+            
+            
+           
+            
+</div>
+    </div>
+    
+        <!-- Asset content -->
+        <div class="content" id="asset-content">
+            <h1>Asset Table</h1>
+            
+    
+            <table>
+                <thead>
+                    <tr>                   
+                        <th>Room</th>
+                        <th>Location</th>
+                        <th>Category</th>
+                        <th>Item Description</th>
+                        <th>Serial Number</th>
+                        <th>Unit Cost</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="data-table">
+                    <div class="row">
+                        <!-- Asset values (maximum 15 per row) -->
+                    </div>
+                    <div class="row">
+                        <!-- Asset values (maximum 15 per row) -->
+                    </div>
+                    <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+
+   <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Row Details</h5>
+          <!-- Close button (x) -->
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Modal content will be filled dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Asset content -->
+<div class="content" id="add-asset-content" style="display: none;">
+    <h1>Add Asset</h1>
+    <!-- Pinalipat ni jaden -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const filterValue = this.value.toLowerCase();
+            const rows = document.getElementById('data-table').getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                let shouldShow = false;
+
+                for (let j = 0; j < cells.length; j++) {
+                    const cell = cells[j];
+                    if (cell.innerHTML.toLowerCase().indexOf(filterValue) > -1) {
+                        shouldShow = true;
+                        break;
+                    }
+                }
+
+                if (shouldShow) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+        showDashboard();
+
+        fetchData(); // Fetch data function call
+    });
+    
+    function click (){alert("clickable")}
+
+    function reportcount (){fetch('/indexreportcount') // Replace this with your backend route to fetch report data
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch report data. Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then((result)=>document.getElementById('reportcounter').innerHTML = result.count )
+            
+            }
+
+            function lending (){fetch('/indexborroweditem') // Replace this with your backend route to fetch report data
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch report data. Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then((result)=>document.getElementById('borroweditem').innerHTML = result.count )
+            
+            }
+
+    function borrowercount (){fetch('/totalassetscount') // Replace this with your backend route to fetch report data
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch report data. Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then((result)=>document.getElementById('totalassetscount').innerHTML = result.totalCount )
+            
+            }
+        function showReportForm() {
+                hideAllTabs();
+                document.getElementById('report-form-content').style.display = 'block';
+            }  
+        //reportform na pang post
+        document.addEventListener("DOMContentLoaded", function () {
+  const repform = document.getElementById("reportForm");
+  const successMessage = document.getElementById("successMessage");
+  const errorMessage = document.getElementById("errorMessage");
+
+  repform.addEventListener('submit', async function (event) {
+    event.preventDefault();
+        // Get form data
+    const formDataReport = {
+    
+        report_location: document.getElementById("report_location").value,
+      report_property_number: document.getElementById("report_property_number").value,
+      report_serial_number: document.getElementById("report_serial_number").value,
+      report_issue: document.getElementById("report_issue").value,
+    };
+       // Send the data to the server
+       await sendDataToServer(formDataReport);
+  });
+ 
+  async function sendDataToServer(formDataReport) {
+    try {
+      const response = await fetch('/indexfacultyreportinput', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formDataReport),
+      });
+
+      if (response.ok) {
+        console.log("ok")
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+      
+    }
+  }
+});    
+            function showBorrowerContent() { // SCRIPT BORROWER TABLE
+                    hideAllTabs(); // Hide all other tabs
+                    const borrowerContent = document.getElementById('borrower-content');
+                    borrowerContent.style.display = 'block';
+            
+                    // Fetch and populate the borrower table with data from the database
+                    fetch('/assets') // Replace this with your backend route to fetch borrower data
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Failed to fetch data. Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            const borrowerTableBody = document.getElementById('borrower-data-table');
+                            borrowerTableBody.innerHTML = ''; // Clear existing data
+            
+                            data.forEach(item => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${item.name}</td>
+                                    <td>${item.email}</td>
+                                    <td>${item.usernum}</td>
+                                    <td>${item.item_description}</td>
+                                    <td>${item.barcode}</td>
+                                    <td>${item.borrow_date}</td>
+                                    <td>${item.return_date}</td>
+                                    <td>${item.status}</td>
+                                    <td><button class="return-button" onclick="returnItem('${item.barcode}')">Return</button></td>
+                                `;
+                                borrowerTableBody.appendChild(row);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching borrower data:', error);
+                });
+            }           
+                // Add an event listener to the "Borrower" link in the sidebar
+            document.querySelector('.borrower-link').addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent default link behavior
+                    showBorrowerContent();
+            });
+            
+            function showAddAssetPage() {
+                    hideAllTabs();
+                    document.getElementById('add-asset-content').style.display = 'block';
+            }
+            
+            function hideAddAssetPage() {
+                    document.getElementById('add-asset-content').style.display = 'none';
+            }
+            
+            function hideAllTabs() {
+                    document.getElementById('dashboard-content').style.display = 'none';
+                    document.getElementById('asset-content').style.display = 'none';
+                    document.getElementById('report-content').style.display = 'none';
+                    hideAddAssetPage(); // Hide the "Add Asset" content
+                    document.getElementById('report-form-content').style.display = 'none';
+                    document.getElementById('borrower-content').style.display = 'none'; // Hide borrower content
+            }
+            
+            function showDashboard() {
+                    hideAllTabs(); // Hide all other tabs
+        
+                    const dashboardContent = document.getElementById('dashboard-content');
+                    if (dashboardContent) {
+                        dashboardContent.style.display = 'block';
+                    } else {
+                        console.error('Dashboard content not found.');
+                    }
+            }
+            
+            
+            function showReport() {
+                    hideAllTabs();
+                    document.getElementById('report-content').style.display = 'block';
+                    hideAddAssetPage(); // Hide the "Add Asset" content
+        
+             
+            }
+            
+        // Your existing code without async/await
+  document.addEventListener("DOMContentLoaded", function () {
+  const assetForm = document.getElementById("addAssetForm");
+  const successMessage = document.getElementById("successMessage");
+  const errorMessage = document.getElementById("errorMessage");
+
+  assetForm.addEventListener('submit', async function (event) {
+    event.preventDefault();
+    
+    // Get form data
+    const formData = {
+      room: document.getElementById("room").value,
+      location: document.getElementById("location").value,
+      category: document.getElementById("category").value,
+      item_description: document.getElementById("item_description").value,
+      property_number: document.getElementById("property_number").value,
+      serial_number: document.getElementById("serial_number").value,
+      unit_cost: document.getElementById("unit_cost").value,
+      rdf_number: document.getElementById("rdf_number").value,
+      rtf_number: document.getElementById("rtf_number").value,
+      asset_status: document.getElementById("asset_status").value,
+    };
+    console.log(formData)
+
+    // Send the data to the server
+    await sendDataToServer(formData);
+  });
+
+  async function sendDataToServer(formData) {
+    try {
+      const response = await fetch('/indexassettable', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+      
+        console.log("ok")
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+      
+    }
+  }
+
+  async function showAuthUsers() {
+    let usersName = document.getElementById("authUsers");
+    usersName.innerText = await localStorage.getItem('lastName');
+}
+
+showAuthUsers();
+});
+
+        // JavaScript to handle switching content when Asset is clicked
+        function showReportContent() {
+            hideAllTabs();
+        
+            document.getElementById('report-content').style.display = 'block';
+        
+            // Fetch and populate the report table with data from the database
+            fetch('/indexfacultyreportinputdata') // Replace this with your backend route to fetch report data
+    .then(response => response.json())
+    .then(data => {
+        const reportTableBody = document.getElementById('report-data-table');
+        reportTableBody.innerHTML = ''; // Clear existing data
+
+        data.forEach(item => {
+    const row = document.createElement('tr');
+    row.setAttribute('data-status', item.serial_number); // Add data-status attribute to the row
+
+    row.innerHTML = `
+        <td>${item.report_location}</td>
+        <td>${item.report_serial_number}</td>
+        <td>${item.report_property_number}</td>
+        <td class="issue" data-status="${item.serial_number}">${item.report_issue}</td>
+        <td>
+            <button class="update-button" onclick="updateRow('${item.serial_number}')">Update</button>
+            <button class="delete-button" onclick="softDeleteRow('${item.serial_number}')">Delete</button>
+        </td>
+    `;
+
+    reportTableBody.appendChild(row);
+});
+
+    })
+    .catch(error => {
+        console.error('Error fetching report data:', error);
+    });
+
+        }
+        
+       // Function to update a row
+       async function updateRow(serialNumber) {
+  const newIssue = prompt('Enter new issue:');
+  if (newIssue !== null) {
+    try {
+      const response = await fetch(`/updaterow/${serialNumber}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ newIssue }), // Send the updated issue text in the request body
+      });
+
+      if (response.ok) {
+        console.log('Row updated successfully');
+      } else {
+        throw new Error('Failed to update row');
+      }
+    } catch (error) {
+      console.error('Error updating row:', error);
+    }
+  }
+}
+ // Function to perform soft delete on the web
+ async function softDeleteRow(serialNumber) {
+  if (serialNumber) {
+    try {
+      const response = await fetch('/indexreportsdelete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          serial_number: serialNumber
+        }),
+      });
+
+      if (response.ok) {
+        const row = document.querySelector(`tr[data-status="${serialNumber}"]`);
+        if (row) {
+          row.style.display = 'none';
+          console.log(`Soft delete row with serial number: ${serialNumber}`);
+        } else {
+          console.error('Row not found:', serialNumber);
+        }
+      } else {
+        console.error('Failed to soft delete row:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  }
+}      
+        function hideAddAssetPage() {
+            const addAssetContent = document.getElementById('add-asset-content');
+            if (addAssetContent.style.display !== 'none') {
+                // Only hide the "Add Asset" content if it is currently visible
+                addAssetContent.style.display = 'none';
+            }
+        }
+        
+        function showDashboard() { // this is the problem
+            hideAllTabs();
+            document.getElementById('dashboard-content').style.display = 'block';
+        }
+        
+        
+        function showReport() {
+            showReportContent(); // Call the renamed function
+            hideAllTabs();
+            document.getElementById('report-content').style.display = 'block';
+            hideAddAssetPage(); // Hide the "Add Asset" content
+        }           
+                // Add an event listener to the "Add Asset" button
+                document.getElementById('addAssetButton').addEventListener('click', function () {
+                    showAddAssetPage();
+                });
+            
+                // JavaScript to handle switching content when Asset is clicked
+                document.addEventListener("DOMContentLoaded", function () {
+                    const assetLink = document.querySelector('.asset-link'); // Select the Asset link
+                    const contentDiv = document.querySelector('.content');
+            
+                    assetLink.addEventListener("click", function (event) {
+                        event.preventDefault(); // Prevent default link behavior
+            
+                        // Fetch and insert asset content
+        
+                    });
+                });
+            
+                function toggleNav() {
+                    var sidebar = document.getElementById("sidebar");
+                    var content = document.getElementById("content");
+                    if (sidebar.style.left === "0px") {
+                        sidebar.style.left = "-250px";
+                        content.style.marginLeft = "0";
+                    } else {
+                        sidebar.style.left = "0px";
+                        content.style.marginLeft = "250px";
+                    }
+                }
+            
+                function toggleHomeSubmenu() {
+                    var homeSubmenu = document.getElementById("home-submenu");
+                    var reportsSubmenu = document.getElementById("rooms-submenu");
+            
+                    homeSubmenu.style.display = (homeSubmenu.style.display === "block") ? "none" : "block";
+                    reportsSubmenu.style.display = "none";
+                }
+            
+                function toggleReportsSubmenu() {
+                    var homeSubmenu = document.getElementById("home-submenu");
+                    var reportsSubmenu = document.getElementById("rooms-submenu");
+            
+                    reportsSubmenu.style.display = (reportsSubmenu.style.display === "block") ? "none" : "block";
+                    homeSubmenu.style.display = "none";
+                }
+            
+
+                    
+            
+                function printAssetStatusReport() {
+            const tableData = [];
+            const tableRows = document.getElementById('report-data-table').getElementsByTagName('tr');
+        
+            for (let i = 0; i < tableRows.length; i++) { // Corrected loop condition
+                const row = tableRows[i];
+                const rowData = [];
+                const cells = row.getElementsByTagName('td');
+        
+                for (let j = 0; j < cells.length; j++) { // Corrected loop condition
+                    rowData.push(cells[j].innerText);
+                }
+        
+                tableData.push(rowData.join(','));
+            }
+        
+            console.log('Asset Status Report Data:', tableData);
+            downloadCSV('asset_status_report.csv', tableData);
+            return tableData;
+        }
+
+                function downloadCSV(fileName, tableData) {
+                    const csvContent = tableData.join('\n');
+                    const blob = new Blob([csvContent], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+            
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }
+            
+                function disableBackButton() {
+                    window.history.pushState(null, "", window.location.href);
+                    window.onpopstate = function () {
+                        window.history.pushState(null, "", window.location.href);
+                    };
+                }
+            
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.getElementById('searchInput').addEventListener('input', function () {
+                        const filterValue = this.value.toLowerCase();
+                        const rows = document.getElementById('data-table').getElementsByTagName('tr');
+            
+                        for (let i = 0; i < rows.length; i++) { // Corrected loop condition
+                            const row = rows[i];
+                            const cells = row.getElementsByTagName('td');
+                            let shouldShow = false;
+            
+                            for (let j = 0; j < cells.length; j++) { // Corrected loop condition
+
+                                const cell = cells[j];
+                                if (cell.innerHTML.toLowerCase().indexOf(filterValue) > -1) {
+                                    shouldShow = true;
+                                    break;
+                                }
+                            }
+            
+                            if (shouldShow) {
+                                row.style.display = '';
+                            } else {
+                                row.style.display = 'none';
+                            }
+                        }
+                    });
+            
+                    fetchData();
+                    disableBackButton();
+                });
+                borrowercount()
+                reportcount()
+                lending()
+                function promptBarcodeScanning(barcode) {
+    // Here you can implement your barcode scanning logic
+    // Once the barcode is successfully scanned, call the API to soft delete and update the entry
+    const confirmed = confirm("Please scan the barcode first. After scanning, press OK to confirm return.");
+    if (confirmed) {
+        // Call the API to update the entry with the barcode and perform soft delete
+        updateEntry(barcode);
+    }
+}
+
+// Function to handle returning an item
+// Modify the returnItem function to include the barcode value in the URL
+async function returnItem(barcode) {
+    try {
+        const confirmed = confirm("Please scan the barcode to confirm return.");
+        if (confirmed) {
+            const response = await fetch(`/assetsupdate/${barcode}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: 'Returned' }), // Update the status field
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update entry');
+            }
+
+            const result = await response.json();
+            alert(result.message); // Show success message
+            // Update the status cell to "Returned" on the webpage
+            const statusCell = document.querySelector(`td.status-cell[data-barcode="${barcode}"]`);
+            statusCell.textContent = 'Returned';
+        }
+    } catch (error) {
+        console.error('Error returning item:', error);
+        alert('An error occurred. Please try again.');
+    }
+}
+
+        </script>
+<!-- pinalipat ni jaden -->
+<!-- Add asset form -->
+    <form id="addAssetForm">
+
+        <div class="form-container">
+    <label for="room">Room:</label>
+    <select class="text" id="room" name="room" required>
+        <option value="select">--Select A Room--</option>
+        <option value="201">201</option>
+        <option value="202">202</option>
+    </select>
+
+    <label for="location">Location:</label>
+    <input type="text" id="location" required>
+
+    <label for="category">Category:</label>
+    <input type="text" id="category" required>
+
+    <label for="item_description">Item Description:</label>
+    <input type="text" id="item_description" required>
+    
+    <label for="property_number">Property Number:</label>
+    <input type="text" id="property_number" required>
+
+    <label for="serial_number">Serial Number:</label>
+    <input type="text" id="serial_number" required>
+
+    <label for="unit_cost">Unit Cost:</label>
+    <input type="text" id="unit_cost" required>
+
+    <label for="rdf_number">RDF Number:</label>
+    <input type="text" id="rdf_number">
+
+    <label for="rtf_number">RTF Number:</label>
+    <input type="text" id="rtf_number">
+
+    <label for="asset_status">Status:</label>
+    <select id="asset_status">
+        <option value="" disabled selected style="color: grey;">Choose Working or Not Working</option>
+        <option value="Good/Instock">Good/Instock</option>
+        <option value="NotWorking">Not Working</option>
+    </select>
+        </div>
+     
+<button type="submit" class="add-button" id="submitAssetButton">Submit</button>
+
+    </form>
+</div>
+<!-- Report display table -->
+<div class="content" id="report-content" style="display: none;">
+    <h1 id="report-text">Asset Status Report</h1>
+    <div class="report-actions">
+        <button class="add-button" onclick="showReportForm()">Add</button>
+        <button class="filter-button">Filter</button>
+        <button class="report-button" onclick="printAssetStatusReport()">Print Table</button>
+    </div>
+
+    <!-- Table for the Asset Status Report -->
+    <table class="report-table">
+        <thead>
+            <tr>
+                <th>Location</th>   
+                <th>Serial Number</th>
+                <th>Property Number</th>
+                <th>Status</th>
+                 <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="report-data-table">
+            <!-- Database content will be dynamically inserted here -->
+        </tbody>
+    </table>
+</div>
+<!-- Report Form content -->
+<div class="content" id="report-form-content" style="display: none;">
+    <h1>Report Asset</h1>
+    <!-- Your form fields go here -->
+    <form id="reportForm">
+
+        <div class="form-container">
+            <label for="report_location">Location:</label>
+            <input type="text" id="report_location" name="report_location" required>
+
+            <label for="report_serial_number">Serial Number:</label>
+            <input type="text" id="report_serial_number" required>
+
+            <label for="report_property_number">Property Number:</label>
+            <input type="text" id="report_property_number" required>
+
+            <label for="report_issue">Issue:</label>
+            <textarea id="report_issue" rows="4" required></textarea>
+        </div>
+        <!-- Add more fields as needed -->
+        <button class="add-button" type="submitform" id="reportsubmit">Submit</button>
+    </form>
+</div>
+<!-- Borrower display table -->
+<div class="content" id="borrower-content" style="display: none;">
+    <h1>Borrower Table</h1>
+    <input type="text" id="searchInput" placeholder="Filter">
+    <table class="borrower-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>User ID</th>
+                <th>Asset Type</th>
+                <th>Barcode</th>
+                <th>Borrow Date</th>
+                <th>Return Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="borrower-data-table">
+            <!-- Data will be dynamically inserted here -->
+        </tbody>
+    </table>
+</div>
+    <!-- Bootstrap JS (optional, for dropdown functionality) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  
+</body>
+</html>

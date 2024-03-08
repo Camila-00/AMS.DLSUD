@@ -1,0 +1,68 @@
+
+body {
+    background: url('assets/ictc.png') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+}
+
+.back-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.form-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 50px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-send {
+    background-color: #28a745;
+    color: #fff;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.btn-send.btn-block {
+    padding: 10px;
+}
+
+.btn-send.btn-block:last-child {
+    margin-top: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.animated {
+    animation: fadeIn 1s ease-in-out;
+}
+
+.container-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin: 20px;
+}
+
+#successMessage,
+#errorMessage {
+    display: none;
+    margin-top: 10px;
+}

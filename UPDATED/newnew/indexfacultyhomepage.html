@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Management</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+ /* New styles for the update button */
+ td button.update-button {
+        background-color: #1db954;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    td button.update-button:hover {
+        background-color: #14843a;
+    }
+
+    h1 {
+        padding-left: 10px;
+    }
+
+    /* New styles for the delete button */
+    td button.delete-button {
+        background-color: #D95353;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    td button.delete-button:hover {
+        background-color: #a63434;
+    }
+
+    #searchInput {
+        margin-left: 10px; /* Adjust as needed */
+    }
+
+    /* Add padding to the left of the print table button */
+    .report-button {
+        margin-left: 5px; /* Adjust as needed */
+    }
+
+        /* Custom CSS */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navbar styling */
+        .navbar {
+            background-color: #f8f9fa; /* Change to desired color */
+            z-index: 1000; /* Ensure it stays on top */
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .dropdown-menu {
+            background-color: #f8f9fa; /* Change to desired color */
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+        background-color: #333333;
+        color: white;
+        height: 100vh;
+        width: 150px; /* Adjusted sidebar width */
+        position: fixed;
+        top: 0;
+        left: 0;
+        overflow-x: hidden;
+        padding-top: 60px;
+        transition: 0.3s;
+        z-index: 900;
+    }
+
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            display: block;
+            transition: 0.3s;
+            color: white; /* Text color */
+        }
+
+        .sidebar a:hover {
+            background-color: #11950092; /* Change hover background color */
+        }
+
+        /* Page content */
+        .content {
+        padding: 20px;
+        transition: margin-left 0.3s;
+        padding-left: 150px; /* Adjusted content padding */
+    }
+
+        /* Table styling */
+        table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        margin-left: 10px ;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        overflow-x: auto; /* Add horizontal scrollbar if necessary */
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    th, td {
+        padding: 10px; /* Adjusted padding */
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        white-space: nowrap; /* Prevent text wrapping */
+        
+    }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Add these styles to your existing styles in the head of your HTML document */
+
+/* Report content styling */
+#report-content {
+    padding: 20px;
+    animation: fadeIn 0.5s ease-in-out;
+    margin-left: 0; /* Adjusted margin to accommodate the sidebar width */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.report-actions {
+    margin-bottom: 20px;
+    display: flex; /* Use flexbox to align items horizontally */
+    align-items: center; /* Center items vertically within the flex container */
+}
+
+#report-content .add-button {
+    background-color: #1db954;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 135px;
+}
+
+.add-button:hover {
+    background-color: #14843a;
+}
+
+.filter-button {
+    background-color: #ddd;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-left: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter-button:hover {
+    background-color: #ccc;
+}
+
+.report-table {
+    width: 95%; /* Set the width to 100% to take the full width of the available space */
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-left: 135px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.report-table th,
+.report-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+
+}
+
+.report-table th {
+    background-color: #f2f2f2;
+}
+#report-content h1 {
+    margin-left: 125px;
+}
+
+#asset-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-left: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        #asset-content th,
+        #asset-content td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #asset-content th {
+            background-color: #f2f2f2;
+        }
+
+/* Add button styling */
+.add-button {
+    background-color: #1db954; /* Same green color as the Print Table button */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 5px; /* Adjust the margin as needed */
+}
+
+.add-button:hover {
+    background-color: #14843a; /* Darker green on hover */
+}
+.report-button{ background-color: #1db954; /* Same green color as the Print Table button */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 5px;}
+
+    .report-button:hover {
+    background-color: #14843a; /* Darker green on hover */
+}
+
+/* Additional styles for Add Asset page */
+#add-asset-content {
+    animation: fadeIn 0.5s ease-in-out;
+    margin-left: 0; /* Adjusted margin to accommodate the sidebar width */
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    margin-left: 5px;
+}
+
+.form-container label {
+    margin-bottom: 5px;
+}
+
+.form-container input,
+.form-container select {
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+/* Add button styling */
+.add-button {
+    background-color: #1db954; /* Same green color as the Print Table button */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-button:hover {
+    background-color: #14843a; /* Darker green on hover */
+}
+
+/* Borrower table styling */
+#borrower-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+#borrower-content th,
+#borrower-content td {
+    padding: 15px; /* Increased padding for better readability */
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+#borrower-content th {
+    background-color: #f2f2f2;
+}
+
+/* Borrower content animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Updated CSS for a centered and smaller rectangular room container */
+.room-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 20px 20px 10px;
+    overflow-y: auto;
+    max-height: 300px; /* Adjust this value as needed */
+    width: 200px;
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    position: relative;
+}
+
+.room {
+    background-color: #1db954;
+    color: #fff;
+    padding: 5px 20px;
+    margin: 5px;
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.room:hover {
+    background-color: #14843a;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply animation to the room container */
+.room-container {
+    animation: fadeInUp 0.5s ease-in-out;
+}
+
+/* Customize the scroll bar for Room Container */
+.room-container {
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #4CAF50 #f2f2f2; /* thumb and track colors */
+}
+
+.room-container::-webkit-scrollbar {
+    width: 8px; /* Set the width of the scrollbar */
+}
+
+.room-container::-webkit-scrollbar-thumb {
+    background-color: #4CAF50; /* Set the color of the scrollbar thumb */
+    border-radius: 4px; /* Add rounded corners to the thumb */
+}
+
+.room-container::-webkit-scrollbar-track {
+    background-color: #f2f2f2; /* Set the color of the scrollbar track */
+}
+
+
+/* Borrowers box styling */
+.borrowers-box {
+    flex: 0.5; /* Half the size of the room container */
+    margin-left: 10px; /* Add space between the containers */
+    margin-top: 20px; /* Add margin at the top for separation */
+    background-color: #f2f2f2; /* Light gray background */
+    border: 1px solid #ddd; /* Border for a simple box */
+    border-radius: 5px; /* Rounded corners */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-height: 200px; /* Set a maximum height for the container */
+    width: 200px; /* Set a fixed width for the container */
+    overflow-y: auto; /* Add scroll wheel for overflow */
+    position: relative; /* To position the Borrowers Number box */
+}
+
+
+
+.borrowers-box p {
+    margin: 0;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.borrowers-counter {
+    font-size: 24px;
+    margin-top: 5px;
+}
+
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">ICTC Asset Management</a>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Sample
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <a href="#" onclick="showDashboard()">Dashboard</a>
+    <a href="#" class="asset-link" onclick="showAsset()">Asset</a>
+    <a href="#" onclick="showReport()">Report</a>
+    <a href="#" class ="borrower-link"onclick="showBorrower()">Borrower</a>
+</div>
+
+
+    <!-- Page content -->
+    <div class="content" id="dashboard-content" style="display: none;">
+        <h1>Dashboard Content</h1>
+        <!-- Vertical container for clickable rooms -->
+    <div class="room-container">
+        <div class="room" onclick="redirectToRoom('ICT 201')">ICT 201</div>
+        <div class="room" onclick="redirectToRoom('ICT 202')">ICT 202</div>
+        <div class="room" onclick="redirectToRoom('ICT 203')">ICT 203</div>
+        <div class="room" onclick="redirectToRoom('ICT 204')">ICT 204</div>
+        <div class="room" onclick="redirectToRoom('ICT 205')">ICT 205</div>
+        <div class="room" onclick="redirectToRoom('ICT 206')">ICT 206</div>
+        <div class="room" onclick="redirectToRoom('ICT 207')">ICT 207</div>
+        <div class="room" onclick="redirectToRoom('ICT 208')">ICT 208</div>
+        <div class="room" onclick="redirectToRoom('ICT 209')">ICT 209</div>
+        <div class="room" onclick="redirectToRoom('ICT 210')">ICT 210</div>
+        <div class="room" onclick="redirectToRoom('ICT 211')">ICT 211</div>
+        <div class="room" onclick="redirectToRoom('ICT 212')">ICT 212</div>
+    </div>
+    <!-- Borrowers Number Box -->
+    <div class="borrowers-box">
+        <p>Borrowers</p>
+        <div class="borrowers-counter">42</div> <!-- Replace 42 with the actual number of borrowers -->
+    </div>
+</div>
+    </div>
+
+<!-- Asset content -->
+<div class="content" id="asset-content" style="display: block;">
+    <h1>Asset Table</h1>
+    <input type="text" id="searchInput" placeholder="Filter">
+    <button class="report-button" onclick="printData()">Print Table</button>
+    <button class="add-button" id="addAssetButton">Add</button>
+
+    <table>
+        <thead>
+        <tr>
+           
+            <th>Location</th>
+            <th>Category</th>
+            <th>Item Description</th>
+            <!-- Only specific columns are displayed in the main table -->
+            <th>Serial Number</th>
+            <th>Unit Cost</th>
+            <th>Accountability</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="data-table">
+    </tbody>
+    </table>
+</div>
+
+<!-- Add Asset content -->
+<div class="content" id="add-asset-content" style="display: none;">
+    <h1>Add Asset</h1>
+    <!-- Your form fields go here -->
+    <form id="addAssetForm">
+
+        <div class="form-container">
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location" required>
+    
+    <label for="category">Category:</label>
+    <input type="text" id="category" required>
+
+    <label for="itemDescription">Item Description:</label>
+    <input type="text" id="itemDescription" required>
+
+    <label for="bundle">Bundle:</label>
+    <input type="text" id="bundle">
+
+    <label for="propertyNumber">Property Number:</label>
+    <input type="text" id="propertyNumber" required>
+
+    <label for="serialNumber">Serial Number:</label>
+    <input type="text" id="serialNumber" required>
+
+    <label for="unitCost">Unit Cost:</label>
+    <input type="text" id="unitCost" required>
+
+    <label for="rdfNumber">RDF Number:</label>
+    <input type="text" id="rdfNumber">
+
+    <label for="rtfNumber">RTF Number:</label>
+    <input type="text" id="rtfNumber">
+
+    <label for="assetStatus">Asset Status:</label>
+    <select id="assetStatus">
+        <option value="working">Working</option>
+        <option value="Not working">Not Working</option>
+    </select>
+
+    <label for="accountability">Accountability:</label>
+    <input type="text" id="accountability" required>
+        </div>
+        <!-- Add more fields as needed -->
+        <button class="add-button" onclick="submitAssetForm()">Submit</button>
+    </form>
+</div>
+
+
+<!-- Report content -->
+<div class="content" id="report-content" style="display: none;">
+    <h1 id="report-text">Asset Status Report</h1>
+    <div class="report-actions">
+        <button class="add-button">Add</button>
+        <button class="filter-button">Filter</button>
+    </div>
+
+    <!-- Table for the Asset Status Report -->
+    <table class="report-table">
+        <thead>
+            <tr>
+                <th>Location</th>
+                <th>Serial Number</th>
+                <th>Property Number</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="report-data-table">
+            <!-- Database content will be dynamically inserted here -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Borrower content -->
+<div class="content" id="borrower-content" style="display: none;">
+    <h1>Borrower Table</h1>
+    <input type="text" id="searchInput" placeholder="Filter">
+    <table class="borrower-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>User ID</th>
+                <th>Asset Type</th>
+                <th>Barcode</th>
+                <th>Borrow Date</th>
+                <th>Return Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="borrower-data-table">
+            <!-- Data will be dynamically inserted here -->
+        </tbody>
+    </table>
+</div>
+
+
+
+    <!-- Bootstrap JS (optional, for dropdown functionality) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+    // Function to show only borrower content
+    function showBorrowerContent() {
+            hideAllTabs(); // Hide all other tabs
+            const borrowerContent = document.getElementById('borrower-content');
+            borrowerContent.style.display = 'block';
+
+            // Fetch and populate the borrower table with data from the database
+            fetch('/getBorrowerData') // Replace this with your backend route to fetch borrower data
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch data. Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const borrowerTableBody = document.getElementById('borrower-data-table');
+                    borrowerTableBody.innerHTML = ''; // Clear existing data
+
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${item.name}</td>
+                            <td>${item.email}</td>
+                            <td>${item.userID}</td>
+                            <td>${item.assetType}</td>
+                            <td>${item.barcode}</td>
+                            <td>${item.borrowDate}</td>
+                            <td>${item.returnDate}</td>
+                            <td>${item.status}</td>
+                            <td>${item.action}</td>
+                        `;
+                        borrowerTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching borrower data:', error);
+                });
+        }
+
+        // Add an event listener to the "Borrower" link in the sidebar
+        document.querySelector('.borrower-link').addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default link behavior
+            showBorrowerContent();
+        });
+
+
+
+
+
+
+
+//add asset show js
+function showAddAssetPage() {
+        hideAllTabs();
+        document.getElementById('add-asset-content').style.display = 'block';
+    }
+
+    function hideAddAssetPage() {
+        document.getElementById('add-asset-content').style.display = 'none';
+    }
+
+    function hideAllTabs() {
+            document.getElementById('dashboard-content').style.display = 'none';
+            document.getElementById('asset-content').style.display = 'none';
+            document.getElementById('report-content').style.display = 'none';
+            hideAddAssetPage(); // Hide the "Add Asset" content
+            document.getElementById('borrower-content').style.display = 'none'; // Hide borrower content
+        }
+
+    function showDashboard() {
+        hideAllTabs();
+        document.getElementById('dashboard-content').style.display = 'block';
+    }
+
+    function showAsset() {
+        hideAllTabs();
+        document.getElementById('asset-content').style.display = 'block';
+    }
+
+    function showReport() {
+        hideAllTabs();
+        document.getElementById('report-content').style.display = 'block';
+    }
+
+    function submitAssetForm() {
+        // Handle form submission logic here
+        // You can use JavaScript to fetch the values from the form and send them to the server
+        // Once the submission is successful, you can navigate back to the Asset tab or perform other actions
+        // Example: fetch('/submitAsset', { method: 'POST', body: new FormData(document.getElementById('addAssetForm')) });
+    }
+// Add an event listener to the "Add Asset" button
+document.getElementById('addAssetButton').addEventListener('click', function () {
+        showAddAssetPage();
+    });
+    
+
+// Add this JavaScript code to your existing script tag or create a new one in your HTML file
+
+function showReport() {
+    hideAllTabs();
+    document.getElementById('report-content').style.display = 'block';
+    
+    // Fetch and populate the report table with data from the database
+    fetch('/getReportData') // Replace this with your backend route to fetch report data
+        .then(response => response.json())
+        .then(data => {
+            const reportTableBody = document.getElementById('report-data-table');
+            reportTableBody.innerHTML = ''; // Clear existing data
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.location}</td>
+                    <td>${item.serial_number}</td>
+                    <td>${item.property_number}</td>
+                    <td>${item.status}</td>
+                `;
+                reportTableBody.appendChild(row);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching report data:', error);
+        });
+}
+
+ // JavaScript to handle switching content when Asset or Dashboard is clicked
+ function showDashboard() {
+            hideAllTabs();
+            document.getElementById('dashboard-content').style.display = 'block';
+        }
+
+        function showAsset() {
+            hideAllTabs();
+            document.getElementById('asset-content').style.display = 'block';
+            hideAddAssetPage(); // Hide the "Add Asset" content
+        }
+
+        function showReport() {
+            hideAllTabs();
+            document.getElementById('report-content').style.display = 'block';
+            hideAddAssetPage(); // Hide the "Add Asset" content
+        }
+
+        // Add an event listener to the "Add Asset" button
+        document.getElementById('addAssetButton').addEventListener('click', function () {
+            showAddAssetPage();
+        });
+
+       
+
+
+         // JavaScript to handle switching content when Asset is clicked
+         document.addEventListener("DOMContentLoaded", function () {
+            const assetLink = document.querySelector('.asset-link'); // Select the Asset link
+            const contentDiv = document.querySelector('.content');
+
+            assetLink.addEventListener("click", function (event) {
+                event.preventDefault(); // Prevent default link behavior
+
+                // Fetch and insert asset content
+                fetch('/getAssetContent') // Replace this with your backend route to fetch asset content
+                    .then(response => response.text())
+                    .then(html => {
+                        contentDiv.innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching asset content:', error);
+                    });
+            });
+        });
+        function toggleNav() {
+            var sidebar = document.getElementById("sidebar");
+            var content = document.getElementById("content");
+            if (sidebar.style.left === "0px") {
+                sidebar.style.left = "-250px";
+                content.style.marginLeft = "0";
+            } else {
+                sidebar.style.left = "0px";
+                content.style.marginLeft = "250px";
+            }
+        }
+    
+        function toggleHomeSubmenu() {
+            var homeSubmenu = document.getElementById("home-submenu");
+            var reportsSubmenu = document.getElementById("rooms-submenu");
+            
+            homeSubmenu.style.display = (homeSubmenu.style.display === "block") ? "none" : "block";
+            reportsSubmenu.style.display = "none";
+        }
+    
+        function toggleReportsSubmenu() {
+            var homeSubmenu = document.getElementById("home-submenu");
+            var reportsSubmenu = document.getElementById("rooms-submenu");
+    
+            reportsSubmenu.style.display = (reportsSubmenu.style.display === "block") ? "none" : "block";
+            homeSubmenu.style.display = "none";
+        }
+
+        async function fetchData() {
+        try {
+            const response = await fetch('/data');
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data. Status: ${response.status}`);
+            }
+            const data = await response.json();
+            console.log('Fetched data:', data);
+
+            const tableBody = document.getElementById('data-table');
+            tableBody.innerHTML = ''; // Clear existing data
+
+            data.forEach((item, index) => {
+    const row = document.createElement('tr');
+    // Display only specific columns in the main table
+    row.innerHTML = `
+      
+        <td>${item.location}</td>
+        <td>${item.category}</td>
+        <td>${item.item_description}</td>
+        <td>${item.serial_number}</td>
+        <td>${item.unit_cost}</td>
+        <td>${item.accountability}</td>
+        <td>${item.unit_status}</td>
+        <td>
+            <button class="update-button" onclick="updateRow(${index})">Update</button>
+            <button class="delete-button" onclick="deleteRow(${index})">Delete</button>
+        </td>
+    `;
+
+    tableBody.appendChild(row);
+});
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+       async function updateRow(rowIndex) {
+        try {
+            const response = await fetch(`/assetsupdate/${rowIndex}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    // Include fields you want to update and their new values
+                    // Example: field1: 'new value 1', field2: 'new value 2', ...
+                }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                console.log('Update successful:', result);
+                // You can update the UI here if needed
+            } else {
+                console.error('Update failed:', result.message);
+            }
+        } catch (error) {
+            console.error('Error during update:', error);
+        }
+    }
+
+    async function deleteRow(rowIndex) {
+        try {
+            const response = await fetch(`/assetdelete/${rowIndex}`, {
+                method: 'DELETE',
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                console.log('Delete successful:', result);
+                // You can update the UI here if needed
+            } else {
+                console.error('Delete failed:', result.message);
+            }
+        } catch (error) {
+            console.error('Error during delete:', error);
+        }
+    }
+
+        function printData() {
+            const printContent = document.getElementById('data-table').cloneNode(true);
+
+            const cells = printContent.getElementsByTagName('td');
+            for (let i = 0; i < cells.length; i++) {
+                const cell = cells[i];
+                cell.style = '';
+            }
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.open();
+            printWindow.document.write('<html><head><title>Print</title></head><body>');
+            printWindow.document.write('<h1>Faculty Dashboard - Table</h1>');
+            printWindow.document.write('<table border="1">');
+            printWindow.document.write(printContent.innerHTML);
+            printWindow.document.write('</table>');
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+
+            printWindow.onload = function () {
+                printWindow.print();
+                printWindow.onafterprint = function () {
+                    printWindow.close();
+                };
+            };
+        }
+
+        function disableBackButton() {
+            window.history.pushState(null, "", window.location.href);
+            window.onpopstate = function () {
+                window.history.pushState(null, "", window.location.href);
+            };
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('searchInput').addEventListener('input', function () {
+                const filterValue = this.value.toLowerCase();
+                const rows = document.getElementById('data-table').getElementsByTagName('tr');
+
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    const cells = row.getElementsByTagName('td');
+                    let shouldShow = false;
+
+                    for (let j = 0; j < cells.length; j++) {
+                        const cell = cells[j];
+                        if (cell.innerHTML.toLowerCase().indexOf(filterValue) > -1) {
+                            shouldShow = true;
+                            break;
+                        }
+                    }
+
+                    if (shouldShow) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+
+            fetchData();
+            disableBackButton();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Asset Management</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background-image: url('ictc.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .btn-green {
+            background-color: #28a745;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-green:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-box">
+        <h2>Report Asset Management</h2>
+
+        <form>
+            <div class="form-group">
+                <label for="room">Room</label>
+                <input type="text" class="form-control" id="room" placeholder="Enter Room">
+            </div>
+
+            <div class="form-group">
+                <label for="serialNumber">Serial Number</label>
+                <input type="text" class="form-control" id="serialNumber" placeholder="Enter Serial Number">
+            </div>
+
+            <div class="form-group">
+                <label for="itemDescription">Item Description</label>
+                <input type="text" class="form-control" id="itemDescription" placeholder="Enter Item Description">
+            </div>
+
+            <div class="form-group">
+                <label for="issue">Issue</label>
+                <input type="text" class="form-control" id="issue" placeholder="Enter Issue">
+            </div>
+
+            <button type="button" class="btn btn-green">Add Asset</button>
+            <button type="button" class="btn btn-green" onclick="clearFields()">Clear</button>
+        </form>
+
+    </div>
+
+    <script>
+        function clearFields() {
+            document.getElementById('room').value = '';
+            document.getElementById('serialNumber').value = '';
+            document.getElementById('itemDescription').value = '';
+            document.getElementById('issue').value = '';
+        }
+    </script>
+
+</body>
+
+</html>

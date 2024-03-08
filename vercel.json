@@ -1,0 +1,16 @@
+
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "asm.js",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/asm.js"
+      }
+    ]
+  }

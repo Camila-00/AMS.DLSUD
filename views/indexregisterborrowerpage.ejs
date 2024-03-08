@@ -1,0 +1,215 @@
+<!DOCTYPE html><!--INDEXBORROWERPAGE FINISHED MARCH 07, 2024-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon"/>
+    <title>Login Page</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            display: flex;
+            flex-direction: row; /* Align elements horizontally */
+        }
+
+        .signupForm {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #1db954;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #038903;
+        }
+
+        .divider {
+            margin: 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .image-container {
+            margin-right: 680px;
+            flex: 1; 
+            max-width: 400px; 
+        }
+        
+        .image {
+            width: 380%; 
+            height: 100%; 
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        p {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #1db954;
+        }
+
+        a:hover {
+            text-decoration: none;
+            color: #038903;
+        }
+
+        /* Notification styling */
+        #notification {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #007bff;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="login-container">
+        <!-- Image container -->
+        <div class="image-container">
+            <a href="indexwelcomepage.ejs">
+                <img src="../assets/ictc.png" alt="ICTC" class="image"/>
+            </a>
+        </div>
+
+        <!-- Login form -->
+        <div class="signupForm">
+            <h2>Create an Account</h2>
+            <form id="signupForm" action="/indexregisterborrowerpage" method="POST">
+                <div class="input-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required/>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required/>
+                </div>
+                <div class="input-group">
+                    <label for="usernum">User ID:</label>
+                    <input type="text" id="usernum" name="usernum" required pattern="[0-9]{8}" title="Please enter your School ID"/>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required/>
+                </div>
+                <button type="submit">Continue</button>
+            </form>
+            <div class="divider"></div>
+            <p>Already have an account? <a href="indexborrowerlogin.ejs">Login</a></p>
+
+            <!-- Error message -->
+            <div id="errorMessage" class="alert alert-danger" role="alert" style="display: none;"></div>
+            <!-- Notification message -->
+            <div id="notification" class="alert" role="alert" style="display: none;"></div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const errorMessage = document.getElementById("errorMessage");
+      const notification = document.getElementById("notification");
+      const signupForm = document.getElementById("signupForm");
+
+      signupForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          try {
+              // Get values from the form
+              const name = document.getElementById("name").value;
+              const email = document.getElementById("email").value;
+              const usernum = document.getElementById("usernum").value;
+              const password = document.getElementById("password").value;
+
+              console.log("User Input:", { name, email, usernum, password });
+
+              const response = await fetch("/indexregisterborrowerpage", {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ name, email, usernum, password }),
+              });
+
+              if (response.status === 201) {
+                  // Show notification with combined message
+                  notification.textContent = "Registration successful. You can now log in. Please wait.";
+                  notification.style.display = "block";
+
+                  // Add loading time of 3 seconds
+                  setTimeout(function () {
+                      // Redirect to another page after 4 seconds
+                      window.location.href = "indexborrowerlogin.ejs";
+                  }, 5000);
+              } else {
+                  const data = await response.text();
+                  errorMessage.textContent = data;
+                  errorMessage.style.display = "block";
+                  notification.style.display = "none";
+              }
+          } catch (error) {
+              console.error("Error:", error);
+              errorMessage.textContent = "An error occurred.";
+              errorMessage.style.display = "block";
+              notification.style.display = "none";
+          }
+      });
+  });
+</script>
+
+</body>
+</html>

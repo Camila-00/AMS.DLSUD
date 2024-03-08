@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Asset Management</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background-image: url('ictc.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .btn-green {
+            background-color: #28a745;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-green:hover {
+            background-color: #218838;
+        }
+
+        .container-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin: 20px; /* Adjusted margin */
+}
+
+#successMessage {
+    display: none;
+    margin-top: 10px; /* Adjusted margin */
+}
+
+#errorMessage {
+    display: none;
+    margin-top: 10px; /* Adjusted margin */
+}
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container-box">
+        <h2>Report Asset Management</h2>
+
+        <form id="assetForm">
+            <div class="mb-3">
+                <label for="room">Room:</label>
+                <select class="form-control" id="room" name="room" required>
+                    <option value="" disabled selected>Select a room</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="serial_number">Serial Number:</label>
+                <input type="text" class="form-control" id="serial_number" name="serial_number" required>
+            </div>
+            <div class="mb-3">
+                <label for="item_description">Item Description:</label>
+                <input type="text" class="form-control" id="item_description" name="item_description" required>
+            </div>
+            <div class="mb-3">
+                <label for="issue">Issue:</label>
+                <input type="text" class="form-control" id="issue" name="issue" required>
+            </div>
+
+            <button type="submit" class="btn btn-green">Add Asset</button>
+            <button type="button" class="btn btn-green" onclick="clearFields()">Clear</button>
+            <a href="#" class="btn btn-green" onclick="goBack()">Go Back</a>
+
+        </form>
+        <div id="successMessage" class="alert alert-success" style="display: none;">Data stored successfully.</div>
+        <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        var dropdowns = document.querySelectorAll('.dropdown-toggle');
+        dropdowns.forEach(function (dropdown) {
+            dropdown.addEventListener('click', function () {
+                dropdown.nextElementSibling.classList.toggle('show');
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", async function () {
+    const assetForm = document.getElementById("assetForm");
+    const successMessage = document.getElementById("successMessage");
+    const errorMessage = document.getElementById("errorMessage");
+
+    assetForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        const room = document.getElementById("room").value;
+        const serial_number = document.getElementById("serial_number").value;
+        const item_description = document.getElementById("item_description").value;
+        const issue = document.getElementById("issue").value;
+
+        try {
+            const response = await fetch("/indexfacultyreportinput", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ room, serial_number, item_description, issue }),
+            });
+            if (response.ok) {
+                console.log("Success");
+                successMessage.style.display = "block";
+                successMessage.textContent = "Added";
+
+                // Hide the success message after 4 seconds
+                setTimeout(function () {
+                    successMessage.style.display = "none";
+                    assetForm.reset(); // Clear the form after the success message disappears
+                }, 4000);
+            } else {
+                console.error("Failed to submit asset.");
+                errorMessage.textContent = "Failed to submit asset.";
+                errorMessage.style.display = "block";
+            }
+        } catch (error) {
+            console.error("Error during asset submission:", error);
+            errorMessage.textContent = "An error occurred.";
+            errorMessage.style.display = "block";
+        }
+    });
+
+    const resetButton = document.querySelector('button[type="button"][onclick="clearFields()"]');
+
+    resetButton.addEventListener("click", function () {
+        assetForm.reset();
+        successMessage.style.display = "none";
+        errorMessage.style.display = "none";
+    });
+});
+
+
+
+        async function fetchData() {
+            // Your fetch data function remains the same
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            fetchData();
+        });
+        function clearFields() {
+            document.getElementById('room').value = '';
+            document.getElementById('serialNumber').value = '';
+            document.getElementById('itemDescription').value = '';
+            document.getElementById('issue').value = '';
+        }
+        const roomDropdown = document.getElementById('room');
+        for (let i = 201; i <= 213; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.text = `Room ${i}`;
+            roomDropdown.add(option);
+        }
+        function goBack() {
+    window.history.back();
+}
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>
