@@ -95,7 +95,7 @@
         color: #fff;
         border: none;
         border-radius: 5px;
-        padding: 6px 15px;
+        padding: 10px 15px;
         cursor: pointer;
         transition: background-color 0.3s ease;
         margin-left: 5px;    
@@ -145,6 +145,23 @@
             
         }
 
+        #searchInput202 {
+        width: 445px; /* Adjusted width to accommodate the print button */
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+
+    #searchInput202:focus {
+        outline: none;
+        border-color: #087830;
+    }
+
+    #searchInput202::placeholder {
+        color: #aaa;
+    }
 
    </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -179,7 +196,7 @@
 <div class="content" id="asset-content202">
     <h1>ICTC 202 Asset Table</h1>
     <input type="text" id="searchInput202" placeholder="Filter">
-    <button class="print-table" onclick="printAssetTable()">Print Table</button>
+    <button class="print-table">Print Table</button>
 
     <table>
         <thead>
@@ -461,84 +478,70 @@ $('#updateModal').on('hidden.bs.modal', function () {
                 }
             });
         
-            // print table button function
-            function printAssetTable() {
-                const tableData = [];
-                const tableRows = document.getElementById('data-table').getElementsByTagName('tr');
-        
-                for (let i = 0; i < tableRows.length; i++) { // Corrected loop condition
-                    const row = tableRows[i];
-                    const rowData = [];
-                    const cells = row.getElementsByTagName('td');
-        
-                    for (let j = 0; j < cells.length; j++) { // Corrected loop condition
-                        rowData.push(cells[j].innerText);
-                    }
-        
-                    tableData.push(rowData.join(','));
-                }
-        
-                console.log('Asset Data:', tableData);
-                downloadCSV('asset_data.csv', tableData);
-                return tableData;
-            }
-        
-            function printAssetStatusReport() {
-                const tableData = [];
-                const tableRows = document.getElementById('report-data-table').getElementsByTagName('tr');
-        
-                for (let i = 0; i < tableRows.length; i++) { // Corrected loop condition
-                    const row = tableRows[i];
-                    const rowData = [];
-                    const cells = row.getElementsByTagName('td');
-        
-                    for (let j = 0; j < cells.length; j++) { // Corrected loop condition
-                        rowData.push(cells[j].innerText);
-                    }
-        
-                    tableData.push(rowData.join(','));
-                }
-        
-                console.log('Asset Status Report Data:', tableData);
-                downloadCSV('asset_status_report.csv', tableData);
-                return tableData;
-            }
-        
-            function downloadCSV(fileName, tableData) {
-                const csvContent = tableData.join('\n');
-                const blob = new Blob([csvContent], { type: 'text/csv' });
-                const url = window.URL.createObjectURL(blob);
-        
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }
-        
-            // print table button function
-            function printAssetTable() {
-                const tableData = [];
-                const tableRows = document.getElementById('data-table').getElementsByTagName('tr');
-        
-                for (let i = 0; i < tableRows.length; i++) { // Corrected loop condition
-                    const row = tableRows[i];
-                    const rowData = [];
-                    const cells = row.getElementsByTagName('td');
-        
-                    for (let j = 0; j < cells.length; j++) { // Corrected loop condition
-                        rowData.push(cells[j].innerText);
-                    }
-        
-                    tableData.push(rowData.join(','));
-                }
-        
-                console.log('Asset Data:', tableData);
-                downloadCSV('asset_data.csv', tableData);
-                return tableData;
-            }
+// Function to download CSV
+function downloadCSV(fileName, tableData) {
+    const csvContent = tableData.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
+// print table button function
+function printAssetTable() {
+    // Fetch data from the server
+    fetch('/data/dBoard202')
+        .then(response => response.json())
+        .then(data => {
+            const tableData = [];
+            // Assuming data is an array of objects, each representing a row in the table
+            // Define the desired order of columns and their respective labels
+            const columnLabels = {
+                "room": "Room",
+                "location": "Location",
+                "category": "Category",
+                "item_description": "Item Description",
+                "property_number": "Property Number",
+                "serial_number": "Serial Number",
+                "unit_cost": "Unit Cost",
+                "rdf_number": "RDF Number",
+                "rtf_number": "Rtf Number",
+                "asset_status": "Status",
+                "accountability": "Accountability",
+                "barcode": "Barcode"
+            };
+            const headers = Object.keys(columnLabels);
+            tableData.push(headers.map(header => columnLabels[header]).join(','));
+
+            // Extracting rows
+            data.forEach(row => {
+                const rowData = [];
+                headers.forEach(header => {
+                    rowData.push(`"${row[header] || ''}"`);
+                });
+                tableData.push(rowData.join(','));
+            });
+
+            // Download CSV
+            downloadCSV('asset_data.csv', tableData);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+}
+
+
+
+
+// Add event listener to the button
+document.querySelector('.print-table').addEventListener('click', printAssetTable);
+
         
         });
 
