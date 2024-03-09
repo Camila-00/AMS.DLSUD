@@ -1,36 +1,45 @@
-<!DOCTYPE html> <!--INDEXCUSTODIANLOGIN.EJS FINISHED MARCH 07, 2024-->
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
+    
     <style>
-        /* Basic styling - add more as needed */
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url('../assets/ictc.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: -400px center; /* Adjusted position to the left */
+    height: 100vh;
+}
+
+
         .container {
             display: flex;
-            justify-content: center;
+            justify-content: flex-end; /* Align container to the right */
             align-items: center;
-            height: 100vh;
-        }
-        .login-container {
-            display: flex;
-            flex-direction: row; /* Align elements horizontally */
+            height: 100%;
+            width: 100%; /* Covering half of the page */
+            position: absolute;
+            right: 0;
+            top: 0;
         }
         .login-form {
-            background-color: #fff;
+            background-color: white;
             padding: 40px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
+            max-width: 660px;
+            width: 500%;
+            height: 660px;
             text-align: center;
+            align-items: center;
         }
         h2 {
-            margin-bottom: 30px;
+            margin-top: 20px;
+
             color: #333;
         }
         input[type="email"],
@@ -78,12 +87,11 @@
             flex: 1; 
             max-width: 400px; 
         }
-        .image {
-            width: 200%; 
-            height: 100%; 
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+        .logo {
+margin-top: 100px;
+    width: 200px; /* Adjust the width as needed */
+    height: auto; /* Maintain aspect ratio */
+}
 
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -91,27 +99,20 @@
 </head>
 <body>
     <div class="container">
-        <div class="login-container">
-            <div class="image-container">
-                <a href="indexwelcomepage.ejs">
-                    <img src="../assets/ictc.png" alt="ICTC" class="image">
-                </a>
+        <!-- Login form -->
+        <div class="login-form">
+            <img src="./assets/ams_logo.png" alt="AMS Logo" class="logo">
+            <h2>Welcome back</h2>
+            <form id="loginForm" action="/indexcustodianlogin" method="POST">
+                <input type="adminum" id="adminum" name="adminum" placeholder="User ID" required><br><br>
+                <input type="password" id="password" name="password" placeholder="Password" required><br><br>
+                <div class="forgot-password">
+                    <a href="forgot-password-page">Forgot password?</a>
                 </div>
-            </div>
-            <!-- Login form -->
-            <div class="login-form">
-                <h2>Welcome back</h2>
-                <form id="loginForm" action="/indexcustodianlogin" method="POST">
-                    <input type="adminum" id="adminum" name="adminum" placeholder="User ID" required><br><br>
-                    <input type="password" id="password" name="password" placeholder="Password" required><br><br>
-                    <div class="forgot-password">
-                        <a href="forgot-password-page">Forgot password?</a>
-                    </div>
-                    <button type="submit">Continue</button><br><br>
-                </form>
-                <div class="divider"></div>
-                <p>Don't have an account? <a href="regis.ejs">Sign up</a></p>
-            </div>
+                <button type="submit">Continue</button><br><br>
+            </form>
+            <div class="divider"></div>
+            <p>Don't have an account? <a href="regis.ejs">Sign up</a></p>
         </div>
     </div>
 
