@@ -263,7 +263,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.js"></script>
 
 <script>
+
+
+
     document.addEventListener('DOMContentLoaded', function () {
+
+       // Event listener for filter input
+    const searchInput = document.getElementById('searchInput201');
+    searchInput.addEventListener('input', function () {
+        const filterText = this.value.trim();
+        console.log('Filter text:', filterText); // Log filter text
+        fetchData(1, itemsPerPage, filterText);
+    });
+
         // Define showModalWithData globally
         async function showModalWithData(row) {
             try {
@@ -329,26 +341,44 @@
             }
         }
     
-        async function fetchData(pageNumber, itemsPerPage) {
-            try {
-                const response = await fetch('/data/dBoard201');
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch data. Status: ${response.status}`);
-                }
-                const data = await response.json();
-                console.log('Fetched data:', data);
-    
-                const startIndex = (pageNumber - 1) * itemsPerPage;
-                const endIndex = Math.min(startIndex + itemsPerPage, data.length);
-                const currentPageData = data.slice(startIndex, endIndex);
-    
-                populatePage(currentPageData);
-                createPagination(data.length, itemsPerPage, pageNumber);
-    
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
+        async function fetchData(pageNumber, itemsPerPage, filterText = '') {
+    try {
+        const response = await fetch('/data/dBoard201');
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data. Status: ${response.status}`);
         }
+        const data = await response.json();
+        console.log('Fetched data:', data);
+
+        // Filter data based on input text
+        const filteredData = data.filter(item => {
+            const searchableFields = ['room', 'location', 'category', 'item_description', 'serial_number','unit_cost', 'asset_status'];
+            const isMatch = searchableFields.some(field => {
+                const fieldValue = item[field];
+                if (typeof fieldValue === 'string') {
+                    const lowercaseValue = fieldValue.toLowerCase();
+                    console.log(`Field: ${field}, Value: ${lowercaseValue}`);
+                    return lowercaseValue.includes(filterText.toLowerCase());
+                }
+                return false;
+            });
+            console.log('Is Match:', isMatch);
+            return isMatch;
+        });
+
+        const startIndex = (pageNumber - 1) * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
+        const currentPageData = filteredData.slice(startIndex, endIndex);
+
+        populatePage(currentPageData);
+        createPagination(filteredData.length, itemsPerPage, pageNumber);
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+
     
         function populatePage(assetsList) {
             const tableBody = document.getElementById('data-table');
@@ -520,13 +550,8 @@ document.querySelector('#updateModal .btn-secondary').addEventListener('click', 
         const itemsPerPage = 10;
         fetchData(1, itemsPerPage);
     
-        // for filter
-        document.getElementById('searchInput201').addEventListener('input', function () {
-            fetchData(1, itemsPerPage);
-        });
     
     });
-    
 // Function to download CSV
 function downloadCSV(fileName, tableData) {
     const csvContent = tableData.join('\n');
