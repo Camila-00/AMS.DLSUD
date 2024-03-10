@@ -412,39 +412,40 @@
                     const statusCell = row.querySelector('td:nth-child(7)');
                     const currentStatus = statusCell.textContent.trim(); // Get the current status
     
-                    // Create custom modal HTML
-                    const modalHTML = `
-                        <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Update Status</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <select id="statusSelect" class="form-control">
-                                            <option value="Good/Instock">Good/Instock</option>
-                                            <option value="Not Working">Not Working</option>
-                                        </select>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" id="updateStatusBtn">Save changes</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-    
-                    // Append the modal HTML to the document body
-                    document.body.insertAdjacentHTML('beforeend', modalHTML);
-    
-                    // Show the modal
-                    $('#updateModal').modal('show');
-    
-                   // Add event listener to close button (x)
+ // Create custom modal HTML
+const modalHTML = `
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update Status</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <select id="statusSelect" class="form-control">
+                        <option value="Good/Instock">Good/Instock</option>
+                        <option value="Good/Not Instock">Good/Not Instock</option>
+                        <option value="Not Working">Not Working</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="updateStatusBtn">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+`;
+
+// Append the modal HTML to the document body
+document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+// Show the modal
+$('#updateModal').modal('show');
+
+// Add event listener to close button (x)
 document.querySelector('#updateModal .close').addEventListener('click', () => {
     $('#updateModal').modal('hide');
 });
@@ -454,21 +455,23 @@ document.querySelector('#updateModal .btn-secondary').addEventListener('click', 
     $('#updateModal').modal('hide');
 });
 
-    
-                    // Add event listener to modal hidden event
-                    $('#updateModal').on('hidden.bs.modal', function () {
-                        // Do something when modal is hidden
-                    });
-    
-                    // Add event listener to the update status button
-                    document.getElementById('updateStatusBtn').addEventListener('click', function () {
-                        const selectedStatus = document.getElementById('statusSelect').value;
-                        statusCell.textContent = selectedStatus;
-                        $('#updateModal').modal('hide');
-    
-                        // Here you can include logic to update the status in your backend or wherever it's stored
-                        console.log("Selected:", selectedStatus);
-                    });
+
+// Add event listener to modal hidden event
+$('#updateModal').on('hidden.bs.modal', function () {
+    // Do something when modal is hidden
+});
+
+// Add event listener to the update status button
+document.getElementById('updateStatusBtn').addEventListener('click', function () {
+    const selectedStatus = document.getElementById('statusSelect').value;
+    statusCell.textContent = selectedStatus;
+    $('#updateModal').modal('hide');
+
+    // Here you can include logic to update the status in your backend or wherever it's stored
+    console.log("Selected:", selectedStatus);
+});
+
+
                 });
     
                 // Add click event listener to the delete button
