@@ -6,7 +6,7 @@
     <title>Login Page</title>
     <style>
         /* Basic styling - add more as needed */
-        body {
+body {
     margin: 0;
     font-family: Arial, sans-serif;
     background-image: url("../assets/ictc.png");
@@ -18,83 +18,75 @@
     align-items: center;
     height: 100vh;
 }
-
 .login-container {
     display: flex;
     flex-direction: row; /* Align elements horizontally */
     width: 50%; /* Take up 50% of the width of the page */
-    height: 743px;
+    height: 100vh; /* Adjusted to cover the entire viewport height */
 }
-        
-        .login-form {
-            background-color: #fff;
+.login-form {
+    background-color: #fff;
     padding: 40px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     text-align: center;
-        }
-
-
-        h2 {
-            margin-bottom: 30px;
-            color: #333;
-        }
-        input[type="email"],
-        input[type="password"],
-        button {
-            width: calc(100% - 22px);
-            padding: 12px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-        a {
-            text-decoration: none;
-            color: #1db954;
-        }
-
-         a:hover{
-            text-decoration: none;
-            color: #038903;
-        }
-        button {
-            padding: 10px 20px;
-            border: 20px;
-            border-radius: 4px;
-            background-color: #1db954 ;
-            color: #fff;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #038903;
-        }
-        .forgot-password {
-            text-align: left;
-            margin-bottom: 20px;
-            margin-left: 10px;
-        }
-        .logo {
-margin-top: 115px;
+}
+h2 {
+    margin-bottom: 30px;
+    color: #333;
+}
+input[type="email"],
+input[type="password"],
+button {
+    width: calc(100% - 22px);
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+a {
+    text-decoration: none;
+    color: #1db954;
+}
+a:hover {
+    text-decoration: none;
+    color: #038903;
+}
+button {
+    padding: 10px 20px;
+    border: 20px;
+    border-radius: 4px;
+    background-color: #1db954;
+    color: #fff;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #038903;
+}
+.forgot-password {
+    text-align: left;
+    margin-bottom: 20px;
+    margin-left: 10px;
+}
+.logo {
+    margin-top: 115px;
     width: 200px; /* Adjust the width as needed */
     height: auto; /* Maintain aspect ratio */
 }
-
 label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            text-align: left;
-            margin-left: 12px;
-        }
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    text-align: left;
+    margin-left: 12px;
+}
 
     </style>
 </head>
 <body>
     <div class="container">
         <div class="login-container">
-           
-
             <!-- Login form -->
             <div class="login-form">
                 <img src="./assets/ams_logo.png" alt="AMS Logo" class="logo">
@@ -111,36 +103,35 @@ label {
         </div>
     </div> 
     
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const loginForm = document.getElementById("loginForm");
-      const errorMessage = document.getElementById("errorMessage");
-      loginForm.addEventListener("submit", async function (event) {
-        event.preventDefault();
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const loginForm = document.getElementById("loginForm");
+            const errorMessage = document.getElementById("errorMessage");
+            loginForm.addEventListener("submit", async function (event) {
+                event.preventDefault();
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
 
-        try {
-          const response = await fetch("/indexborrowerlogin", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-          });
+                try {
+                    const response = await fetch("/indexborrowerlogin", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ email, password }),
+                    });
 
-          if (response.ok) {
-            window.location.href = "/indexborrowforms";
-          } else {
-            const errorMessageText = await response.json();
-            errorMessage.textContent = errorMessageText.error;
-          }
-        } catch (error) {
-          console.error("Error during login:", error);
-        }
-      });
-    });
-  </script>
-  
+                    if (response.ok) {
+                        window.location.href = "/indexborrowforms";
+                    } else {
+                        const errorMessageText = await response.json();
+                        errorMessage.textContent = errorMessageText.error;
+                    }
+                } catch (error) {
+                    console.error("Error during login:", error);
+                }
+            });
+        });
+    </script>
 </body>
 </html>

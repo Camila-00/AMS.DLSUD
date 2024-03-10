@@ -23,7 +23,7 @@
     display: flex;
     flex-direction: row; /* Align elements horizontally */
     width: 50%; /* Take up 50% of the width of the page */
-    height: 743px;
+    height: 100vh; /* Adjusted to cover the entire viewport height */
 }
 
 .signupForm {
@@ -73,10 +73,6 @@
             background-color: #038903;
         }
 
-        .divider {
-            margin: 10px 0;
-            border-bottom: 1px solid #ccc;
-        }
 
 
         p {
@@ -107,7 +103,7 @@ a:hover {
 }
 
 .logo {
-margin-top: 30px;
+margin-top: 70px;
     width: 200px; /* Adjust the width as needed */
     height: auto; /* Maintain aspect ratio */
 }
@@ -140,7 +136,6 @@ margin-top: 30px;
                 </div>
                 <button type="submit">Continue</button>
             </form>
-            <div class="divider"></div>
             <p>Already have an account? <a href="indexborrowerlogin.ejs">Login</a></p>
 
             <!-- Error message -->
