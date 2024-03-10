@@ -7,29 +7,34 @@
     <style>
         /* Basic styling - add more as needed */
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .login-container {
-            display: flex;
-            flex-direction: row; /* Align elements horizontally */
-        }
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url("../assets/ictc.png");
+    background-size: cover; /* Ensure the background image covers the entire page */
+}
+.container {
+    display: flex;
+    justify-content: flex-end; /* Align container to the right side */
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    display: flex;
+    flex-direction: row; /* Align elements horizontally */
+    width: 50%; /* Take up 50% of the width of the page */
+    height: 743px;
+}
+        
         .login-form {
             background-color: #fff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
+    padding: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    text-align: center;
         }
+
+
         h2 {
             margin-bottom: 30px;
             color: #333;
@@ -69,42 +74,38 @@
             margin-bottom: 20px;
             margin-left: 10px;
         }
-        .divider {
-            margin: 10px 0;
-            border-bottom: 1px solid #ccc;
+        .logo {
+margin-top: 115px;
+    width: 200px; /* Adjust the width as needed */
+    height: auto; /* Maintain aspect ratio */
+}
+
+label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            text-align: left;
+            margin-left: 12px;
         }
-        .image-container {
-            margin-right: 380px;
-            flex: 1; 
-            max-width: 400px; 
-        }
-        .image {
-            width: 190%; 
-            height: 100%; 
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <div class="login-container">
-            <div class="image-container">
-                <a href="indexwelcomepage.ejs">
-                    <img src="../assets/ictc.png" alt="ICTC" class="image">
-                </a>
-            </div>
-            </div>
+           
 
             <!-- Login form -->
             <div class="login-form">
+                <img src="./assets/ams_logo.png" alt="AMS Logo" class="logo">
                 <h2>Welcome back</h2>
                 <form action="/indexborrowerlogin" method="POST" id="loginForm">
+                    <label for="name">Email:</label>
                     <input type="email" id="email" name="email" placeholder="Email" required><br><br>
+                    <label for="name">Password:</label>
                     <input type="password" id="password" name="password" placeholder="Password" required><br><br>
                     <button type="submit">Continue</button><br><br>
                 </form>
-                <div class="divider"></div>
                 <p>Don't have an account? <a href="indexregisterborrowerpage.ejs">Sign up</a></p>
             </div>
         </div>
