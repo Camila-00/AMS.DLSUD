@@ -8,12 +8,10 @@
     integrity="sha512-TH+vnrhByFI2RzNvaHSqt6EwoJ9Bp+yGAGTWp84qTuTx315ebnypxtyGHpli55Rm4N4J+N/0W9xAL2b5RZ2ZSA=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.js"></script>
-
    <style>
-
 .update-button {
         background-color: transparent;
-        color: #28a745; /* Green */
+        color: #1db954; /* Green */
         border: 2px solid transparent;
         border-radius: 4px;
         padding: 8px 16px;
@@ -23,26 +21,11 @@
     }
 
     .update-button:hover {
-        background-color: #28a745; /* Green */
+        background-color: #218137; /* Green */
         color: #fff; /* White text color on hover */
         border-color: #28a745; /* Green border on hover */
     }
 
-    .delete-button {
-        background-color: transparent;
-        color: #dc3545; /* Red */
-        border: 2px solid transparent;
-        border-radius: 4px;
-        padding: 8px 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-    }
-
-    .delete-button:hover {
-        background-color: #dc3545; /* Red */
-        color: #fff; /* White text color on hover */
-        border-color: #dc3545; /* Red border on hover */
-    }
     /* Navbar styling */
     .navbar {
         background-color: #f8f9fa; /* Change to desired color */
@@ -132,7 +115,7 @@
     }
 
     #pagination a.active {
-        background-color: #00a100;
+        background-color: #1db954;
         color: #fff;
     }
 
@@ -144,7 +127,6 @@
             font-family: 'Montserrat', sans-serif;
             
         }
-
         #searchInput202 {
         width: 445px; /* Adjusted width to accommodate the print button */
         padding: 10px;
@@ -162,6 +144,65 @@
     #searchInput202::placeholder {
         color: #aaa;
     }
+
+    /* Modal Styles */
+    .modal-content {
+        border-radius: 10px;
+    }
+
+    .modal-header {
+        background-color: #1db954;
+        color: #fff;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .modal-footer {
+        border-radius: 0 0 10px 10px;
+    }
+
+    /* Animation */
+    @keyframes modalFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50%);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes modalFadeOut {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateY(-50%);
+        }
+    }
+
+ /* Select Styles */
+ #asset_status {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        transition: border-color 0.3s ease;
+    }
+
+    #asset_status:focus {
+        outline: none;
+        border-color: #00c600;
+    }
+#updateStatusBtn {
+    background-color: #1db954;
+}
+
 
    </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -219,107 +260,155 @@
     <div id="pagination"></div>
 </div>
 
- <!-- Modal -->
- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Row Details</h5>
-          <!-- Close button (x) -->
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <!-- Modal content will be filled dynamically -->
+          <!-- Row details will be populated here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
   </div>
-        
+  
+
+ <!-- Modal -->
+ <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Update Status</h5>
+                <!-- Close button (x) -->
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Modal content will be filled dynamically -->
+                <label for="asset_status">Select Status:</label>
+                <select id="asset_status">
+                    <option value="In Stock">In Stock</option>
+                    <option value="Out of Stock">Out of Stock</option>
+                    <option value="Disposed">Disposed</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="updateStatusBtn">Update Status</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
     <!-- Bootstrap JS and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <script>
+<!-- Bootbox JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.js"></script>
 
+<script>
+let updatedAsset; // Define updatedAsset at a higher scope
 
+document.addEventListener('DOMContentLoaded', function () {
 
-        document.addEventListener('DOMContentLoaded', function () {
-    
-           // Event listener for filter input
-        const searchInput = document.getElementById('searchInput202');
-        searchInput.addEventListener('input', function () {
-            const filterText = this.value.trim();
-            console.log('Filter text:', filterText); // Log filter text
-            fetchData(1, itemsPerPage, filterText);
+    // Event listener for filter input
+    const searchInput = document.getElementById('searchInput202');
+    searchInput.addEventListener('input', function () {
+        const filterText = this.value.trim();
+        console.log('Filter text:', filterText); // Log filter text
+        fetchData(1, itemsPerPage, filterText);
+    });
+
+    async function showModalWithData(row) {
+    try {
+        const response = await fetch('/data/dBoard202');
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data. Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Fetched data:', data);
+
+        // Get modal element
+        const modal = document.getElementById('exampleModal');
+        if (!modal) {
+            throw new Error('Modal element not found');
+        }
+
+        // Set modal title
+        modal.querySelector('.modal-title').textContent = 'Row Details';
+        // Get modal body container
+        const modalBody = modal.querySelector('.modal-body');
+        // Clear existing data
+        modalBody.innerHTML = '';
+
+        // Find the index of the row in the fetched data
+        const rowIndex = Array.from(row.parentNode.children).indexOf(row);
+        const rowData = data[rowIndex];
+
+        // Custom field names
+        const fieldNames = {
+            "room": "Room",
+            "location": "Location",
+            "category": "Category",
+            "item_description": "Item Description",
+            "property_number": "Property Number",
+            "serial_number": "Serial Number",
+            "unit_cost": "Unit Cost",
+            "rdf_number": "RDF Number",
+            "rtf_number": "Rtf Number",
+            "asset_status": "Status",
+            "accountability": "Accountability",
+            "action": "Action",
+            "barcode": "Barcode"
+        };
+
+        // Assuming data is the array containing table row data
+        const dataList = document.createElement('ul');
+        dataList.classList.add('list-group');
+
+        // Iterate over the row data and create list items
+        for (const [key, value] of Object.entries(rowData)) {
+            // Skip _id field
+            if (key === '_id') continue;
+            const customFieldName = fieldNames[key] || key;
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item');
+            listItem.innerHTML = `<strong>${customFieldName}:</strong> ${value}`;
+            dataList.appendChild(listItem);
+        }
+
+        // Append the list to the modal body
+        modalBody.appendChild(dataList);
+
+        // Show modal
+        $(modal).modal('show');
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const tableRows = document.querySelectorAll('#data-table tr');
+
+    // Add click event listener to each table row
+    tableRows.forEach(row => {
+        row.addEventListener('click', function () {
+            showModalWithData(row);
         });
-    
-            // Define showModalWithData globally
-            async function showModalWithData(row) {
-                try {
-                    const response = await fetch('/data/dBoard202');
-                    if (!response.ok) {
-                        throw new Error(`Failed to fetch data. Status: ${response.status}`);
-                    }
-                    const data = await response.json();
-                    console.log('Fetched data:', data);
-        
-                    // Get modal element
-                    const modal = document.getElementById('exampleModal');
-                    // Set modal title
-                    modal.querySelector('.modal-title').textContent = 'Row Details';
-                    // Get modal body container
-                    const modalBody = modal.querySelector('.modal-body');
-                    // Clear existing data
-                    modalBody.innerHTML = '';
-        
-                    // Find the index of the row in the fetched data
-                    const rowIndex = Array.from(row.parentNode.children).indexOf(row);
-                    const rowData = data[rowIndex];
-        
-                    // Custom field names
-                    const fieldNames = {
-                        "room": "Room",
-                        "location": "Location",
-                        "category": "Category",
-                        "item_description": "Item Description",
-                        "property_number": "Property Number",
-                        "serial_number": "Serial Number",
-                        "unit_cost": "Unit Cost",
-                        "rdf_number": "RDF Number",
-                        "rtf_number": "Rtf Number",
-                        "asset_status": "Status",
-                        "accountability": "Accountability",
-                        "action": "Action",
-                        "barcode": "Barcode"
-                    };
-        
-                    // Assuming data is the array containing table row data
-                    const dataList = document.createElement('ul');
-                    dataList.classList.add('list-group');
-        
-                    // Iterate over the row data and create list items
-                    for (const [key, value] of Object.entries(rowData)) {
-                        // Skip _id field
-                        if (key === '_id') continue;
-                        const customFieldName = fieldNames[key] || key;
-                        const listItem = document.createElement('li');
-                        listItem.classList.add('list-group-item');
-                        listItem.innerHTML = `<strong>${customFieldName}:</strong> ${value}`;
-                        dataList.appendChild(listItem);
-                    }
-        
-                    // Append the list to the modal body
-                    modalBody.appendChild(dataList);
-        
-                    // Show modal
-                    $(modal).modal('show');
-                } catch (error) {
-                    console.error('Error fetching data:', error);
-                }
-            }
-        
-            async function fetchData(pageNumber, itemsPerPage, filterText = '') {
+    });
+});
+
+
+    async function fetchData(pageNumber, itemsPerPage, filterText = '') {
         try {
             const response = await fetch('/data/dBoard202');
             if (!response.ok) {
@@ -327,10 +416,10 @@
             }
             const data = await response.json();
             console.log('Fetched data:', data);
-    
+
             // Filter data based on input text
             const filteredData = data.filter(item => {
-                const searchableFields = ['room', 'location', 'category', 'item_description', 'serial_number','unit_cost', 'asset_status'];
+                const searchableFields = ['room', 'location', 'category', 'item_description', 'serial_number', 'unit_cost', 'asset_status'];
                 const isMatch = searchableFields.some(field => {
                     const fieldValue = item[field];
                     if (typeof fieldValue === 'string') {
@@ -343,261 +432,193 @@
                 console.log('Is Match:', isMatch);
                 return isMatch;
             });
-    
+
             const startIndex = (pageNumber - 1) * itemsPerPage;
             const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
             const currentPageData = filteredData.slice(startIndex, endIndex);
-    
+
             populatePage(currentPageData);
             createPagination(filteredData.length, itemsPerPage, pageNumber);
-    
+
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     }
-    
-    
-        
-            function populatePage(assetsList) {
-                const tableBody = document.getElementById('data-table');
-                tableBody.innerHTML = ''; // Clear existing data
-        
-                assetsList.forEach(item => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${item.room}</td>
-                        <td>${item.location}</td>
-                        <td>${item.category}</td>
-                        <td>${item.item_description}</td>
-                        <td>${item.serial_number}</td>
-                        <td>${item.unit_cost}</td>
-                        <td>${item.asset_status}</td>
-                        <td>
-                            <button class="update-button">Update</button>
-                            <button class="delete-button">Delete</button>
-                        </td>
-                    `;
-        
-                    // Add click event listener to the row
-                    row.addEventListener('click', function () {
-                        showModalWithData(row);
-                    });
-        
-                    // Add click event listener to the update button
-                    const updateButton = row.querySelector('.update-button');
-                    updateButton.addEventListener('click', function (event) {
-                        event.stopPropagation(); // Prevent row click event from firing
-                        const statusCell = row.querySelector('td:nth-child(7)');
-                        const currentStatus = statusCell.textContent.trim(); // Get the current status
-        
-                       // Create custom modal HTML
-const modalHTML = `
-    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Update Status</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <select id="statusSelect" class="form-control">
-                        <option value="Good/Instock">Good/Instock</option>
-                        <option value="Good/Not Instock">Good/Not Instock</option>
-                        <option value="Not Working">Not Working</option>
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="updateStatusBtn">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-`;
 
-// Append the modal HTML to the document body
-document.body.insertAdjacentHTML('beforeend', modalHTML);
+    function populatePage(assetsList) {
+        const tableBody = document.getElementById('data-table');
+        tableBody.innerHTML = ''; // Clear existing data
 
-// Show the modal
-$('#updateModal').modal('show');
+        assetsList.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.room}</td>
+                <td>${item.location}</td>
+                <td>${item.category}</td>
+                <td>${item.item_description}</td>
+                <td>${item.serial_number}</td>
+                <td>${item.unit_cost}</td>
+                <td>${item.asset_status}</td>
+                <td>
+                    <button class="update-button">Update</button>
+                </td>
+            `;
 
-// Add event listener to close button (x)
-document.querySelector('#updateModal .close').addEventListener('click', () => {
-    $('#updateModal').modal('hide');
-});
-
-// Add event listener to close button (Close)
-document.querySelector('#updateModal .btn-secondary').addEventListener('click', () => {
-    $('#updateModal').modal('hide');
-});
-
-
-// Add event listener to modal hidden event
-$('#updateModal').on('hidden.bs.modal', function () {
-    // Do something when modal is hidden
-});
-
-// Add event listener to the update status button
-document.getElementById('updateStatusBtn').addEventListener('click', function () {
-    const selectedStatus = document.getElementById('statusSelect').value;
-    statusCell.textContent = selectedStatus;
-    $('#updateModal').modal('hide');
-
-    // Here you can include logic to update the status in your backend or wherever it's stored
-    console.log("Selected:", selectedStatus);
-});
-                    });
-        
-                    // Add click event listener to the delete button
-                    const deleteButton = row.querySelector('.delete-button');
-                    deleteButton.addEventListener('click', function (event) {
-                        event.stopPropagation(); // Prevent row click event from firing
-        
-                        // Create custom modal HTML for soft deletion
-                        const modalHTML = `
-                            <div class="modal fade" id="softDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Confirm Soft Deletion</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to soft delete this item?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                            <button type="button" class="btn btn-danger" id="confirmSoftDeleteBtn">Soft Delete</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-        
-                        // Append the modal HTML to the document body
-                        document.body.insertAdjacentHTML('beforeend', modalHTML);
-        
-                        // Show the modal
-                        $('#softDeleteModal').modal('show');
-        
-                        // Add event listener to close button
-                        document.querySelector('#softDeleteModal .close').addEventListener('click', () => {
-                            $('#softDeleteModal').modal('hide');
-                        });
-        
-                        // Add event listener to cancel button
-                        document.querySelector('#softDeleteModal .btn-secondary').addEventListener('click', () => {
-                            $('#softDeleteModal').modal('hide');
-                        });
-        
-                        // Add event listener to soft delete button
-                        document.getElementById('confirmSoftDeleteBtn').addEventListener('click', function () {
-                            // Perform soft delete operation
-                            // You can implement your soft delete logic here
-                            row.style.display = 'none'; // For demonstration purpose, hiding the row
-                            $('#softDeleteModal').modal('hide');
-                        });
-                    });
-        
-                    tableBody.appendChild(row);
-                });
-            }
-        
-            function createPagination(totalItems, itemsPerPage, currentPage) {
-                const totalPages = Math.ceil(totalItems / itemsPerPage);
-                const pagination = document.getElementById('pagination');
-                pagination.innerHTML = '';
-        
-                for (let i = 1; i <= totalPages; i++) {
-                    const pageLink = document.createElement('a');
-                    pageLink.href = '#';
-                    pageLink.textContent = i;
-                    if (i === currentPage) {
-                        pageLink.classList.add('active');
-                    }
-                    pageLink.addEventListener('click', function () {
-                        fetchData(i, itemsPerPage);
-                    });
-                    pagination.appendChild(pageLink);
-                }
-            }
-        
-            const itemsPerPage = 10;
-            fetchData(1, itemsPerPage);
-        
-        
-        });
-    // Function to download CSV
-    function downloadCSV(fileName, tableData) {
-        const csvContent = tableData.join('\n');
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-    
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-    }
-    
-    // print table button function
-    function printAssetTable() {
-        // Fetch data from the server
-        fetch('/data/dBoard202')
-            .then(response => response.json())
-            .then(data => {
-                const tableData = [];
-                // Assuming data is an array of objects, each representing a row in the table
-                // Define the desired order of columns and their respective labels
-                const columnLabels = {
-                    "room": "Room",
-                    "location": "Location",
-                    "category": "Category",
-                    "item_description": "Item Description",
-                    "property_number": "Property Number",
-                    "serial_number": "Serial Number",
-                    "unit_cost": "Unit Cost",
-                    "rdf_number": "RDF Number",
-                    "rtf_number": "Rtf Number",
-                    "asset_status": "Status",
-                    "accountability": "Accountability",
-                    "barcode": "Barcode"
-                };
-                const headers = Object.keys(columnLabels);
-                tableData.push(headers.map(header => columnLabels[header]).join(','));
-    
-                // Extracting rows
-                data.forEach(row => {
-                    const rowData = [];
-                    headers.forEach(header => {
-                        rowData.push(`"${row[header] || ''}"`);
-                    });
-                    tableData.push(rowData.join(','));
-                });
-    
-                // Download CSV
-                downloadCSV('asset_data.csv', tableData);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
+            // Add click event listener to the row
+            row.addEventListener('click', function () {
+                showModalWithData(row);
             });
+
+            // Add click event listener to the update button
+            const updateButton = row.querySelector('.update-button');
+            updateButton.addEventListener('click', function (event) {
+                event.stopPropagation(); // Prevent row click event from firing
+
+                // Show modal
+                $('#updateModal').modal('show');
+
+                // Set up event listener for the update status button
+                document.getElementById('updateStatusBtn').onclick = function() {
+                    const statusCell = row.querySelector('td:nth-child(7)');
+                    const selectedStatus = document.getElementById('asset_status').value;
+                    statusCell.textContent = selectedStatus; // Update UI immediately
+                    $('#updateModal').modal('hide');
+
+                    // Send the updated status to the server
+                    const serial_number = item.serial_number; // Get the serial number from the item
+                    const updatedAsset = { asset_status: selectedStatus }; // Prepare updated asset data
+
+                    fetch(`/assetsupdate/dBoard202/${serial_number}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(updatedAsset),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.message); // Log the server response
+                        // Optionally, you can handle success response here
+                    })
+                    .catch(error => {
+                        console.error('Error updating status:', error);
+                        // Optionally, you can handle error here
+                    });
+                };
+            });
+            tableBody.appendChild(row);
+        });
     }
-    
-    
-    
-    
-    
-    
-    // Add event listener to the button
-    document.querySelector('.print-table').addEventListener('click', printAssetTable);
-    
-            
-        </script>
+
+    function createPagination(totalItems, itemsPerPage, currentPage) {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageLink = document.createElement('a');
+            pageLink.href = '#';
+            pageLink.textContent = i;
+            if (i === currentPage) {
+                pageLink.classList.add('active');
+            }
+            pageLink.addEventListener('click', function () {
+                fetchData(i, itemsPerPage);
+            });
+            pagination.appendChild(pageLink);
+        }
+    }
+
+    const itemsPerPage = 10;
+    fetchData(1, itemsPerPage);
+    const assetStatusElement = document.getElementById('asset_status');
+if (assetStatusElement) {
+    const selectedStatus = assetStatusElement.value;
+    // Proceed with your code using selectedStatus
+
+    // For example, you can log the selected status to the console
+    console.log('Selected Status:', selectedStatus);
+
+    // Or you can perform further actions based on the selected status
+    if (selectedStatus === 'In Stock') {
+        // Do something if the status is 'In Stock'
+    } else if (selectedStatus === 'Out of Stock') {
+        // Do something if the status is 'Out of Stock'
+    } else if (selectedStatus === 'Disposed') {
+        // Do something if the status is 'Disposed'
+    } else {
+        // Handle other status values if needed
+    }
+} else {
+    console.error('asset_status element not found');
+}
+function printAssetTable() {
+            // Fetch data from the server
+            fetch('/data/dBoard202')
+                .then(response => response.json())
+                .then(data => {
+                    const tableData = [];
+                    // Assuming data is an array of objects, each representing a row in the table
+                    // Define the desired order of columns and their respective labels
+                    const columnLabels = {
+                        "room": "Room",
+                        "location": "Location",
+                        "category": "Category",
+                        "item_description": "Item Description",
+                        "property_number": "Property Number",
+                        "serial_number": "Serial Number",
+                        "unit_cost": "Unit Cost",
+                        "rdf_number": "RDF Number",
+                        "rtf_number": "Rtf Number",
+                        "asset_status": "Status",
+                        "accountability": "Accountability",
+                        "barcode": "Barcode"
+                    };
+                    const headers = Object.keys(columnLabels);
+                    tableData.push(headers.map(header => columnLabels[header]).join(','));
+
+                    // Extracting rows
+                    data.forEach(row => {
+                        const rowData = [];
+                        headers.forEach(header => {
+                            rowData.push(`"${row[header] || ''}"`);
+                        });
+                        tableData.push(rowData.join(','));
+                    });
+
+                    // Download CSV
+                    downloadCSV('asset_data_Room202.csv', tableData);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+        function downloadCSV(filename, data) {
+    const csv = data.join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+    if (navigator.msSaveBlob) { // IE 10+
+        navigator.msSaveBlob(blob, filename);
+    } else {
+        const link = document.createElement('a');
+        if (link.download !== undefined) { // Feature detection
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+}
+
+        // Add event listener to the button
+        document.querySelector('.print-table').addEventListener('click', printAssetTable);
+    });
+
+
+    </script>
+
 </body>
 </html>

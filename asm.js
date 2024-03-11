@@ -157,20 +157,18 @@ app.get('/indexrooms202.ejs', (req, res) => {
   res.render('indexrooms202.ejs', { user });
 });
 
-// Route to handle update request
-app.post('/update', (req, res) => {
-  const { serialNumber, newIssue } = req.body;
-  const index = reportData.findIndex(item => item.serial_number === serialNumber);
-  if (index !== -1) {
-      reportData[index].issue = newIssue;
-      res.sendStatus(200); // Send success status
-  } else {
-      res.status(404).send('Serial number not found.');
-  }
+app.get('/indexregisterborrowerpage.ejs', (req, res) => {
+  res.render('indexregisterborrowerpage');
+});
+
+app.get('/indexfacultyreportinput', (req, res) => {
+  // Logic to render or send the indexfacultyreportinput.ejs file
+  res.render('indexfacultyreportinput');
 });
 
 
-app.get('/indexcustodianhomepage', async (req, res) => { // TRYING NA MAPAKITA YUNG FIRST NAME NG KUNG SINO NAGLOGIN JAN16
+// SERVER SIDE STARTS UNDER
+app.get('/indexcustodianhomepage', async (req, res) => { // CUSTODIAN HOMEPAGE COMPLETE
   try {
     // Check if the user is logged in and if there is a user in the session
     const user = req.session.user;
@@ -202,16 +200,6 @@ app.get('/indexcustodianhomepage', async (req, res) => { // TRYING NA MAPAKITA Y
   }
 });
 
-
-app.get('/indexregisterborrowerpage.ejs', (req, res) => {
-  res.render('indexregisterborrowerpage');
-});
-
-app.get('/indexfacultyreportinput', (req, res) => {
-  // Logic to render or send the indexfacultyreportinput.ejs file
-  res.render('indexfacultyreportinput');
-});
-
 app.get('/totalassetscount', async(req, res) => { // TOTAL ASSETS ON DASHBOARD CONTENT
   const dBoard201DbCollection = dBoard201Db.collection(dBoard201DbCollectionName);
   const dBoard202DbCollection = dBoard202Db.collection(dBoard202DbCollectionName);
@@ -224,21 +212,22 @@ app.get('/totalassetscount', async(req, res) => { // TOTAL ASSETS ON DASHBOARD C
   res.status(201).send({totalCount});
 })
 
-
-app.get('/indexreportcount', async(req, res) => { // CHANGE THIS NA KAPAG OTHER ROOMS NA EH MAY COUNTER DIN
+app.get('/indexreportcount', async(req, res) => { // REPORT COUNTER ON CUSTODIAN HOMEPAGE
   const reportCollection = reportDb.collection(reportCollectionName);
   const count = await reportCollection.count()
   res.status(201).send({count});
 })
 
-app.get('/indexborroweditem', async(req, res) => { // CHANGE THIS NA KAPAG OTHER ROOMS NA EH MAY COUNTER DIN
+app.get('/indexborroweditem', async(req, res) => { // BORROWER COUNTER ON CUSTODIAN HOMEPAGE
   const ledingCollection = lendingDb.collection(lendingCollectionName);
   const count = await ledingCollection.count()
   res.status(201).send({count});
 })
 
 
-app.post('/indexregisterborrowerpage', async (req, res) => { // BORROWER REGISTER // CHECK MO KUNG KAYA NA NAME AND EMAIL ANG HAHANAPIN
+
+
+app.post('/indexregisterborrowerpage', async (req, res) => { // BORROWER REGISTER
   // Handle registration logic here
   const { name, email, usernum, password } = req.body;
 
@@ -265,7 +254,7 @@ app.post('/indexregisterborrowerpage', async (req, res) => { // BORROWER REGISTE
   }
 });
 
-app.post('/indexcustodianlogin', async (req, res) => { // CUSTODIAN LOGIN - TRYING NA MAPAKITA YUNG FIRST NAME NG KUNG SINO NAGLOGIN JAN16
+app.post('/indexcustodianlogin', async (req, res) => { // CUSTODIAN LOGIN 
   const { adminum, password } = req.body;
 
   try {
@@ -321,7 +310,8 @@ app.post('/indexborrowerlogin', async (req, res) => { // BORROWER LOGIN
   }
 });
 
-app.post('/indexassettable', async (req, res) => { // Asset table
+
+app.post('/indexassettable', async (req, res) => { // ADD ASSET FORM FOR ASSET TABLE
   const {
     room,
     location,
@@ -388,14 +378,14 @@ app.post('/indexassettable', async (req, res) => { // Asset table
 
 app.post('/indexfacultyreportinput', async (req, res) => { // BROKEN ITEMS FORM
 
-  const { report_location, report_serial_number, report_property_number, report_issue } = req.body;
+  const { report_location, report_barcode, report_item_description, report_issue } = req.body;
 
-  console.log({ report_location, report_serial_number, report_property_number, report_issue })
+  console.log({ report_location, report_barcode, report_item_description, report_issue })
 
   try {
 
     try {
-      const assetDocument = { report_location, report_serial_number, report_property_number, report_issue }
+      const assetDocument = { report_location, report_barcode, report_item_description, report_issue }
 
       const result = await reportDb.collection(reportCollectionName).insertOne(assetDocument)
 
@@ -413,8 +403,42 @@ app.post('/indexfacultyreportinput', async (req, res) => { // BROKEN ITEMS FORM
   }
 });
 
-// Route for fetching data from dBoard201Db
-app.get('/data/dBoard201', async (req, res) => {
+
+app.put('/data/dBoard201/:id', async (req, res) => { // WHAT THE HELL IS THIS // Route for fetching data from dBoard201Db
+  try {
+    // Check if the database connection is established
+    if (!dBoard201Db) {
+      console.log('Database connection for dBoard201Db is not established yet.');
+      return res.status(500).json({ error: 'Database connection for dBoard201Db is not ready.' });
+    }
+
+    const { id } = req.params;
+    const { asset_status } = req.body;
+
+    // Update the asset status in the MongoDB collection for dBoard201Db
+    const result = await dBoard201Db.collection(dBoard201DbCollectionName).updateOne(
+      { _id: ObjectId(id) },
+      { $set: { asset_status } }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ error: 'Asset not found' });
+    }
+
+    // Send success response
+    res.json({ message: 'Asset status updated successfully' });
+  } catch (error) {
+    // Handle errors and send an error response
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+
+
+app.get('/data/dBoard201', async (req, res) => { // Route for fetching data from dBoard201Db
   try {
     // Check if the database connection is established
     if (!dBoard201Db) {
@@ -435,8 +459,7 @@ app.get('/data/dBoard201', async (req, res) => {
   }
 });
 
-// Route for fetching data from dBoard202Db
-app.get('/data/dBoard202', async (req, res) => {
+app.get('/data/dBoard202', async (req, res) => { // Route for fetching data from dBoard202Db
   try {
     // Check if the database connection is established
     if (!dBoard202Db) {
@@ -457,24 +480,33 @@ app.get('/data/dBoard202', async (req, res) => {
   }
 });
 
+app.put('/indexreports/:id', async (req, res) => { // ARCHIVE + DELETE BUTTON REPORT FORMS
+  const { id } = req.params; // Ensure that this is the correct variable name
+  const updatedAsset = req.body;
 
-// Route to perform soft delete on a report
-app.post('/indexreportsdelete', async (req, res) => {
+  console.log('Received Database ID:', id);
+  console.log('Request Body:', updatedAsset);
+
   try {
-      const { serial_number } = req.body;
-      // Update the status of the item with the given serial number to false
-      const result = await reportDb.collection(reportCollectionName).updateOne(
-          { serial_number },
-          { $set: { status: false } }
-      );
-      if (result.modifiedCount === 1) {
-          res.sendStatus(200); // Send success status
+    const result = await reportDb.collection(reportCollectionName).updateOne(
+      { _id: new ObjectId(id) }, // Use ObjectId directly for the _id
+      { $set: updatedAsset } // Update all fields in the document
+    );
+
+    console.log('Database Update Result:', result);
+
+    if (result.modifiedCount === 1) {
+      if (updatedAsset.isDeleted) {
+        res.status(200).json({ message: 'Asset soft deleted successfully' });
       } else {
-          res.status(404).send('Report not found.');
+        res.status(200).json({ message: 'Asset updated successfully' });
       }
-  } catch (error) {
-      console.error('Error deleting report:', error);
-      res.sendStatus(500); // Send server error status
+    } else {
+      res.status(404).json({ message: 'Asset not found' });
+    }
+  } catch (err) {
+    console.error('Error updating asset:', err);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
@@ -537,7 +569,7 @@ app.post('/indexborrowforms', async (req, res) => { //BORROWER FORMS
         console.log(assetDocument);
 
         const mailOptions = {
-          from: 'school.angeloramirez@gmail.com',
+          from: 'rpc.assetms@gmail.com',
           to: email,
           subject: 'Asset Borrowed',
           text: `Dear ${name},
@@ -596,30 +628,39 @@ app.get('/assets', async (req, res) => { // BORROWER DATA
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+// Assume you already have the MongoDB client and database connection set up
 
+app.put('/assetsupdate/:id', async (req, res) => { // BORROWER DATA UPDATE AND ARCHIVE BUTTON
+  const { id } = req.params; // Ensure that this is the correct variable name
+  const updatedAsset = req.body;
 
-app.put('/assetsupdate/:barcode', async (req, res) => {
-  const { barcode } = req.params;
+  console.log('Received Database ID:', id);
+  console.log('Request Body:', updatedAsset);
 
   try {
-      // Perform update of the "status" field to "Returned"
-      const result = await lendingDb.collection(lendingCollectionName).updateOne(
-          { barcode: barcode },
-          { $set: { status: 'Returned' } }
-      );
+    const result = await lendingDb.collection(lendingCollectionName).updateOne(
+      { _id: new ObjectId(id) }, // Use ObjectId directly for the _id
+      { $set: updatedAsset } // Update all fields in the document
+    );
 
-      if (result.modifiedCount === 1) {
-          res.status(200).json({ message: 'Status updated to Returned successfully' });
+    console.log('Database Update Result:', result);
+
+    if (result.modifiedCount === 1) {
+      if (updatedAsset.isDeleted) {
+        res.status(200).json({ message: 'Asset soft deleted successfully' });
       } else {
-          res.status(404).json({ message: 'Entry not found' });
+        res.status(200).json({ message: 'Asset updated successfully' });
       }
-  } catch (error) {
-      console.error('Error updating status:', error);
-      res.status(500).json({ message: 'Internal server error' });
+    } else {
+      res.status(404).json({ message: 'Asset not found' });
+    }
+  } catch (err) {
+    console.error('Error updating asset:', err);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
-app.get('/item_description', async (req, res) => {
+app.get('/item_description', async (req, res) => { // BORROWER FORM AFTER SCANNING ON PLACEHOLDER
   try {
       // Check if the barcode parameter is present
       const { barcode } = req.query;
@@ -652,30 +693,42 @@ app.get('/item_description', async (req, res) => {
   }
 });
 
-// Route to update a row
-app.put('/updaterow/:serialNumber', async (req, res) => {
-  const { serialNumber } = req.params;
-  const { newIssue } = req.body;
 
+app.put('/assetsupdate/dBoard201/:serial_number', async (req, res) => { // for UPDATES DBOARD201
   try {
-    if (!reportDb) {
-      console.log('Report database connection is not established yet.');
-      return res.status(500).json({ error: 'Report database connection is not ready.' });
-    }
+    const serialNumber = req.params.serial_number;
+    const updatedStatus = req.body.asset_status; // Change key to asset_status
 
-    const result = await reportDb.collection(reportCollectionName).updateOne(
-      { serial_number: serialNumber }, // Using 'serial_number' as the field name
-      { $set: { issue: newIssue } }
+    // Update the status of the item in the database using the serial number
+    await dBoard201Db.collection(dBoard201DbCollectionName).updateOne(
+      { serial_number: serialNumber }, // Update based on serial number
+      { $set: { asset_status: updatedStatus } }
     );
 
-    if (result.modifiedCount === 1) {
-      res.status(200).json({ message: 'Row updated successfully' });
-    } else {
-      res.status(404).json({ message: 'Entry not found' });
-    }
+    // Send a success response
+    res.json({ message: 'Status updated successfully' });
   } catch (error) {
-    console.error('Error updating row:', error);
-    res.status(500).json({ message: 'Internal server error', error: error.message });
+    console.error('Error updating status:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.put('/assetsupdate/dBoard202/:serial_number', async (req, res) => {  // for UPDATES DBOARD202
+  try {
+    const serialNumber = req.params.serial_number;
+    const updatedStatus = req.body.asset_status; // Change key to asset_status
+
+    // Update the status of the item in the database using the serial number
+    await dBoard202Db.collection(dBoard202DbCollectionName).updateOne(
+      { serial_number: serialNumber }, // Update based on serial number
+      { $set: { asset_status: updatedStatus } }
+    );
+
+    // Send a success response
+    res.json({ message: 'Status updated successfully' });
+  } catch (error) {
+    console.error('Error updating status:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
