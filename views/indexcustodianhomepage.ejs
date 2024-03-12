@@ -589,22 +589,23 @@
             <!-- Vertical container for clickable rooms -->
             <div class="room-container">
                 <div class="room-row">
-                    <a href="indexrooms201.ejs" class="room">ICT 201</a>
-                    <a class="room" href="indexrooms202.ejs">ICT 202</a>
-                    <a class="room" href="indexrooms202.ejs">ICT 203</a>
-                    <a class="room" href="indexrooms202.ejs">ICT 204</a>
-                    <a class="room" href="indexrooms202.ejs">ICT 205</a>
-                    <a class="room" href="indexrooms202.ejs">ICT 206</a>
+                    <a href="indexrooms201.ejs" class="room" target="_blank">ICT 201</a>
+                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 202</a>
+                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 203</a>
+                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 204</a>
+                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 205</a>
+                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 206</a>
                 </div>
                 <div class="room-row">
-                    <a class="room" href="indexrooms202.ejs">ICT 207</a>
-                    <a class="room" href="indexrooms202.ejs">ICT 208</a>
-                    <a class="room" href="indexrooms202.ejs">ICT 209</a>
-                    <a class="room" href="indexrooms202.ejs">ICT 210</a>
-                    <a class="room" href="indexrooms202.ejs">ICT 211</a>
-                    <a class="room" href="indexrooms202.ejs">ICT 212</a>
+                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 207</a>
+                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 208</a>
+                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 209</a>
+                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 210</a>
+                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 211</a>
+                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 212</a>
                 </div>
             </div>
+            
             
             
            
@@ -929,9 +930,10 @@ function updateRow(id) { // REPORT FORMS RETURN
 // Function to soft delete a row
 function archiveReportItem(event, id) {
   event.preventDefault();
+
   console.log('Sending Database ID:', id); // Log the _id being sent
   const updatedAsset = { isDeleted: true };
-
+  const confirmation = confirm("Are you sure you want to delete this item?"); // 
   fetch(`/indexreports/${id}`, { // Update the URL to include the _id
     method: 'PUT',
     headers: {
@@ -949,6 +951,7 @@ function archiveReportItem(event, id) {
     console.error('Error updating asset:', error);
   });
 }
+
 
 function isHidden(assetId) { // BORROWER FORMS HIDDEN IF BOOLEAN IS TRUE
     const hiddenAssets = JSON.parse(localStorage.getItem('hiddenAssets')) || [];
@@ -1164,23 +1167,27 @@ function archiveItem(event, id) { // BORROWER FORMS ARCHIVE
 
     const updatedAsset = { isDeleted: true };
 
-    fetch(`/assetsupdate/${id}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedAsset),
-    })
-    .then((response) => response.json())
-    .then((data) => {
-        console.log(data.message);
-        // Refresh the borrower table after archiving the item
-        showBorrowerContent();
-    })
-    .catch((error) => {
-        console.error('Error updating asset:', error);
-    });
+    const confirmation = confirm("Are you sure you want to delete this item?");
+    if (confirmation) {
+        fetch(`/assetsupdate/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedAsset),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data.message);
+            // Refresh the borrower table after archiving the item
+            showBorrowerContent();
+        })
+        .catch((error) => {
+            console.error('Error updating asset:', error);
+        });
+    }
 }
+
 
 function isHidden(assetId) { // BORROWER FORMS HIDDEN IF BOOLEAN IS TRUE
     const hiddenAssets = JSON.parse(localStorage.getItem('hiddenAssets')) || [];
