@@ -69,19 +69,22 @@
 
         /* Navbar styling */
         .navbar {
-            background-color: #f8f9fa; /* Change to desired color */
-            z-index: 1000; /* Ensure it stays on top */
+    background-color: #f8f9fa; /* Change to desired color */
+    z-index: 1000; /* Ensure it stays on top */
+    position: fixed; /* Fix the navbar position */
+    top: 0; /* Position it at the top */
+    width: 100%; /* Occupy full width */
+}
 
-        }
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
 
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
+.dropdown-menu {
+    background-color: #f8f9fa; /* Change to desired color */
+}
 
-        .dropdown-menu {
-            background-color: #f8f9fa; /* Change to desired color */
-        }
 
         /* Sidebar styling */
         .sidebar {
@@ -157,6 +160,7 @@
 
 /* Report content styling */
 #report-content {
+    margin-top: 50px;
     padding: 20px;
     animation: fadeIn 0.5s ease-in-out;
     margin-left: 0; /* Adjusted margin to accommodate the sidebar width */
@@ -227,28 +231,6 @@
     margin-left: 125px;
 }
 
-#asset-content table {
-    width: 100%;
-    max-width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    margin-left: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    overflow-x: auto; /* Allow horizontal scroll */
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-#asset-content th,
-#asset-content td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    font-size: 10px;
-}
-
-#asset-content th {
-    background-color: #f2f2f2;
-}
 
 
 /* Add button styling */
@@ -281,6 +263,7 @@
 
 /* Additional styles for Add Asset page */
 #add-asset-content {
+    margin-top: 50px;
     animation: fadeIn 0.5s ease-in-out;
     margin-left: 0; /* Adjusted margin to accommodate the sidebar width */
 }
@@ -621,7 +604,7 @@
     </div>
 
         <!-- Page content -->
-        <div class="content" id="dashboard-content" style="display: none;"> <!--TRANSFER FUNCTIONALITY FOR PRINT AND FILTER-->
+        <div class="content" id="dashboard-content" style="display: none; margin-top: 50px;"> <!--TRANSFER FUNCTIONALITY FOR PRINT AND FILTER-->
             <h1>Dashboard Content</h1>
             <button class="add-button" id="addAssetButton">Add Asset</button>
 
@@ -1376,7 +1359,7 @@ function isHidden(assetId) { // BORROWER FORMS HIDDEN IF BOOLEAN IS TRUE
     </table>
 </div>
 <!-- Report Form content -->
-<div class="content" id="report-form-content" style="display: none;">
+<div class="content" id="report-form-content" style="display: none; margin-top: 50px;">
     <h1>Report Asset</h1>
     <!-- Your form fields go here -->
     <form id="reportForm">
@@ -1401,7 +1384,7 @@ function isHidden(assetId) { // BORROWER FORMS HIDDEN IF BOOLEAN IS TRUE
     </form>
 </div>
 <!-- Borrower display table -->
-<div class="content" id="borrower-content" style="display: none;">
+<div class="content" id="borrower-content" style="display: none; margin-top: 50px;">
     <h1>Borrower Table</h1>
 
     <table class="borrower-table">
