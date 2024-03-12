@@ -534,6 +534,34 @@
     animation: pulse 0.5s infinite alternate;
 }
 
+
+#successMessage, #errorMessage {
+    display: none;
+    padding: 10px;
+    margin-left: 5px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    }
+
+    #successMessage {
+        background-color: #1db954; /* Green */
+        color: #ffffff; /* Dark green */
+    }
+
+    #errorMessage {
+        background-color: #c50000; /* Red */
+        color: white; /* Dark red */
+    }
+    @keyframes fadeInOut {
+    0% { opacity: 0; }
+    5% { opacity: 1; }
+    95% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+
            </style>
 </head>
 
@@ -658,48 +686,86 @@
                     hideAllTabs();
                     document.getElementById('report-form-content').style.display = 'block';
                 }  
-            document.addEventListener("DOMContentLoaded", function () {
-      const repform = document.getElementById("reportForm");
-      const successMessage = document.getElementById("successMessage");
-      const errorMessage = document.getElementById("errorMessage");
-    
-      repform.addEventListener('submit', async function (event) {
-        event.preventDefault();
+
+
+                document.addEventListener("DOMContentLoaded", function () {
+        const repform = document.getElementById("reportForm");
+        const successMessage = document.getElementById("successMessage");
+        const errorMessage = document.getElementById("errorMessage");
+        const reportSubmitButton = document.getElementById("reportsubmit");
+
+        repform.addEventListener('submit', async function (event) {
+            event.preventDefault();
             // Get form data
-        const formDataReport = {
-        
-            report_location: document.getElementById("report_location").value,
-      report_barcode: document.getElementById("report_barcode").value,
-      report_item_description: document.getElementById("report_item_description").value,
-      report_issue: document.getElementById("report_issue").value,
-        };
-           // Send the data to the server
-           await sendDataToServer(formDataReport);
-      });
-     
-      async function sendDataToServer(formDataReport) {
-        try {
-          const response = await fetch('/indexfacultyreportinput', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formDataReport),
-          });
-    
-          if (response.ok) {
-            console.log("ok")
-          }
-        } catch (error) {
-          console.error('Error:', error.message);
-          
+            const formDataReport = {
+                report_location: document.getElementById("report_location").value,
+                report_barcode: document.getElementById("report_barcode").value,
+                report_item_description: document.getElementById("report_item_description").value,
+                report_issue: document.getElementById("report_issue").value,
+            };
+            // Send the data to the server
+            sendDataToServer(formDataReport);
+        });
+
+        async function sendDataToServer(formDataReport) {
+            try {
+                const response = await fetch('/indexfacultyreportinput', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formDataReport),
+                });
+
+                if (response.ok) {
+                    // Reset form fields
+                    repform.reset();
+                    // Display success message
+                    successMessage.innerText = "Form submitted successfully!";
+                    successMessage.style.display = "block";
+                    errorMessage.style.display = "none";
+                    // Hide success message after 3 seconds
+                    setTimeout(function () {
+                        successMessage.style.display = "none";
+                    }, 3000);
+                } else {
+                    // Display error message
+                    successMessage.style.display = "none";
+                    errorMessage.innerText = "Form submission failed. Please try again.";
+                    errorMessage.style.display = "block";
+                    // Hide error message after 3 seconds
+                    setTimeout(function () {
+                        errorMessage.style.display = "none";
+                    }, 3000);
+                }
+            } catch (error) {
+                // Display error message
+                console.error('Error:', error.message);
+                errorMessage.innerText = "An error occurred. Please try again later.";
+                errorMessage.style.display = "block";
+                // Hide error message after 3 seconds
+                setTimeout(function () {
+                    errorMessage.style.display = "none";
+                }, 3000);
+            }
         }
-      }
-      reportcount();
-      lending();
-      borrowercount();
-      showDashboard();
-    });    
+
+        // Add event listener to reportSubmit button
+        reportSubmitButton.addEventListener('click', function () {
+            // Hide success and error messages initially
+            successMessage.style.display = "none";
+            errorMessage.style.display = "none";
+        });
+        reportcount();
+    lending();
+    borrowercount();
+    showDashboard();
+
+    });
+
+  
+    
+    
     function showBorrowerContent() { // SCRIPT BORROWER TABLE
     hideAllTabs(); // Hide all other tabs
     const borrowerContent = document.getElementById('borrower-content');
@@ -789,79 +855,89 @@
                  
                 }
                 
-            // Your existing code without async/await
-      document.addEventListener("DOMContentLoaded", function () {
-      const assetForm = document.getElementById("addAssetForm");
-      const successMessage = document.getElementById("successMessage");
-      const errorMessage = document.getElementById("errorMessage");
-    
-      assetForm.addEventListener('submit', async function (event) {
+           // Your existing code without async/await
+document.addEventListener("DOMContentLoaded", function () {
+    const assetForm = document.getElementById("addAssetForm");
+    const successMessage = document.getElementById("successMessage");
+    const errorMessage = document.getElementById("errorMessage");
+
+    // Function to display a message for a certain duration
+    function displayMessage(messageElement, message, duration) {
+        messageElement.innerText = message;
+        messageElement.style.display = "block";
+        setTimeout(function () {
+            messageElement.style.display = "none";
+        }, duration);
+    }
+
+    assetForm.addEventListener('submit', async function (event) {
         event.preventDefault();
         
         // Get form data
         const formData = {
-          room: document.getElementById("room").value,
-          location: document.getElementById("location").value,
-          category: document.getElementById("category").value,
-          item_description: document.getElementById("item_description").value,
-          property_number: document.getElementById("property_number").value,
-          serial_number: document.getElementById("serial_number").value,
-          unit_cost: document.getElementById("unit_cost").value,
-          rdf_number: document.getElementById("rdf_number").value,
-          rtf_number: document.getElementById("rtf_number").value,
-          asset_status: document.getElementById("asset_status").value,
+            room: document.getElementById("room").value,
+            location: document.getElementById("location").value,
+            category: document.getElementById("category").value,
+            item_description: document.getElementById("item_description").value,
+            property_number: document.getElementById("property_number").value,
+            serial_number: document.getElementById("serial_number").value,
+            unit_cost: document.getElementById("unit_cost").value,
+            rdf_number: document.getElementById("rdf_number").value,
+            rtf_number: document.getElementById("rtf_number").value,
+            asset_status: document.getElementById("asset_status").value,
         };
-        console.log(formData)
-    
+        console.log(formData);
+
         // Send the data to the server
         await sendDataToServer(formData);
-      });
-    
-      async function sendDataToServer(formData) {
+    });
+
+    async function sendDataToServer(formData) {
         try {
-          const response = await fetch('/indexassettable', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-          });
-    
-          if (response.ok) {
-          
-            console.log("ok")
-          }
+            const response = await fetch('/indexassettable', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                displayMessage(successMessage, "Asset added successfully!", 3000); // Display success message
+                console.log("ok");
+            }
         } catch (error) {
-          console.error('Error:', error.message);
-          
+            console.error('Error:', error.message);
+            displayMessage(errorMessage, "Failed to add asset. Please try again.", 3000); // Display error message
         }
-      }
-    
-      async function showAuthUsers() {
+    }
+
+    async function showAuthUsers() {
         let usersName = document.getElementById("authUsers");
         usersName.innerText = await localStorage.getItem('lastName');
     }
-    
+
     showAuthUsers();
 
     function showAddAssetPage() {
-            hideAllTabs(); // Hide all other tabs
-            document.getElementById('add-asset-content').style.display = 'block';
-        }
+        hideAllTabs(); // Hide all other tabs
+        document.getElementById('add-asset-content').style.display = 'block';
+    }
 
-        // Function to hide all tabs
-        function hideAllTabs() {
-            document.getElementById('dashboard-content').style.display = 'none';
-            document.getElementById('report-content').style.display = 'none';
-            // Hide other content sections if needed
-        }
+    // Function to hide all tabs
+    function hideAllTabs() {
+        document.getElementById('dashboard-content').style.display = 'none';
+        document.getElementById('report-content').style.display = 'none';
+        // Hide other content sections if needed
+    }
 
-        // Add event listener to the "Add Asset" button
-        document.getElementById('addAssetButton').addEventListener('click', function () {
-            showAddAssetPage();
-        });
-        
+    // Add event listener to the "Add Asset" button
+    document.getElementById('addAssetButton').addEventListener('click', function () {
+        showAddAssetPage();
     });
+
+});
+
     
     function showReportContent() {
     hideAllTabs(); // Hide all other tabs
@@ -1193,8 +1269,7 @@ function isHidden(assetId) { // BORROWER FORMS HIDDEN IF BOOLEAN IS TRUE
     const hiddenAssets = JSON.parse(localStorage.getItem('hiddenAssets')) || [];
     return hiddenAssets.includes(assetId);
 }
-    
-    
+
     </script>
 <!-- pinalipat ni jaden -->
 <!-- Add asset form -->
@@ -1241,9 +1316,11 @@ function isHidden(assetId) { // BORROWER FORMS HIDDEN IF BOOLEAN IS TRUE
         </div>
      
 <button type="submit" class="add-button" id="submitAssetButton">Submit</button>
-
+    <div id="successMessage" style="display: none;"></div>
+    <div id="errorMessage" style="display: none;"></div>
     </form>
 </div>
+
 <!-- Report display table -->
 <div class="content" id="report-content" style="display: none;">
     <h1 id="report-text">Asset Status Report</h1>
@@ -1288,7 +1365,9 @@ function isHidden(assetId) { // BORROWER FORMS HIDDEN IF BOOLEAN IS TRUE
             <textarea id="report_issue" rows="4" required></textarea>
         </div>
         <!-- Add more fields as needed -->
-        <button class="add-button" type="submitform" id="reportsubmit">Submit</button>
+        <button class="add-button" type="submit" id="reportsubmit">Submit</button>
+        <div id="successMessage" style="display: none;"></div>
+        <div id="errorMessage" style="display: none;"></div>
     </form>
 </div>
 <!-- Borrower display table -->
