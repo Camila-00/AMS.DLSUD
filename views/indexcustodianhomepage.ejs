@@ -561,6 +561,35 @@
     100% { opacity: 0; }
 }
 
+#reportSuccessMessage, #reportErrorMessage {
+    display: none;
+    padding: 10px;
+    margin-left: 5px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    animation: fadeInOut 3s ease-in-out; /* Apply fade in/out animation */
+}
+
+#reportSuccessMessage {
+    background-color: #1db954; /* Green */
+    color: #ffffff; /* Dark green */
+}
+
+#reportErrorMessage {
+    background-color: #c50000; /* Red */
+    color: white; /* Dark red */
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    5% { opacity: 1; }
+    95% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+
 
            </style>
 </head>
@@ -689,73 +718,74 @@
 
 
                 document.addEventListener("DOMContentLoaded", function () {
-        const repform = document.getElementById("reportForm");
-        const successMessage = document.getElementById("successMessage");
-        const errorMessage = document.getElementById("errorMessage");
-        const reportSubmitButton = document.getElementById("reportsubmit");
+    const repform = document.getElementById("reportForm");
+    const successMessage = document.getElementById("reportSuccessMessage"); // corrected ID
+    const errorMessage = document.getElementById("reportErrorMessage"); // corrected ID
+    const reportSubmitButton = document.getElementById("reportsubmit");
 
-        repform.addEventListener('submit', async function (event) {
-            event.preventDefault();
-            // Get form data
-            const formDataReport = {
-                report_location: document.getElementById("report_location").value,
-                report_barcode: document.getElementById("report_barcode").value,
-                report_item_description: document.getElementById("report_item_description").value,
-                report_issue: document.getElementById("report_issue").value,
-            };
-            // Send the data to the server
-            sendDataToServer(formDataReport);
-        });
+    repform.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        // Get form data
+        const formDataReport = {
+            report_location: document.getElementById("report_location").value,
+            report_barcode: document.getElementById("report_barcode").value,
+            report_item_description: document.getElementById("report_item_description").value,
+            report_issue: document.getElementById("report_issue").value,
+        };
+        // Send the data to the server
+        sendDataToServer(formDataReport);
+    });
 
-        async function sendDataToServer(formDataReport) {
-            try {
-                const response = await fetch('/indexfacultyreportinput', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formDataReport),
-                });
+    async function sendDataToServer(formDataReport) {
+        try {
+            const response = await fetch('/indexfacultyreportinput', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formDataReport),
+            });
 
-                if (response.ok) {
-                    // Reset form fields
-                    repform.reset();
-                    // Display success message
-                    successMessage.innerText = "Form submitted successfully!";
-                    successMessage.style.display = "block";
-                    errorMessage.style.display = "none";
-                    // Hide success message after 3 seconds
-                    setTimeout(function () {
-                        successMessage.style.display = "none";
-                    }, 3000);
-                } else {
-                    // Display error message
+            if (response.ok) {
+                // Reset form fields
+                repform.reset();
+                // Display success message
+                successMessage.innerText = "Form submitted successfully!";
+                successMessage.style.display = "block";
+                errorMessage.style.display = "none";
+                // Hide success message after 3 seconds
+                setTimeout(function () {
                     successMessage.style.display = "none";
-                    errorMessage.innerText = "Form submission failed. Please try again.";
-                    errorMessage.style.display = "block";
-                    // Hide error message after 3 seconds
-                    setTimeout(function () {
-                        errorMessage.style.display = "none";
-                    }, 3000);
-                }
-            } catch (error) {
+                }, 3000);
+            } else {
                 // Display error message
-                console.error('Error:', error.message);
-                errorMessage.innerText = "An error occurred. Please try again later.";
+                successMessage.style.display = "none";
+                errorMessage.innerText = "Form submission failed. Please try again.";
                 errorMessage.style.display = "block";
                 // Hide error message after 3 seconds
                 setTimeout(function () {
                     errorMessage.style.display = "none";
                 }, 3000);
             }
+        } catch (error) {
+            // Display error message
+            console.error('Error:', error.message);
+            errorMessage.innerText = "An error occurred. Please try again later.";
+            errorMessage.style.display = "block";
+            // Hide error message after 3 seconds
+            setTimeout(function () {
+                errorMessage.style.display = "none";
+            }, 3000);
         }
+    }
 
-        // Add event listener to reportSubmit button
-        reportSubmitButton.addEventListener('click', function () {
-            // Hide success and error messages initially
-            successMessage.style.display = "none";
-            errorMessage.style.display = "none";
-        });
+    // Add event listener to reportSubmit button
+    reportSubmitButton.addEventListener('click', function () {
+        // Hide success and error messages initially
+        successMessage.style.display = "none";
+        errorMessage.style.display = "none";
+    });
+
         reportcount();
     lending();
     borrowercount();
@@ -1366,8 +1396,8 @@ function isHidden(assetId) { // BORROWER FORMS HIDDEN IF BOOLEAN IS TRUE
         </div>
         <!-- Add more fields as needed -->
         <button class="add-button" type="submit" id="reportsubmit">Submit</button>
-        <div id="successMessage" style="display: none;"></div>
-        <div id="errorMessage" style="display: none;"></div>
+<div id="reportSuccessMessage" style="display: none;"></div>
+<div id="reportErrorMessage" style="display: none;"></div>
     </form>
 </div>
 <!-- Borrower display table -->
