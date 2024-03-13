@@ -601,6 +601,7 @@
         <a href="#" onclick="showDashboard()">Dashboard</a>
         <a href="#" onclick="showReport()">Report</a>
         <a href="#" class="borrower-link" onclick="showBorrowerContent()">Borrower</a>
+        <a href="/indexarchivepage">Archives</a>
     </div>
 
         <!-- Page content -->
@@ -661,6 +662,10 @@
     <!-- Pinalipat ni jaden -->
     <script>
         function click (){alert("clickable")}
+
+        function openArchivePage() {
+        window.open('/indexarchivepage', '_blank');
+    }
     
         function reportcount (){fetch('/indexreportcount') // Replace this with your backend route to fetch report data
                     .then(response => {

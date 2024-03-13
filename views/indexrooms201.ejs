@@ -204,6 +204,51 @@
     background-color: #1db954;
 }
 
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.controls-container {
+    display: flex;
+    align-items: center; /* Align items vertically in the center */
+}
+
+.controls {
+    display: flex;
+    align-items: center; /* Align items to the center */
+}
+
+#assetcount201 {
+    display: flex;
+    flex-direction: column; /* Arrange child elements in a column */
+    align-items: center; /* Center items horizontally */
+    font-size: 18px; /* Adjust font size as needed */
+    font-weight: bold; /* Make the text bold */
+    color: #ffffff; /* Set text color */
+    margin-left: 10px; /* Add some margin to separate it from other controls */
+    margin-top: 5px;
+}
+
+
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.asset-summary-container {
+    background-color: #333333;; /* Gray background */
+    float: right; /* Align to the right */
+    padding: 10px; /* Add padding for spacing */
+    margin-top: -20px;
+    margin-left: 775px; /* Adjust margin-left as needed */
+    border-radius: 10px; /* Rounded borders */
+    color: white; /* White text */
+}
+
 
    </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -233,33 +278,49 @@
     </div>
 </nav>
 
-
 <!-- Asset content -->
 <div class="content" id="asset-content201">
-    <h1>ICTC 201 Asset Table</h1>
-    <input type="text" id="searchInput201" placeholder="Filter">
-    <button class="print-table">Print Table</button>
-
-    <table>
-        <thead>
-            <tr>                   
-                <th>Room</th>
-                <th>Location</th>
-                <th>Category</th>
-                <th>Item Description</th>
-                <th>Serial Number</th>
-                <th>Unit Cost</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="data-table">
-        </tbody>
-    </table>
-
+    <div class="header">
+        <h1>ICTC 201 Asset Table</h1>
+    </div>
+    <div class="controls-container">
+        <div class="controls">
+            <input type="text" id="searchInput201" placeholder="Filter">
+            <button class="print-table">Print Table</button>
+        </div>
+        <div class="asset-summary-container">
+            <div id="assetcount201" class="borrowers-counter">
+                <!-- Asset Count will be populated here -->
+            </div>
+            <p>Total Asset Room 201</p>
+        </div>
+    </div>
+    <div class="main-content">
+        <table>
+            <thead>
+                <tr>                   
+                    <th>Room</th>
+                    <th>Location</th>
+                    <th>Category</th>
+                    <th>Item Description</th>
+                    <th>Serial Number</th>
+                    <th>Unit Cost</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="data-table">
+            </tbody>
+        </table>
+    </div>
     <!-- Pagination HTML -->
     <div id="pagination"></div>
 </div>
+
+
+
+
+
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -317,6 +378,32 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.js"></script>
 
 <script>
+
+async function showAuthUsers() {
+        let usersName = document.getElementById("authUsers");
+        usersName.innerText = await localStorage.getItem('lastName');
+    }
+
+
+function borrowercount() {
+        fetch('/assetcount201')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch report data. Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(result => {
+                document.getElementById('assetcount201').innerHTML = result.count201;
+            })
+            .catch(error => {
+                console.error('Error fetching report data:', error);
+            });
+    }
+
+    // Call borrowercount function when the page loads
+    window.onload = borrowercount;
+
 let updatedAsset; // Define updatedAsset at a higher scope
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -507,6 +594,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                 };
             });
+            showAuthUsers();
             tableBody.appendChild(row);
         });
     }

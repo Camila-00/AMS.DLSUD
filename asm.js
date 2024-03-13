@@ -200,6 +200,25 @@ app.get('/indexcustodianhomepage', async (req, res) => { // CUSTODIAN HOMEPAGE C
   }
 });
 
+//different room counter - ROOM 201
+app.get('/assetcount201', async (req, res) => { 
+  const dBoard201DbCollection = dBoard201Db.collection(dBoard201DbCollectionName);
+  const count201 = await dBoard201DbCollection.count();
+  res.status(201).send({ count201 });
+});
+
+// Server-side route to get asset count for ROOM 202
+app.get('/assetcount202', async (req, res) => { 
+  try {
+    const dBoard202DbCollection = dBoard202Db.collection(dBoard202DbCollectionName);
+    const count202 = await dBoard202DbCollection.countDocuments(); // Changed from count() to countDocuments() as count() is deprecated
+    res.status(200).json({ count202 }); // Changed from 201 to 200 as it's a success response
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' }); // Handle errors gracefully
+  }
+});
+
+
 app.get('/totalassetscount', async(req, res) => { // TOTAL ASSETS ON DASHBOARD CONTENT
   const dBoard201DbCollection = dBoard201Db.collection(dBoard201DbCollectionName);
   const dBoard202DbCollection = dBoard202Db.collection(dBoard202DbCollectionName);
@@ -434,9 +453,15 @@ app.put('/data/dBoard201/:id', async (req, res) => { // WHAT THE HELL IS THIS //
   }
 });
 
+app.get('/', (req, res) => {
+  // Render your main index.ejs file
+  res.render('index');
+});
 
-
-
+app.get('/indexarchivepage', (req, res) => {
+  // Render the indexarchivepage.ejs file
+  res.render('indexarchivepage');
+});
 
 app.get('/data/dBoard201', async (req, res) => { // Route for fetching data from dBoard201Db
   try {
