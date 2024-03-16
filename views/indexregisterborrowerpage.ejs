@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon"/>
     <title>Login Page</title>
     <style>
@@ -36,10 +37,12 @@
 }
 
 
-        h2 {
-            margin-bottom: 30px;
-            color: #333;
-        }
+h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 35px;
+        color: #333333;
+        margin-bottom: 30px;
+    }
 
         .input-group {
             margin-bottom: 20px;
@@ -104,10 +107,68 @@ a:hover {
 }
 
 .logo {
-margin-top: 70px;
+margin-top: 20px;
     width: 200px; /* Adjust the width as needed */
     height: auto; /* Maintain aspect ratio */
 }
+
+@media only screen and (max-width: 600px) {
+    body {
+        margin: 0;
+        background-image: none;
+    }
+
+    .signupForm {
+    background-color: #fff;
+    padding: 40px;
+    box-shadow: none;
+    width: 100%;
+    text-align: center;
+}
+
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 0 20px;
+        box-shadow: none; 
+    }
+
+    .login-container {
+        width: 100%;
+    }
+
+    .logo {
+        margin-top: 20px;
+        width: 150px;
+        height: auto;
+    }
+
+    .login-form {
+        padding: 40px;
+        box-shadow: none;
+        width: 100%;
+        text-align: center;
+    }
+
+    h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 20px;
+        color: #333333;
+        margin-bottom: 30px;
+    }
+
+    p {
+    font-size: 15px;
+
+}
+
+}
+
+
+
     </style>
 </head>
 <body>

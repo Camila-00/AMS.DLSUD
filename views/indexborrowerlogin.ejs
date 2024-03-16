@@ -3,16 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <style>
         /* Basic styling - add more as needed */
-body {
+        body {
     margin: 0;
-    font-family: Arial, sans-serif;
     background-image: url("../assets/ictc.png");
-    background-size: cover; /* Ensure the background image covers the entire page */
-    background-position: -400px; /* Center the background image */
+    background-size: cover;
+    background-position: -400px;
 }
+
+p {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 20px;
+    color: #333333;
+}
+
 .container {
     display: flex;
     justify-content: flex-end; /* Align container to the right side */
@@ -26,16 +35,25 @@ body {
     height: 100vh; /* Adjusted to cover the entire viewport height */
 }
 .login-form {
-    background-color: #fff;
+    background-color: #ffffff;
     padding: 40px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     text-align: center;
 }
 h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 36px;
     margin-bottom: 30px;
-    color: #333;
+    color: #333333;
 }
+
+::placeholder {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    color: #B3B3B3;
+}
+
 input[type="email"],
 input[type="password"],
 button {
@@ -43,7 +61,7 @@ button {
     padding: 12px;
     margin-bottom: 20px;
     border-radius: 4px;
-    border: 1px solid #ccc;
+    border: 1px solid #b3b3b3;
     box-sizing: border-box;
 }
 a {
@@ -52,9 +70,11 @@ a {
 }
 a:hover {
     text-decoration: none;
-    color: #038903;
+    color: #15863d;
 }
 button {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
     padding: 10px 20px;
     border: 20px;
     border-radius: 4px;
@@ -62,8 +82,9 @@ button {
     color: #fff;
     cursor: pointer;
 }
+
 button:hover {
-    background-color: #038903;
+    background-color: #15863d;
 }
 .forgot-password {
     text-align: left;
@@ -75,13 +96,68 @@ button:hover {
     width: 200px; /* Adjust the width as needed */
     height: auto; /* Maintain aspect ratio */
 }
+
 label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
     display: block;
     margin-bottom: 8px;
-    color: #555;
+    color: #333333;
     text-align: left;
     margin-left: 12px;
 }
+
+@media only screen and (max-width: 600px) {
+    body {
+        margin: 0;
+        background-image: none;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 0 20px;
+        box-shadow: none; 
+    }
+
+    .login-container {
+        width: 100%;
+    }
+
+    .logo {
+                margin-top: 60px;
+                width: 150px;
+                height: auto;
+            }
+
+    .login-form {
+        padding: 40px;
+        box-shadow: none;
+        width: 100%;
+        text-align: center;
+    }
+
+    h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 25px;
+        color: #333333;
+        margin-bottom: 30px;
+    }
+    button {
+margin-top: -15px;
+}
+
+p {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+    text-align: center;
+    margin-top: -25px;
+    color: #333333;
+}
+}
+
 
     </style>
 </head>

@@ -14,6 +14,8 @@
       margin: 0;
     }
 
+
+    
     .back-btn {
       position: absolute;
       top: 10px;
@@ -74,6 +76,87 @@
     margin-top: 10px; /* Adjusted margin */
 }
 
+send {
+    background-color: #1DB954;
+}
+
+.send:hover {
+    background-color: #15863d;
+    color: #ffffff;
+}
+
+.logout {
+    background-color: #D95353;
+}
+
+.logout:hover {
+    background-color: #c62c2c;
+    color: #ffffff;;
+}
+
+/* for tablet devices */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+
+body {
+    overflow: visible;
+}
+
+.form-container {
+    margin-top: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 28px;
+    margin-top: 10px;
+}
+
+.btn-send {
+    font-size: 16px;
+}
+
+.btn-send.btn-block {
+    padding: 8px;
+}
+}
+
+
+
+
+
+
+@media only screen and (max-width: 600px) {
+    body {
+        background-image: none;
+    }
+
+    .container-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 0 20px;
+        box-shadow: none; 
+    }
+
+    .form-container {
+        width: 100%;
+    }
+
+
+    h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 33px;
+        color: #333333;
+        margin-bottom: 30px;
+    }
+}
+
+
+
+
+
   </style>
 </head>
 <body>
@@ -120,13 +203,13 @@
             <input type="text" class="form-control" id="return_date" readonly data-date-format="yyyy-mm-dd">
           </div>
 
-          <button type="button" class="btn btn-send btn-block" onclick="submitForm()">Send</button>    
+          <button type="button" class="btn btn-send btn-block send" onclick="submitForm()">Send</button>  
 
           <div id="successMessage" class="alert alert-success" role="alert" style="display: none;">
             Asset stored successfully.
         </div>
         </form>
-        <button class="btn btn-send btn-block" onclick="logout()">Logout</button>  
+        <button class="btn btn-send btn-block logout" onclick="logout()">Logout</button> 
     </div>
   </div>
 

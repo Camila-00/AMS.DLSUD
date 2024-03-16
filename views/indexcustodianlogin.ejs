@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
             background-image: url('../assets/ictc.png');
             background-size: cover;
             background-repeat: no-repeat;
@@ -27,10 +26,28 @@
             text-align: center;
         }
         
-        h2 {
-            margin-top: 20px;
-            color: #333;
-        }
+        h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 36px;
+    color: #333333;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
+    color: #333333;
+            text-align: left;
+            margin-left: 12px;
+}
+
+::placeholder {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    color: #B3B3B3;
+}
         
         input[type="email"],
         input[type="adminum"],
@@ -79,13 +96,46 @@
             height: auto; /* Maintain aspect ratio */
         }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            text-align: left;
-            margin-left: 12px;
-        }
+        @media only screen and (max-width: 600px) {
+            body {
+                margin: 0;
+                background-image: none;
+                overflow: hidden;
+            }
+
+            .container {
+                width: 90%;
+                max-width: none;
+                padding: 100px 20px;
+                text-align: center;
+                box-shadow: none;
+                margin: auto;
+                position: relative;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .logo {
+                margin-top: 60px;
+                width: 150px;
+                height: auto;
+            }
+
+            .login-form {
+                padding-top: 175px;
+                padding-bottom: 175px;
+            }
+
+            h1 {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 33px;
+                color: #333333;
+            }
+        } 
+
+
+
+
         </style>
         
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -96,7 +146,7 @@
         <!-- Login form -->
         <div class="login-form">
             <img src="./assets/ams_logo.png" alt="AMS Logo" class="logo" onclick="window.location.href='indexwelcomepage.ejs'" style="cursor: pointer;">
-            <h2>Welcome back</h2>
+            <h1>Welcome back</h1>
             <form id="loginForm" action="/indexcustodianlogin" method="POST">
                 <label for="name">User ID:</label>
                 <input type="adminum" id="adminum" name="adminum" placeholder="User ID" required><br><br>
