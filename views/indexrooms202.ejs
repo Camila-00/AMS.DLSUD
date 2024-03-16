@@ -10,6 +10,23 @@
     crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.js"></script>
    <style>
+.modify-button {
+        background-color: transparent;
+        color: #1db954; /* Green */
+        border: 2px solid transparent;
+        border-radius: 4px;
+        padding: 8px 16px;
+        cursor: pointer;
+        margin-right: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .modify-button:hover {
+        background-color: #28a745; /* Green */
+        color: #fff; /* White text color on hover */
+        border-color: #28a745; /* Green border on hover */
+    }
+
 .update-button {
         background-color: transparent;
         color: #1db954; /* Green */
@@ -367,6 +384,49 @@
     </div>
 </div>
 
+<!-- Modify Modal -->
+<div class="modal fade" id="modifyModal" tabindex="-1" aria-labelledby="modifyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modifyModalLabel">Modify Asset</h5>
+                <!-- Close button (x) -->
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Input fields for modification -->
+                <div class="mb-3">
+                    <label for="modifiedRoom" class="form-label">Room</label>
+                    <input type="text" class="form-control" id="modifiedRoom">
+                </div>
+                <div class="mb-3">
+                    <label for="modifiedLocation" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="modifiedLocation">
+                </div>
+                <div class="mb-3">
+                    <label for="modifiedCategory" class="form-label">Category</label>
+                    <input type="text" class="form-control" id="modifiedCategory">
+                </div>
+                <div class="mb-3">
+                    <label for="modifiedDescription" class="form-label">Description</label>
+                    <input type="text" class="form-control" id="modifiedDescription">
+                </div>
+                <div class="mb-3">
+                    <label for="modifiedSerialNumber" class="form-label">Serial Number</label>
+                    <input type="text" class="form-control" id="modifiedSerialNumber">
+                </div>
+                <div class="mb-3">
+                    <label for="modifiedUnitCost" class="form-label">Unit Cost</label>
+                    <input type="text" class="form-control" id="modifiedUnitCost">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="modifyAssetBtn">Modify Asset</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
     <!-- Bootstrap JS and jQuery -->
@@ -378,7 +438,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.js"></script>
 
 <script>
-
+    // Add event listener for the modify asset button
+    document.getElementById('modifyAssetBtn').addEventListener('click', function() {
+        // Handle modification logic here
+    });
 async function showAuthUsers() {
         let usersName = document.getElementById("authUsers");
         usersName.innerText = await localStorage.getItem('lastName');
@@ -484,6 +547,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 }
 
+
+
+
 document.addEventListener('DOMContentLoaded', function () {
     const tableRows = document.querySelectorAll('#data-table tr');
 
@@ -534,28 +600,43 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function populatePage(assetsList) {
-        const tableBody = document.getElementById('data-table');
-        tableBody.innerHTML = ''; // Clear existing data
+    const tableBody = document.getElementById('data-table');
+    tableBody.innerHTML = ''; // Clear existing data
 
-        assetsList.forEach(item => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${item.room}</td>
-                <td>${item.location}</td>
-                <td>${item.category}</td>
-                <td>${item.item_description}</td>
-                <td>${item.serial_number}</td>
-                <td>${item.unit_cost}</td>
-                <td>${item.asset_status}</td>
-                <td>
-                    <button class="update-button">Update</button>
-                </td>
-            `;
+    assetsList.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.room}</td>
+            <td>${item.location}</td>
+            <td>${item.category}</td>
+            <td>${item.item_description}</td>
+            <td>${item.serial_number}</td>
+            <td>${item.unit_cost}</td>
+            <td>${item.asset_status}</td>
+            <td>
+                <button class="update-button">Update</button>
+                <button class="modify-button">Modify</button>
+            </td>
+        `;
 
-            // Add click event listener to the row
-            row.addEventListener('click', function () {
-                showModalWithData(row);
-            });
+        // Add click event listener to the row
+        row.addEventListener('click', function () {
+            showModalWithData(row);
+        });
+        
+        // Add click event listener to the modify button
+        const modifyButton = row.querySelector('.modify-button');
+        modifyButton.addEventListener('click', function (event) {
+            event.stopPropagation(); // Prevent row click event from firing
+
+            // Show modify modal
+            $('#modifyModal').modal('show');
+
+            // Set up event listener for the modify asset button
+            document.getElementById('modifyAssetBtn').onclick = function() {
+                $('#modifyModal').modal('hide');
+            };
+        });
 
             // Add click event listener to the update button
             const updateButton = row.querySelector('.update-button');

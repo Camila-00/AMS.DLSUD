@@ -422,6 +422,25 @@ app.post('/indexfacultyreportinput', async (req, res) => { // BROKEN ITEMS FORM
   }
 });
 
+app.put('/assetsupdate/dBoard201', async (req, res) => {
+  try {
+    // Extract RDF and RTF values from the request body
+    const { rdf, rtf } = req.body;
+
+    // Update the status of Room 201 asset in the database
+    await dBoard201Db.collection(dBoard201DbCollectionName).updateOne(
+      { rdf_number: rdf, rtf_number: rtf }, // Update based on RDF and RTF numbers
+      { $set: { asset_status: req.body.asset_status } } // Update asset_status
+    );
+
+    // Send a success response
+    res.json({ message: 'Status updated successfully' });
+  } catch (error) {
+    console.error('Error updating status:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 app.put('/data/dBoard201/:id', async (req, res) => { // WHAT THE HELL IS THIS // Route for fetching data from dBoard201Db
   try {
@@ -550,6 +569,8 @@ app.get('/indexfacultyreportinputdata', async (req, res) => { // BROKEN ITEM REP
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
 
 app.post('/indexborrowforms', async (req, res) => { //BORROWER FORMS
   const {
@@ -719,24 +740,51 @@ app.get('/item_description', async (req, res) => { // BORROWER FORM AFTER SCANNI
 });
 
 
-app.put('/assetsupdate/dBoard201/:serial_number', async (req, res) => { // for UPDATES DBOARD201
+app.put('/assetsupdate/dBoard201/:serial_number', async (req, res) => {
   try {
     const serialNumber = req.params.serial_number;
-    const updatedStatus = req.body.asset_status; // Change key to asset_status
 
-    // Update the status of the item in the database using the serial number
-    await dBoard201Db.collection(dBoard201DbCollectionName).updateOne(
-      { serial_number: serialNumber }, // Update based on serial number
-      { $set: { asset_status: updatedStatus } }
-    );
+    // Check if the request body contains 'asset_status' to update status
+    if ('asset_status' in req.body) {
+      const updatedStatus = req.body.asset_status;
 
-    // Send a success response
-    res.json({ message: 'Status updated successfully' });
+      // Update the status of the item in the database using the serial number
+      await dBoard201Db.collection(dBoard201DbCollectionName).updateOne(
+        { serial_number: serialNumber }, // Update based on serial number
+        { $set: { asset_status: updatedStatus } }
+      );
+
+      // Send a success response for status update
+      return res.json({ message: 'Status updated successfully' });
+    }
+
+    // Check if the request body contains 'rdf_number' and 'rtf_number' to update RDF and RTF
+    if ('rdf_number' in req.body && 'rtf_number' in req.body) {
+      const updatedRDF = req.body.rdf_number;
+      const updatedRTF = req.body.rtf_number;
+
+      // Update RDF and RTF values in the database using the serial number
+      await dBoard201Db.collection(dBoard201DbCollectionName).updateOne(
+        { serial_number: serialNumber }, // Update based on serial number
+        { $set: { rdf_number: updatedRDF, rtf_number: updatedRTF } }
+      );
+
+      // Send a success response for RDF and RTF update
+      return res.json({ message: 'RDF and RTF values updated successfully' });
+    }
+
+    // If neither 'asset_status' nor 'rdf_number'/'rtf_number' found in request body
+    throw new Error('Invalid request body. Provide either asset_status or rdf_number/rtf_number values.');
   } catch (error) {
-    console.error('Error updating status:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error updating:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
+
+
+
 
 app.put('/assetsupdate/dBoard202/:serial_number', async (req, res) => {  // for UPDATES DBOARD202
   try {
