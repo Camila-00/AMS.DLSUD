@@ -167,6 +167,12 @@ app.get('/indexfacultyreportinput', (req, res) => {
 });
 
 
+app.get('/indexarchivepage', (req, res) => {
+  // Render the indexarchivepage.ejs file
+  res.render('indexarchivepage');
+});
+
+
 // SERVER SIDE STARTS UNDER
 app.get('/indexcustodianhomepage', async (req, res) => { // CUSTODIAN HOMEPAGE COMPLETE
   try {
@@ -231,17 +237,26 @@ app.get('/totalassetscount', async(req, res) => { // TOTAL ASSETS ON DASHBOARD C
   res.status(201).send({totalCount});
 })
 
-app.get('/indexreportcount', async(req, res) => { // REPORT COUNTER ON CUSTODIAN HOMEPAGE
-  const reportCollection = reportDb.collection(reportCollectionName);
-  const count = await reportCollection.count()
-  res.status(201).send({count});
-})
+app.get('/indexreportcount', async (req, res) => { // REPORT COUNTER ON CUSTODIAN HOMEPAGE
+  try {
+    const reportCollection = reportDb.collection(reportCollectionName);
+    const count = await reportCollection.countDocuments({
+      $or: [{ isDeleted: false }, { isDeleted: { $exists: false } }]
+    });
+    res.status(200).send({ count });
+  } catch (error) {
+    console.error('Error fetching report count:', error);
+    res.status(500).send({ error: 'Internal Server Error' });
+  }
+});
 
-app.get('/indexborroweditem', async(req, res) => { // BORROWER COUNTER ON CUSTODIAN HOMEPAGE
-  const ledingCollection = lendingDb.collection(lendingCollectionName);
-  const count = await ledingCollection.count()
-  res.status(201).send({count});
-})
+app.get('/indexborroweditem', async (req, res) => {
+  const lendingCollection = lendingDb.collection(lendingCollectionName);
+  // Count documents where isDeleted is false or the field does not exist
+  const count = await lendingCollection.countDocuments({ $or: [{ isDeleted: false }, { isDeleted: { $exists: false } }] });
+
+  res.status(201).send({ count });
+});
 
 
 
@@ -358,8 +373,6 @@ app.post('/indexassettable', async (req, res) => { // ADD ASSET FORM FOR ASSET T
       asset_status,
     });
 
-    const client = new MongoClient(dbConfig.status.url);
-
     try {
       // Change: Dynamic collection name based on room
       const collectionName = `dBoard${room}`;
@@ -425,11 +438,12 @@ app.post('/indexfacultyreportinput', async (req, res) => { // BROKEN ITEMS FORM
 app.put('/assetsupdate/dBoard201', async (req, res) => {
   try {
     // Extract RDF and RTF values from the request body
-    const { rdf, rtf } = req.body;
+    const { rdf, rtf, room, loc, cat, itemdesc, propnum, unitcost, account, bar } = req.body;
 
     // Update the status of Room 201 asset in the database
     await dBoard201Db.collection(dBoard201DbCollectionName).updateOne(
-      { rdf_number: rdf, rtf_number: rtf }, // Update based on RDF and RTF numbers
+      { rdf_number: rdf, rtf_number: rtf, room: room, location: loc, category: cat, item_description: itemdesc,
+      property_number: propnum, unit_cost: unitcost, barcode: bar, accountability: account,}, // Update based on RDF and RTF numbers
       { $set: { asset_status: req.body.asset_status } } // Update asset_status
     );
 
@@ -472,15 +486,6 @@ app.put('/data/dBoard201/:id', async (req, res) => { // WHAT THE HELL IS THIS //
   }
 });
 
-app.get('/', (req, res) => {
-  // Render your main index.ejs file
-  res.render('index');
-});
-
-app.get('/indexarchivepage', (req, res) => {
-  // Render the indexarchivepage.ejs file
-  res.render('indexarchivepage');
-});
 
 app.get('/data/dBoard201', async (req, res) => { // Route for fetching data from dBoard201Db
   try {
@@ -571,7 +576,6 @@ app.get('/indexfacultyreportinputdata', async (req, res) => { // BROKEN ITEM REP
 });
 
 
-
 app.post('/indexborrowforms', async (req, res) => { //BORROWER FORMS
   const {
     name,
@@ -618,15 +622,26 @@ app.post('/indexborrowforms', async (req, res) => { //BORROWER FORMS
           from: 'rpc.assetms@gmail.com',
           to: email,
           subject: 'Asset Borrowed',
-          text: `Dear ${name},
+          text: `
           
-          Your request has been approved for borrowing ${item_description} from our school's inventory. 
+          Dear ${name},
+
+Thank you for submitting your request to borrow ${item_description}. We have received your request and are currently processing it.
+
+To proceed further, kindly go to ICT 209 / ITD Office and look for Mr. Homer Morallo. Present this email as proof of your request, and Mr. Morallo will assist you in finalizing the borrowing process.
+
+The item is needed to be returned on ${return_date}.
+
+For further questions or need for assistance, please don't hesitate to contact us at (046) 481 1900 local (3134).
+
+Thank you for your cooperation.
+
+Best Regards,
+
+Homer Morallo
+CSIT Laboratory Technician`,
+
           
-          We would like to remind you of our school's policy regarding the responsible use and return of borrowed items. 
-          We place great importance on the timely return of assets to ensure they are readily available for other students/faculty who may require them.
-          The item is needed to be returned on ${return_date} 
-          Please arrange for the return of the ${item_description} to its designated location as soon as it is no longer required for your specific project or task.
-          Your cooperation in this matter is vital to maintaining our operational efficiency and resource management.`,
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
@@ -762,11 +777,24 @@ app.put('/assetsupdate/dBoard201/:serial_number', async (req, res) => {
     if ('rdf_number' in req.body && 'rtf_number' in req.body) {
       const updatedRDF = req.body.rdf_number;
       const updatedRTF = req.body.rtf_number;
+      const updatedRoom = req.body.room;
+      const updatedLocation = req.body.location;
+      const updatedCategory = req.body.category;
+      const updatedItemdesc = req.body.item_description;
+      const updatedprop = req.body.item_description;
+      const updatedUnit = req.body.unit_cost;
+      const updatedAccount = req.body.accountability;
+      const updatedBar = req.body.barcode;
+
+
+
 
       // Update RDF and RTF values in the database using the serial number
       await dBoard201Db.collection(dBoard201DbCollectionName).updateOne(
         { serial_number: serialNumber }, // Update based on serial number
-        { $set: { rdf_number: updatedRDF, rtf_number: updatedRTF } }
+        { $set: { rdf_number: updatedRDF, rtf_number: updatedRTF, room: updatedRoom, location: updatedLocation, category: updatedCategory,
+                  item_description: updatedItemdesc, property_number: updatedprop, unit_cost: updatedUnit, accountability: updatedAccount,
+                  barcode: updatedBar} }
       );
 
       // Send a success response for RDF and RTF update
@@ -804,6 +832,75 @@ app.put('/assetsupdate/dBoard202/:serial_number', async (req, res) => {  // for 
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+app.get('/alldata', async (req, res) => {
+  try {
+    // Fetch all data from the MongoDB collections for Borrower, Report, dBoard201, and dBoard202
+    const allData = {
+      borrower: await borrowerDb.collection(borrowerCollectionName).find({}).toArray(),
+      lending: await lendingDb.collection(lendingCollectionName).find({}).toArray(),
+      report: await reportDb.collection(reportCollectionName).find({}).toArray(),
+      dBoard201: await dBoard201Db.collection(dBoard201DbCollectionName).find({}).toArray(),
+      dBoard202: await dBoard202Db.collection(dBoard202DbCollectionName).find({}).toArray()
+    };
+
+    // Log the fetched data
+    console.log('Fetched all data:', allData);
+
+    // Send the fetched data as a JSON response
+    res.json(allData);
+  } catch (error) {
+    // Handle errors and send an error response
+    console.error('Error fetching all data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/availability/items', async (req, res) => {
+  try {
+    // Check if the database connections are established
+    if (!dBoard201Db || !dBoard202Db) {
+      console.log('Database connections are not established yet.');
+      return res.status(500).json({ error: 'Database connections are not ready.' });
+    }
+
+    // Fetch data from the MongoDB collections for dBoard201Db and dBoard202Db
+    const data201 = await dBoard201Db.collection(dBoard201DbCollectionName).find({}).toArray();
+    const data202 = await dBoard202Db.collection(dBoard202DbCollectionName).find({}).toArray();
+
+    // Count the number of items in each category for each collection
+    const counts201 = {
+      UPS: data201.filter(item => item.category === 'UPS').length,
+      'SYSTEM UNIT': data201.filter(item => item.category === 'SYSTEM UNIT').length,
+      PRINTER: data201.filter(item => item.category === 'PRINTER').length,
+      'LCD MONITOR': data201.filter(item => item.category === 'LCD MONITOR').length,
+      FURNITURE: data201.filter(item => item.category === 'FURNITURE').length,
+      APPLIANCE: data201.filter(item => item.category === 'APPLIANCE').length,
+      'A/C': data201.filter(item => item.category === 'A/C').length
+    };
+
+    const counts202 = {
+      UPS: data202.filter(item => item.category === 'UPS').length,
+      'SYSTEM UNIT': data202.filter(item => item.category === 'SYSTEM UNIT').length,
+      PRINTER: data202.filter(item => item.category === 'PRINTER').length,
+      'LCD MONITOR': data202.filter(item => item.category === 'LCD MONITOR').length,
+      FURNITURE: data202.filter(item => item.category === 'FURNITURE').length,
+      APPLIANCE: data202.filter(item => item.category === 'APPLIANCE').length,
+      'A/C': data202.filter(item => item.category === 'A/C').length
+    };
+
+    // Send the counts as part of the response
+    res.json({ counts201, counts202 });
+  } catch (error) {
+    // Handle errors and send an error response
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+
 
 connectToDatabases()
   .then(() => {

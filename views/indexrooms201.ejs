@@ -366,6 +366,40 @@
                     <label for="rtf_input" class="form-label">RTF Number:</label>
                     <input type="text" class="form-control" id="rtf_input">
                 </div>
+                <div class="mb-3">
+                    <label for="rtf_input" class="form-label">Room:</label>
+                    <input type="text" class="form-control" id="room_input">
+                </div>
+                    <div class="mb-3">
+                        <label for="rtf_input" class="form-label">Location:</label>
+                        <input type="text" class="form-control" id="location_input">
+                    </div>
+                    <div class="mb-3">
+                        <label for="rtf_input" class="form-label">Category:</label>
+                        <input type="text" class="form-control" id="category_input">
+                    </div>
+                    <div class="mb-3">
+                        <label for="rtf_input" class="form-label">Item Description:</label>
+                        <input type="text" class="form-control" id="item_description_input">
+                    </div>
+                    <div class="mb-3">
+                        <label for="rtf_input" class="form-label">Property Number:</label>
+                        <input type="text" class="form-control" id="property_number_input">
+                    </div>
+                    <div class="mb-3">
+                        <label for="rtf_input" class="form-label">Unit Cost:</label>
+                        <input type="text" class="form-control" id="unit_cost_input">
+                    </div>
+                    <div class="mb-3">
+                        <label for="rtf_input" class="form-label">Accountability:</label>
+                        <input type="text" class="form-control" id="accountability_input">
+                    </div>
+                    <div class="mb-3">
+                        <label for="rtf_input" class="form-label">Barcode:</label>
+                        <input type="text" class="form-control" id="barcode_input">
+                    </div>
+                </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="updateStatusBtn">Update Status</button>
@@ -580,107 +614,57 @@ document.addEventListener('DOMContentLoaded', function () {
 // Define an object to store the previous data for each row
 const previousData = {};
 
+
 document.getElementById('updateStatusBtn').addEventListener('click', function () {
-    // Get RDF and RTF values
-    const rdfValue = document.getElementById('rdf_input').value;
-    const rtfValue = document.getElementById('rtf_input').value;
-
-    // Get the serial number of the item being updated (assuming item is defined somewhere in your code)
-    const serialNumber = item.serial_number;
-
-    // Ensure each row has its own set of previous data
-    if (!previousData[serialNumber]) {
-        previousData[serialNumber] = {};
-    }
-
-    // Define the data object to be sent to the backend
-    const data = {};
-
-    // Determine if RDF and RTF values are provided
-    if (rdfValue !== '' && rtfValue!== '') {
-        // If RDF and RTF values are provided, update RDF and RTF for the specific row
-        data.rdf_number = rdfValue;
-        data.rtf_number = rtfValue;
-
-        // Send data to backend endpoint for RDF/RTF update
-        fetch('/assetsupdate/dBoard201/' + serialNumber, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data) // Send only the latest data, not the entire previousData
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data.message); // Log the server response
-            // Optionally, you can handle success response here for RDF/RTF update
-        })
-        .catch(error => {
-            console.error('Error updating RDF/RTF:', error);
-            // Optionally, you can handle error here
-        });
-    } else{
-        console.error('RDF and RTF values are required.');
-    }
-});
-
-// Add click event listener to the update button
-updateButton.addEventListener('click', function (event) {
-    event.stopPropagation(); // Prevent row click event from firing
-
-    // Get selected asset status
-    const assetStatus = document.getElementById('asset_status').value;
+    // Get the selected asset status
 
     // Assuming 'item' is the row being updated
     const serialNumber = item.serial_number; // Ensure this references the correct row's serial number
 
-    // Get RDF and RTF values for the current row
-    const rdfValue = document.querySelector('#' + serialNumber + ' .rdf_input').value;
-    const rtfValue = document.querySelector('#' + serialNumber + ' .rtf_input').value;
+    // Get RDF and RTF values
+    const rdfValue = document.getElementById('rdf_input').value;
+    const rtfValue = document.getElementById('rtf_input').value;
+    const roomValue = document.getElementById('room_input').value;
+    const locValue = document.getElementById('location_input').value;
+    const catvalue = document.getElementById('category_input').value;
+    const itemdescValue = document.getElementById('item_description_input').value;
+    const propValue = document.getElementById('property_number_input').value;
+    const unitValue = document.getElementById('unit_cost_input').value;
+    const accountValue = document.getElementById('accountability_input').value;
+    const barValue = document.getElementById('barcode_input').value;
 
     // Ensure each row has its own set of previous data
     if (!previousData[serialNumber]) {
         previousData[serialNumber] = {};
     }
 
-    // Store the previous data for the current row in a separate variable
-    const previousRowData = previousData[serialNumber];
-
     // Define the data object to be sent to the backend
-    const data = {};// Determine if RDF and RTF values are provided
-    if (rdfValue !== '' && rtfValue !== '') {
-        // If RDF and RTF values are provided, update RDF and RTF for the specific row
-        data.rdf_number = rdfValue;
-        data.rtf_number = rtfValue;
-    } else {
-        // If RDF and RTF values are not provided, update asset status for the specific row
-        data.asset_status = assetStatus;
-    }
+    const data = {
+        rdf_number: rdfValue,
+        rtf_number: rtfValue,
+        room: roomValue,
+        location: locValue,
+        category: catvalue,
+        item_description: itemdescValue,
+        property_number: propValue,
+        unit_cost: unitValue,
+        accountability: accountValue,
+        barcode: barValue,
 
-    // Update the previous data for the specific row
-    previousData[serialNumber] = { ...previousData[serialNumber], ...data };
+    };
 
-    // Send data to backend endpoint for RDF/RTF update or assetstatus update
+    // Send data to backend endpoint for updating all fields
     fetch('/assetsupdate/dBoard201/' + serialNumber, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data) // Send only the latest data, not the entire previousData
+        body: JSON.stringify(data)
     })
     .then(response => response.json())
     .then(data => {
-        if ('asset_status' in data) {
-            // If asset status is updated, handle UI changes accordingly
-            document.getElementById('updateStatusBtn').innerText = 'Status Updated';
-            const statusCell = row.querySelector('td:nth-child(7)');
-            statusCell.textContent = assetStatus;
-        }
         console.log(data.message); // Log the server response
-        // Optionally, you can handle success response here for RDF/RTF update
-
-        // Restore the previous data for the next row
-        Object.assign(previousData[serialNumber], previousRowData);
+        // Optionally, you can handle success response here
     })
     .catch(error => {
         console.error('Error updating:', error);

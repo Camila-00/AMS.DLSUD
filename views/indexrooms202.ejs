@@ -632,11 +632,86 @@ document.addEventListener('DOMContentLoaded', function () {
             // Show modify modal
             $('#modifyModal').modal('show');
 
-            // Set up event listener for the modify asset button
-            document.getElementById('modifyAssetBtn').onclick = function() {
-                $('#modifyModal').modal('hide');
-            };
+// Set up event listener for the modify asset button
+document.getElementById('modifyAssetBtn').addEventListener('click', function () {
+    // Fetch asset ID from /data/dBoard202
+    fetch('/modify_asset/:id')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data. Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Assuming the asset ID is stored in '_id' property of the response data
+            const assetId = data._id;
+            console.log('Fetched Asset ID:', assetId);
+            // Call the modifyAsset function with the fetched asset ID
+            modifyAsset(assetId);
+        })
+        .catch(error => {
+            console.error('Error fetching asset ID:', error);
+            // Handle error, such as showing an error message to the user
         });
+});
+
+// Function to handle modification of asset
+function modifyAsset(assetId) {
+    // Get input values
+    var modifiedRoom = document.getElementById('modifiedRoom').value;
+    var modifiedLocation = document.getElementById('modifiedLocation').value;
+    var modifiedCategory = document.getElementById('modifiedCategory').value;
+    var modifiedDescription = document.getElementById('modifiedDescription').value;
+    var modifiedSerialNumber = document.getElementById('modifiedSerialNumber').value;
+    var modifiedUnitCost = document.getElementById('modifiedUnitCost').value;
+
+    // Prepare data to send to server (Assuming using JSON)
+    var modifiedAssetData = {
+        room: modifiedRoom,
+        location: modifiedLocation,
+        category: modifiedCategory,
+        description: modifiedDescription,
+        serialNumber: modifiedSerialNumber,
+        unitCost: modifiedUnitCost
+    };
+
+    // Ensure assetId is valid
+    if (assetId) {
+        // Send the modification request to the server
+        fetch(`/assetsupdate/dBoard202/${assetId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(modifiedAssetData)
+        })
+        .then(response => {
+            if (response.ok) {
+                // If modification is successful, you can do something here like show a success message
+                console.log('Asset modified successfully');
+                // Close the modal
+                $('#modifyModal').modal('hide');
+            } else {
+                // If modification fails, handle error
+                console.error('Error modifying asset');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle error, such as showing an error message to the user
+        });
+    } else {
+        console.error('Asset ID not found');
+        // Handle the case when asset ID is not found, such as showing an error message to the user
+    }
+}
+
+
+$('#modifyModal').modal('hide');
+
+        });
+
+
 
             // Add click event listener to the update button
             const updateButton = row.querySelector('.update-button');

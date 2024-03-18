@@ -176,7 +176,7 @@
     align-items: center; /* Center items vertically within the flex container */
 }
 
-#report-content .add-button {
+#report-content .add-button, .pdd-button, .rdf-button {
     background-color: #1db954;
     color: #fff;
     border: none;
@@ -187,7 +187,7 @@
     margin-left: 135px;
 }
 
-.add-button:hover {
+.add-button:hover, .pdd-button:hover, .rdf-button:hover {
     background-color: #2fd667;
 }
 
@@ -234,7 +234,7 @@
 
 
 /* Add button styling */
-.add-button {
+.add-button, .pdd-button, .rdf-button {
     background-color: #1db954; /* Same green color as the Print Table button */
     color: #fff;
     border: none;
@@ -245,7 +245,7 @@
     margin-left: 5px; /* Adjust the margin as needed */
 }
 
-.add-button:hover {
+.add-button:hover, .pdd-button:hover, .rdf-button:hover {
     background-color: #14843a; /* Darker green on hover */
 }
 .report-button{ background-color: #1db954; /* Same green color as the Print Table button */
@@ -286,7 +286,7 @@
 }
 
 /* Add button styling */
-.add-button {
+.add-button, .pdd-button, .rdf-button {
     background-color: #1db954; /* Same green color as the Print Table button */
     color: #fff;
     border: none;
@@ -296,7 +296,7 @@
     transition: background-color 0.3s ease;
 }
 
-.add-button:hover {
+.add-button:hover, .pdd-button:hover, .rdf-button:hover {
     background-color: #14843a; /* Darker green on hover */
 }
 
@@ -572,8 +572,6 @@
     100% { opacity: 0; }
 }
 
-
-
            </style>
 </head>
 
@@ -599,7 +597,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <a href="#" onclick="showDashboard()">Dashboard</a>
-        <a href="#" onclick="showReport()">Report</a>
+        <a href="#" onclick="showReport()">Asset Condition</a>
         <a href="#" class="borrower-link" onclick="showBorrowerContent()">Borrower</a>
         <a href="/indexarchivepage">Archives</a>
     </div>
@@ -608,6 +606,10 @@
         <div class="content" id="dashboard-content" style="display: none; margin-top: 50px;"> <!--TRANSFER FUNCTIONALITY FOR PRINT AND FILTER-->
             <h1>Dashboard Content</h1>
             <button class="add-button" id="addAssetButton">Add Asset</button>
+            <button class="pdd-button" onclick="printDatabaseData()">Print Database Data</button>
+            <button class="rdf-button" onclick="downloadRDF()">RDF Forms</button>
+            <button class="rdf-button" onclick="downloadRTF()">RTF Forms</button>
+
 
              <!-- Borrowers Number Box -->
              <div class="borrowers-container">
@@ -632,51 +634,176 @@
                 <div class="room-row">
                     <a href="indexrooms201.ejs" class="room" target="_blank">ICT 201</a>
                     <a class="room" href="indexrooms202.ejs" target="_blank">ICT 202</a>
-                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 203</a>
-                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 204</a>
-                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 205</a>
-                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 206</a>
+                    <a class="room" href="#" target="_blank">ICT 203</a>
+                    <a class="room" href="#" target="_blank">ICT 204</a>
+                    <a class="room" href="#" target="_blank">ICT 205</a>
+                    <a class="room" href="#" target="_blank">ICT 206</a>
                 </div>
                 <div class="room-row">
-                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 207</a>
-                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 208</a>
-                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 209</a>
-                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 210</a>
-                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 211</a>
-                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 212</a>
+                    <a class="room" href="#" target="_blank">ICT 207</a>
+                    <a class="room" href="#" target="_blank">ICT 208</a>
+                    <a class="room" href="#" target="_blank">ICT 209</a>
+                    <a class="room" href="#" target="_blank">ICT 210</a>
+                    <a class="room" href="#" target="_blank">ICT 211</a>
+                    <a class="room" href="#" target="_blank">ICT 212</a>
+                    <a class="room" href="#" target="_blank">ICT 213</a>
                 </div>
             </div>
-            
-            
-            
-           
-            
-</div>
+              
     </div>
-    
+    </div>
     
 
 <!-- Add Asset content -->
-<div class="content" id="add-asset-content" style="display: none;">
+    <div class="content" id="add-asset-content" style="display: none;">
     <h1>Add Asset</h1>
     <!-- Pinalipat ni jaden -->
-    <script>
-        function click (){alert("clickable")}
+
+    <!-- Add asset form -->
+    <form id="addAssetForm">
+
+        <div class="form-container">
+    <label for="room">Room:</label>
+    <select class="text" id="room" name="room" required>
+        <option value="select"></option>
+        <option value="201">201</option>
+        <option value="202">202</option>
+    </select>
+
+    <label for="location">Location:</label>
+    <input type="text" id="location" required>
+
+    <label for="category">Category:</label>
+    <select id="category" required>
+        <option value="select"></option>
+        <option value="UPS">UPS</option>
+        <option value="SU">System Unit</option>
+        <option value="LCD">LCD Monitor</option>
+        <option value="Furniture">Furniture</option>
+        <option value="Appliance">Appliance</option>
+        <option value="AC">Air Conditioner</option>
+        <option value="Printer">Printer</option>
+        <option value="Add">Add New</option>
+
+    </select>
+    
+
+    <label for="item_description">Item Description:</label>
+    <input type="text" id="item_description" required>
+    
+    <label for="property_number">Property Number:</label>
+    <input type="text" id="property_number" required>
+
+    <label for="serial_number">Serial Number:</label>
+    <input type="text" id="serial_number" required>
+
+    <label for="unit_cost">Unit Cost:</label>
+    <input type="text" id="unit_cost" required>
+
+    <label for="rdf_number">Request for Disposal of Furniture Number:</label>
+    <input type="text" id="rdf_number">
+
+    <label for="rtf_number">Rquest for Transfer of Furniture Number:</label>
+    <input type="text" id="rtf_number">
+
+    <label for="asset_status">Status:</label>
+    <select id="asset_status">
+        <option value="" disabled selected style="color: grey;"></option>
+        <option value="Good/Instock">Good</option>
+        <option value="NotWorking">Instock</option>
+    </select>
+        </div>
+     
+<button type="submit" class="add-button" id="submitAssetButton">Submit</button>
+    <div id="successMessage" style="display: none;"></div>
+    <div id="errorMessage" style="display: none;"></div>
+    </form>
+</div>
+
+
+<script>
+      
+
+document.addEventListener("DOMContentLoaded", function () {
+    const categoryDropdown = document.getElementById("category");
+    const localStorageKey = "categories";
+
+    // Load categories from localStorage or use default if not available
+    let categories = JSON.parse(localStorage.getItem(localStorageKey)) || [
+        "UPS", "SU", "LCD Monitor", "Furniture", "Appliance", "AC", "Printer"
+    ];
+
+    // Populate category dropdown
+    updateCategoryDropdown(categories);
+
+    categoryDropdown.addEventListener("change", function () {
+        const selectedCategory = categoryDropdown.value;
+
+        if (selectedCategory === "Add") {
+            const newCategory = prompt("Enter the new category:");
+            if (newCategory !== null && newCategory.trim() !== "") {
+                addNewCategory(newCategory);
+            } else {
+                // User canceled or entered an empty category
+                // You can handle this case if needed
+            }
+        }
+    });
+
+    // Function to add the new category to the list permanently
+    function addNewCategory(newCategory) {
+        // Add new category to categories array
+        categories.push(newCategory);
+
+        // Update localStorage with the updated categories
+        localStorage.setItem(localStorageKey, JSON.stringify(categories));
+
+        // Update the Category dropdown with the new category
+        updateCategoryDropdown(categories);
+    }
+
+    // Function to update the Category dropdown with the new categories
+    function updateCategoryDropdown(categories) {
+        categoryDropdown.innerHTML = ""; // Clear the dropdown
+
+        categories.forEach(category => {
+            const option = document.createElement("option");
+            option.value = category;
+            option.textContent = category;
+            categoryDropdown.appendChild(option);
+        });
+
+        // Add "Add New" option at the end
+        const addNewOption = document.createElement("option");
+        addNewOption.value = "Add";
+        addNewOption.textContent = "Add New";
+        categoryDropdown.appendChild(addNewOption);
+    }
+});
+
+
+function click (){alert("clickable")}
 
         function openArchivePage() {
         window.open('/indexarchivepage', '_blank');
     }
     
-        function reportcount (){fetch('/indexreportcount') // Replace this with your backend route to fetch report data
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Failed to fetch report data. Status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then((result)=>document.getElementById('reportcounter').innerHTML = result.count )
-                
-                }
+    async function reportcount() {
+  try {
+    const response = await fetch('/indexreportcount');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch report data. Status: ${response.status}`);
+    }
+    const result = await response.json();
+    // Update the Total Reports counter
+    let totalReports = result.count;
+    document.getElementById('reportcounter').innerHTML = totalReports;
+  } catch (error) {
+    console.error('Error fetching report data:', error);
+  }
+}
+
+
     
                 function lending (){fetch('/indexborroweditem') // Replace this with your backend route to fetch report data
                     .then(response => {
@@ -781,9 +908,6 @@
 
     });
 
-  
-    
-    
     function showBorrowerContent() { // SCRIPT BORROWER TABLE
     hideAllTabs(); // Hide all other tabs
     const borrowerContent = document.getElementById('borrower-content');
@@ -910,7 +1034,7 @@ document.addEventListener("DOMContentLoaded", function () {
         await sendDataToServer(formData);
     });
 
-    async function sendDataToServer(formData) {
+async function sendDataToServer(formData) {
         try {
             const response = await fetch('/indexassettable', {
                 method: 'POST',
@@ -957,7 +1081,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
     
-    function showReportContent() {
+function showReportContent() {
     hideAllTabs(); // Hide all other tabs
 
     const reportContent = document.getElementById('report-content');
@@ -985,7 +1109,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>${item.report_item_description}</td>
                     <td class="issue" data-status="${item.barcode}">${item.report_issue}</td>
                     <td>
-                        <button class="return-button" onclick="updateRow('${item._id}')">RETURN</button>
+                        <button class="return-button" onclick="updateRow('${item._id}')">UPDATE</button>
                         <button class="archive-button" onclick="archiveReportItem(event, '${item._id}')">ARCHIVE</button>
                     </td>
                 `;
@@ -996,8 +1120,6 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('Error fetching report data:', error);
         });
 }
-
-// Function to update a row
 function updateRow(id) { // REPORT FORMS RETURN
     const currentTime = new Date();
     const formattedTime = "Fixed: " + currentTime.toLocaleString();
@@ -1021,6 +1143,7 @@ function updateRow(id) { // REPORT FORMS RETURN
         console.error('Error updating asset:', error);
     });
 }
+
 // Function to soft delete a row
 function archiveReportItem(event, id) {
   event.preventDefault();
@@ -1057,7 +1180,7 @@ document.querySelector('.report-link').addEventListener('click', function(event)
     event.preventDefault(); // Prevent default link behavior
     showReportContent();
 });
-            function hideAddAssetPage() {
+function hideAddAssetPage() {
                 const addAssetContent = document.getElementById('add-asset-content');
                 if (addAssetContent.style.display !== 'none') {
                     // Only hide the "Add Asset" content if it is currently visible
@@ -1065,12 +1188,12 @@ document.querySelector('.report-link').addEventListener('click', function(event)
                 }
             }
             
-            function showDashboard() { // this is the problem
+function showDashboard() { // this is the problem
                 hideAllTabs();
                 document.getElementById('dashboard-content').style.display = 'block';
             }
                    
-            function showReport() {
+function showReport() {
                 showReportContent(); // Call the renamed function
                 hideAllTabs();
                 document.getElementById('report-content').style.display = 'block';
@@ -1106,7 +1229,7 @@ document.querySelector('.report-link').addEventListener('click', function(event)
                         }
                     }
                 
-                    function toggleHomeSubmenu() {
+function toggleHomeSubmenu() {
                         var homeSubmenu = document.getElementById("home-submenu");
                         var reportsSubmenu = document.getElementById("rooms-submenu");
                 
@@ -1114,7 +1237,7 @@ document.querySelector('.report-link').addEventListener('click', function(event)
                         reportsSubmenu.style.display = "none";
                     }
                 
-                    function toggleReportsSubmenu() {
+function toggleReportsSubmenu() {
                         var homeSubmenu = document.getElementById("home-submenu");
                         var reportsSubmenu = document.getElementById("rooms-submenu");
                 
@@ -1122,7 +1245,7 @@ document.querySelector('.report-link').addEventListener('click', function(event)
                         homeSubmenu.style.display = "none";
                     }
                        
-                    function printAssetStatusReport() {
+function printAssetStatusReport() {
                 const tableData = [];
                 const tableRows = document.getElementById('report-data-table').getElementsByTagName('tr');
             
@@ -1143,7 +1266,7 @@ document.querySelector('.report-link').addEventListener('click', function(event)
                 return tableData;
             }
     
-                    function downloadCSV(fileName, tableData) {
+function downloadCSV(fileName, tableData) {
                         const csvContent = tableData.join('\n');
                         const blob = new Blob([csvContent], { type: 'text/csv' });
                         const url = window.URL.createObjectURL(blob);
@@ -1157,14 +1280,14 @@ document.querySelector('.report-link').addEventListener('click', function(event)
                         window.URL.revokeObjectURL(url);
                     }
                 
-                    function disableBackButton() {
+function disableBackButton() {
                         window.history.pushState(null, "", window.location.href);
                         window.onpopstate = function () {
                             window.history.pushState(null, "", window.location.href);
                         };
                     }
                 
-                    document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('searchInput').addEventListener('input', function () {
         const filterValue = this.value.toLowerCase();
         const rows = document.getElementById('data-table').getElementsByTagName('tr');
@@ -1205,56 +1328,88 @@ document.querySelector('.report-link').addEventListener('click', function(event)
 // Function to fetch data from the backend and update the borrower counter
 function updateBorrowerCounter() {
     fetch('/filterborrow') // Send a request to the backend filterborrow endpoint
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Failed to fetch borrower data. Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Update the borrower counter with the fetched count from the backend response
-            document.getElementById('borroweditem').innerHTML = data.count;
-        })
-        .catch(error => {
-            console.error('Error fetching borrower data:', error);
-        });
-}
+    .then(response => response.json())
+    .then(items => {
+        // Filter out soft-deleted items
+        const activeItems = items.filter(item => !item.isDeleted);
 
-                    
-                
-                    function promptBarcodeScanning(barcode) {
-        // Here you can implement your barcode scanning logic
-        // Once the barcode is successfully scanned, call the API to soft delete and update the entry
-        const confirmed = confirm("Please scan the barcode first. After scanning, press OK to confirm return.");
-        if (confirmed) {
-            // Call the API to update the entry with the barcode and perform soft delete
-            updateEntry(barcode);
-        }
-    }
-    
-    function returnItem(id) { // BORROWER FORMS RETURN
-    const currentTime = new Date();
-    const formattedTime = currentTime.toLocaleString();
+        // Update the borrower counter based on the number of active items
+        const borrowerCounter = activeItems.length;
 
-    const updatedAsset = { status: formattedTime }; // Update the status field with current time
-
-    fetch(`/assetsupdate/${id}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedAsset),
+        // Update the UI with the new borrower counter value
+        document.getElementById('borrower-counter').textContent = borrowerCounter;
     })
-    .then((response) => response.json())
-    .then((data) => {
-        console.log(data.message);
-        // Refresh the borrower table after returning the item
-        showBorrowerContent();
-    })
-    .catch((error) => {
-        console.error('Error updating asset:', error);
+    .catch(error => {
+        console.error('Error fetching items:', error);
     });
 }
+
+// Function to fetch data from the backend and update the Total Reports counter
+function updateReportCounter() {
+    fetch('/indexreportcount') // Send a request to the backend indexreportcount endpoint
+    .then(response => response.json())
+    .then(items => {
+        // Filter out soft-deleted items
+        const activeReports = result.filter(report => !report.isDeleted);
+
+        // Update the borrower counter based on the number of active items
+        const reportCount = activeReports.length;
+
+        // Update the UI with the new Total Reports counter value
+        document.getElementById('reportcounter').textContent = reportCount;
+    })
+    .catch(error => {
+        console.error('Error fetching report count:', error);
+    });
+}
+    
+function returnItem(id) {
+    // Prompt barcode scanning
+    promptBarcodeScanning((barcode) => {
+        if (barcode) { // Check if barcode is not empty (scanning successful)
+            // Barcode scanning successful
+            const currentTime = new Date();
+            const formattedTime = currentTime.toLocaleString();
+            
+            const updatedAsset = {
+                status: formattedTime,
+                barcode: barcode // assuming barcode is captured from scanning
+            }; 
+            
+            // Update the status field with current time and barcode
+            fetch(`/assetsupdate/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedAsset),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data.message);
+                // Reload the page after successful update
+                showBorrowerContent();
+            })
+            .catch((error) => {
+                console.error('Error updating asset:', error);
+            });
+        } else {
+            console.log("Barcode scanning cancelled or failed.");
+        }
+    });
+}
+function promptBarcodeScanning(callback) {  // BORROWER FORMS RETURN PROMPT BARCODE SCAN
+    // Simulating barcode scanning prompt
+    const barcode = prompt("Scan Barcode:");
+    if (barcode) {
+        // Barcode scanned successfully, invoke callback with the barcode
+        callback(barcode);
+    } else {
+        // Handle case where scanning was cancelled or failed
+        console.log("Barcode scanning cancelled or failed.");
+    }
+}
+
 
 function archiveItem(event, id) { // BORROWER FORMS ARCHIVE
     event.preventDefault();
@@ -1273,6 +1428,10 @@ function archiveItem(event, id) { // BORROWER FORMS ARCHIVE
         .then((response) => response.json())
         .then((data) => {
             console.log(data.message);
+            // If the item is successfully archived (deleted), update the borrower counter
+            if (data.success) {
+                updateBorrowerCounter(); // Call the function to update the borrower counter
+            }
             // Refresh the borrower table after archiving the item
             showBorrowerContent();
         })
@@ -1282,66 +1441,134 @@ function archiveItem(event, id) { // BORROWER FORMS ARCHIVE
     }
 }
 
-
 function isHidden(assetId) { // BORROWER FORMS HIDDEN IF BOOLEAN IS TRUE
     const hiddenAssets = JSON.parse(localStorage.getItem('hiddenAssets')) || [];
     return hiddenAssets.includes(assetId);
 }
+// Function to fetch data from the server and generate Excel file
+function printDatabaseData() {
+  // Fetch data from the server
+  fetch('/alldata')
+    .then(response => response.json())
+    .then(data => generateExcel(data))
+    .catch(error => console.error('Error fetching data:', error));
+}
+// Function to generate Excel file
+function generateExcel(data) {
+  const workbook = XLSX.utils.book_new();
+
+  // Loop through each collection in the data
+  for (let collectionName in data) {
+    const sheetName = collectionName.toUpperCase(); // Use collection name as sheet name
+    const sheetData = data[collectionName];
+
+    // Convert the data to worksheet
+    const worksheet = XLSX.utils.json_to_sheet(sheetData.map(obj => {
+      // Remove the ObjectId field from each object
+      delete obj._id;
+      
+      // Rename properties as required
+      const renameMap = {
+        'name': 'Name',
+        'email': 'Email',
+        'usernum': 'User ID',
+        'password': 'Password',
+        'item_description': 'Item Description',
+        'barcode': 'Barcode',
+        'borrow_date': 'Borrow Date',
+        'return_date': 'Return Date',
+        'status': 'Status',
+        'report_location': 'Location',
+        'report_barcode': 'Barcode',
+        'report_item_description': 'Item Description',
+        'report_issue': 'Issue',
+        'room': 'Room',
+        'location': 'Location',
+        'category': 'Category',
+        'property_number': 'Property Number',
+        'serial_number': 'Serial Number',
+        'unit_cost': 'Unit Cost',
+        'rdf_number' : 'RDF',
+        'rtf_number': 'RTF',
+        'asset_status': 'Status',
+        'accountability': 'Accountability'
+      };
+      
+      for (let oldProp in renameMap) {
+        if (obj.hasOwnProperty(oldProp)) {
+          obj[renameMap[oldProp]] = obj[oldProp];
+          delete obj[oldProp];
+        }
+      }
+      
+      // Rename "isDeleted" to "Archived"
+      if (obj.hasOwnProperty('isDeleted')) {
+        obj.Archived = obj.isDeleted ? 'Yes' : 'No';
+        delete obj.isDeleted;
+      }
+
+      // Add modification or creation date (only day and month)
+      const currentDate = new Date();
+      obj['Download Date'] = currentDate.toLocaleString('default', { day: 'numeric', month: 'short' });
+      
+      return obj;
+    }));
+
+    // Add spacing between columns
+    worksheet['!cols'] = Object.keys(sheetData[0]).map(key => ({ wch: 20 }));
+
+    // Add the worksheet to the workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+  }
+
+  // Generate Excel file
+  const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
+
+  // Convert buffer to Blob
+  const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+  // Create download link
+  const downloadLink = document.createElement('a');
+  downloadLink.href = window.URL.createObjectURL(blob);
+  downloadLink.download = 'ICTC-Inventory.xlsx';
+
+  // Trigger download
+  downloadLink.click();
+}
+function downloadRDF() { // RDF FORM
+            // Create an anchor element
+            var link = document.createElement('a');
+            // Set the href attribute to the URL of the PDF file
+            link.href = 'https://github.com/Camila-00/AMS.DLSUD/raw/main/RDF-Form.pdf';
+            // Set the download attribute to the desired filename for the downloaded file
+            link.download = 'RDF-Form.pdf';
+            // Append the anchor element to the body
+            document.body.appendChild(link);
+            // Programmatically trigger a click event on the anchor element
+            link.click();
+            // Remove the anchor element from the body
+            document.body.removeChild(link);
+        }
+function downloadRTF() { // RDF FORM
+            // Create an anchor element
+            var link = document.createElement('a');
+            // Set the href attribute to the URL of the PDF file
+            link.href = 'https://github.com/Camila-00/AMS.DLSUD/raw/main/RTF-Form.pdf'; 
+            // Set the download attribute to the desired filename for the downloaded file
+            link.download = 'RDF-Form.pdf';
+            // Append the anchor element to the body
+            document.body.appendChild(link);
+            // Programmatically trigger a click event on the anchor element
+            link.click();
+            // Remove the anchor element from the body
+            document.body.removeChild(link);
+        }
 
     </script>
-<!-- pinalipat ni jaden -->
-<!-- Add asset form -->
-    <form id="addAssetForm">
-
-        <div class="form-container">
-    <label for="room">Room:</label>
-    <select class="text" id="room" name="room" required>
-        <option value="select">--Select A Room--</option>
-        <option value="201">201</option>
-        <option value="202">202</option>
-    </select>
-
-    <label for="location">Location:</label>
-    <input type="text" id="location" required>
-
-    <label for="category">Category:</label>
-    <input type="text" id="category" required>
-
-    <label for="item_description">Item Description:</label>
-    <input type="text" id="item_description" required>
-    
-    <label for="property_number">Property Number:</label>
-    <input type="text" id="property_number" required>
-
-    <label for="serial_number">Serial Number:</label>
-    <input type="text" id="serial_number" required>
-
-    <label for="unit_cost">Unit Cost:</label>
-    <input type="text" id="unit_cost" required>
-
-    <label for="rdf_number">RDF Number:</label>
-    <input type="text" id="rdf_number">
-
-    <label for="rtf_number">RTF Number:</label>
-    <input type="text" id="rtf_number">
-
-    <label for="asset_status">Status:</label>
-    <select id="asset_status">
-        <option value="" disabled selected style="color: grey;">Choose Working or Not Working</option>
-        <option value="Good/Instock">Good</option>
-        <option value="NotWorking">Instock</option>
-    </select>
-        </div>
-     
-<button type="submit" class="add-button" id="submitAssetButton">Submit</button>
-    <div id="successMessage" style="display: none;"></div>
-    <div id="errorMessage" style="display: none;"></div>
-    </form>
-</div>
 
 <!-- Report display table -->
 <div class="content" id="report-content" style="display: none;">
-    <h1 id="report-text">Asset Status Report</h1>
+    <h1 id="report-text">Asset Condition Status</h1>
     <div class="report-actions">
         <button class="add-button" onclick="showReportForm()">Add</button>
          <button class="report-button" onclick="printAssetStatusReport()">Print Table</button>
@@ -1415,7 +1642,8 @@ function isHidden(assetId) { // BORROWER FORMS HIDDEN IF BOOLEAN IS TRUE
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Add this script tag to include the XLSX library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
 
-  
 </body>
 </html>
