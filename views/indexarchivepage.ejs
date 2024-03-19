@@ -222,6 +222,12 @@
     </div>
 
     <script>
+
+async function showAuthUsers() {
+        let usersName = document.getElementById("authUsers");
+        usersName.innerText = await localStorage.getItem('lastName');
+    }
+
         const itemsPerPage = 10; // Define itemsPerPage globally
     
 
@@ -321,7 +327,7 @@ function hideAllTabs() {
     
         document.addEventListener('DOMContentLoaded', function () {
             showReportContent();
-    
+            showAuthUsers();
             // Event listener for filter input in Room 201
             const searchInput201 = document.getElementById('searchInput201');
             searchInput201.addEventListener('input', function () {
