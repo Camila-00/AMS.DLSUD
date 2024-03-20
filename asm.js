@@ -172,6 +172,11 @@ app.get('/indexarchivepage', (req, res) => {
   res.render('indexarchivepage');
 });
 
+// Define a route to render the indexavailpage.ejs file
+app.get('/indexavailpage', (req, res) => {
+  res.render('indexavailpage'); // Render indexavailpage.ejs
+});
+
 
 // SERVER SIDE STARTS UNDER
 app.get('/indexcustodianhomepage', async (req, res) => { // CUSTODIAN HOMEPAGE COMPLETE
@@ -754,55 +759,74 @@ app.get('/item_description', async (req, res) => { // BORROWER FORM AFTER SCANNI
   }
 });
 
+app.get('/report_item_description', async (req, res) => { // ASSET CONDITION FORM AFTER SCANNING ON PLACEHOLDER
+  try {
+    const { barcode } = req.query;
+    console.log('Received barcode:', barcode); // Add this line to log the received barcode
+    if (!barcode) {
+      return res.status(400).send('Barcode parameter is missing');
+    }
+
+    // Ensure case-insensitive matching for barcode
+    const item1 = await dBoard201Db.collection(dBoard201DbCollectionName).findOne({ barcode: { $regex: new RegExp(`^${barcode}$`, 'i') } });
+    const item2 = await dBoard202Db.collection(dBoard202DbCollectionName).findOne({ barcode: { $regex: new RegExp(`^${barcode}$`, 'i') } });
+
+    // Check if item is not found in both databases
+    if (!item1 && !item2) {
+      return res.status(404).send('Item not found');
+    }
+
+    // Determine the item description based on the database where the item was found
+    let description, location;
+    if (item1) {
+      description = item1.item_description;
+      location = item1.location;
+    } else {
+      description = item2.item_description;
+      location = item2.location;
+    }
+
+    console.log('Description:', description); // Add this line to log the description
+    console.log('Location:', location); // Add this line to log the location
+
+    // Concatenate description and location, separated by a comma or any other delimiter as needed
+    const combinedDescription = `${description}, ${location}`;
+
+    // Return a JSON response with the combined description
+    res.status(200).json({ description: combinedDescription });
+  } catch (error) {
+    console.error('Error fetching item description for report:', error);
+    res.status(500).send(`Error fetching item description for report: ${error.message}`);
+  }
+});
 
 app.put('/assetsupdate/dBoard201/:serial_number', async (req, res) => {
   try {
     const serialNumber = req.params.serial_number;
 
-    // Check if the request body contains 'asset_status' to update status
-    if ('asset_status' in req.body) {
-      const updatedStatus = req.body.asset_status;
+    // Merge all fields into the update operation
+    const updateFields = {
+      ...(req.body.asset_status && { asset_status: req.body.asset_status }),
+      ...(req.body.rdf_number && { rdf_number: req.body.rdf_number }),
+      ...(req.body.rtf_number && { rtf_number: req.body.rtf_number }),
+      ...(req.body.room && { room: req.body.room }),
+      ...(req.body.location && { location: req.body.location }),
+      ...(req.body.category && { category: req.body.category }),
+      ...(req.body.item_description && { item_description: req.body.item_description }),
+      ...(req.body.property_number && { property_number: req.body.property_number }),
+      ...(req.body.unit_cost && { unit_cost: req.body.unit_cost }),
+      ...(req.body.accountability && { accountability: req.body.accountability }),
+      ...(req.body.barcode && { barcode: req.body.barcode })
+    };
 
-      // Update the status of the item in the database using the serial number
-      await dBoard201Db.collection(dBoard201DbCollectionName).updateOne(
-        { serial_number: serialNumber }, // Update based on serial number
-        { $set: { asset_status: updatedStatus } }
-      );
+    // Update the item in the database using the serial number
+    await dBoard201Db.collection(dBoard201DbCollectionName).updateOne(
+      { serial_number: serialNumber }, // Update based on serial number
+      { $set: updateFields }
+    );
 
-      // Send a success response for status update
-      return res.json({ message: 'Status updated successfully' });
-    }
-
-    // Check if the request body contains 'rdf_number' and 'rtf_number' to update RDF and RTF
-    if ('rdf_number' in req.body && 'rtf_number' in req.body) {
-      const updatedRDF = req.body.rdf_number;
-      const updatedRTF = req.body.rtf_number;
-      const updatedRoom = req.body.room;
-      const updatedLocation = req.body.location;
-      const updatedCategory = req.body.category;
-      const updatedItemdesc = req.body.item_description;
-      const updatedprop = req.body.item_description;
-      const updatedUnit = req.body.unit_cost;
-      const updatedAccount = req.body.accountability;
-      const updatedBar = req.body.barcode;
-
-
-
-
-      // Update RDF and RTF values in the database using the serial number
-      await dBoard201Db.collection(dBoard201DbCollectionName).updateOne(
-        { serial_number: serialNumber }, // Update based on serial number
-        { $set: { rdf_number: updatedRDF, rtf_number: updatedRTF, room: updatedRoom, location: updatedLocation, category: updatedCategory,
-                  item_description: updatedItemdesc, property_number: updatedprop, unit_cost: updatedUnit, accountability: updatedAccount,
-                  barcode: updatedBar} }
-      );
-
-      // Send a success response for RDF and RTF update
-      return res.json({ message: 'RDF and RTF values updated successfully' });
-    }
-
-    // If neither 'asset_status' nor 'rdf_number'/'rtf_number' found in request body
-    throw new Error('Invalid request body. Provide either asset_status or rdf_number/rtf_number values.');
+    // Send a success response
+    return res.json({ message: 'Asset data updated successfully' });
   } catch (error) {
     console.error('Error updating:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
@@ -810,28 +834,40 @@ app.put('/assetsupdate/dBoard201/:serial_number', async (req, res) => {
 });
 
 
-
-
-
-
-app.put('/assetsupdate/dBoard202/:serial_number', async (req, res) => {  // for UPDATES DBOARD202
+app.put('/assetsupdate/dBoard202/:serial_number', async (req, res) => {
   try {
     const serialNumber = req.params.serial_number;
-    const updatedStatus = req.body.asset_status; // Change key to asset_status
 
-    // Update the status of the item in the database using the serial number
+    // Merge all fields into the update operation
+    const updateFields = {
+      ...(req.body.asset_status && { asset_status: req.body.asset_status }),
+      ...(req.body.rdf_number && { rdf_number: req.body.rdf_number }),
+      ...(req.body.rtf_number && { rtf_number: req.body.rtf_number }),
+      ...(req.body.room && { room: req.body.room }),
+      ...(req.body.location && { location: req.body.location }),
+      ...(req.body.category && { category: req.body.category }),
+      ...(req.body.item_description && { item_description: req.body.item_description }),
+      ...(req.body.property_number && { property_number: req.body.property_number }),
+      ...(req.body.unit_cost && { unit_cost: req.body.unit_cost }),
+      ...(req.body.accountability && { accountability: req.body.accountability }),
+      ...(req.body.barcode && { barcode: req.body.barcode })
+    };
+
+    // Update the item in the database using the serial number
     await dBoard202Db.collection(dBoard202DbCollectionName).updateOne(
       { serial_number: serialNumber }, // Update based on serial number
-      { $set: { asset_status: updatedStatus } }
+      { $set: updateFields }
     );
 
     // Send a success response
-    res.json({ message: 'Status updated successfully' });
+    return res.json({ message: 'Asset data updated successfully' });
   } catch (error) {
-    console.error('Error updating status:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error updating:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
 
 app.get('/alldata', async (req, res) => {
   try {
@@ -897,9 +933,6 @@ app.get('/availability/items', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-
-
 
 
 connectToDatabases()

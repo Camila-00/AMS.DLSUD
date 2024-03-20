@@ -1,4 +1,4 @@
-<!DOCTYPE html><!--MAINSCREEN.EJS-->
+<!DOCTYPE html> <!--MAINSCREEN.EJS-->
 <html lang="en">
 
 <head>
@@ -14,6 +14,19 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
     <style>
       
+      .redirect-button{ background-color: #1db954; /* Same green color as the Print Table button */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 5px;}
+
+    .redirect-button:hover {
+    background-color: #14843a; /* Darker green on hover */
+}
+
  /* New styles for the update button */
  
  td button.update-button {
@@ -260,6 +273,8 @@
     .report-button:hover {
     background-color: #14843a; /* Darker green on hover */
 }
+
+
 
 /* Additional styles for Add Asset page */
 #add-asset-content {
@@ -572,6 +587,12 @@
     100% { opacity: 0; }
 }
 
+.readonly {
+    background-color: #f2f2f2; 
+    color: #666; 
+    cursor: not-allowed; 
+}
+
            </style>
 </head>
 
@@ -609,6 +630,8 @@
             <button class="pdd-button" onclick="printDatabaseData()">Print Database Data</button>
             <button class="rdf-button" onclick="downloadRDF()">RDF Forms</button>
             <button class="rdf-button" onclick="downloadRTF()">RTF Forms</button>
+            <button class="redirect-button" id="redirectButton" onclick="redirect()">Item Availability</button>
+
 
 
              <!-- Borrowers Number Box -->
@@ -654,6 +677,8 @@
     </div>
     
 
+
+
 <!-- Add Asset content -->
     <div class="content" id="add-asset-content" style="display: none;">
     <h1>Add Asset</h1>
@@ -677,11 +702,11 @@
     <select id="category" required>
         <option value="select"></option>
         <option value="UPS">UPS</option>
-        <option value="SU">System Unit</option>
+        <option value="System Unit">System Unit</option>
         <option value="LCD">LCD Monitor</option>
         <option value="Furniture">Furniture</option>
         <option value="Appliance">Appliance</option>
-        <option value="AC">Air Conditioner</option>
+        <option value="Air Conditioner">Air Conditioner</option>
         <option value="Printer">Printer</option>
         <option value="Add">Add New</option>
 
@@ -722,7 +747,9 @@
 
 
 <script>
-      
+      function redirect() {
+        window.location.href = "/indexavailpage"; // Redirect to indexavailpage.ejs
+    }
 
 document.addEventListener("DOMContentLoaded", function () {
     const categoryDropdown = document.getElementById("category");
@@ -730,7 +757,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Load categories from localStorage or use default if not available
     let categories = JSON.parse(localStorage.getItem(localStorageKey)) || [
-        "UPS", "SU", "LCD Monitor", "Furniture", "Appliance", "AC", "Printer"
+    "UPS", "System Unit", "LCD Monitor", "Furniture", "Appliance", "Air Conditioner", "Printer"
     ];
 
     // Populate category dropdown
@@ -802,9 +829,7 @@ function click (){alert("clickable")}
     console.error('Error fetching report data:', error);
   }
 }
-
-
-    
+ 
                 function lending (){fetch('/indexborroweditem') // Replace this with your backend route to fetch report data
                     .then(response => {
                         if (!response.ok) {
@@ -900,7 +925,7 @@ function click (){alert("clickable")}
         successMessage.style.display = "none";
         errorMessage.style.display = "none";
     });
-
+   
         reportcount();
     lending();
     borrowercount();
@@ -1122,7 +1147,11 @@ function showReportContent() {
 }
 function updateRow(id) { // REPORT FORMS RETURN
     const currentTime = new Date();
-    const formattedTime = "Fixed: " + currentTime.toLocaleString();
+
+    // Assuming existingTextFromDatabase holds the text fetched from the database
+    const report_issue = document.getElementById('report_issue').innerText;
+    
+    const formattedTime = report_issue + " " + currentTime.toLocaleDateString(); // Append current date to existing text
 
     const updatedAsset = { report_issue: formattedTime }; // Update the status field with current time
 
@@ -1143,6 +1172,7 @@ function updateRow(id) { // REPORT FORMS RETURN
         console.error('Error updating asset:', error);
     });
 }
+
 
 // Function to soft delete a row
 function archiveReportItem(event, id) {
@@ -1245,26 +1275,68 @@ function toggleReportsSubmenu() {
                         homeSubmenu.style.display = "none";
                     }
                        
-function printAssetStatusReport() {
-                const tableData = [];
-                const tableRows = document.getElementById('report-data-table').getElementsByTagName('tr');
-            
-                for (let i = 0; i < tableRows.length; i++) { // Corrected loop condition
-                    const row = tableRows[i];
-                    const rowData = [];
-                    const cells = row.getElementsByTagName('td');
-            
-                    for (let j = 0; j < cells.length; j++) { // Corrected loop condition
-                        rowData.push(cells[j].innerText);
-                    }
-            
-                    tableData.push(rowData.join(','));
-                }
-            
-                console.log('Asset Status Report Data:', tableData);
-                downloadCSV('asset_status_report.csv', tableData);
-                return tableData;
+                    function printAssetStatusReport() {
+    const tableData = [];
+    const tableRows = document.getElementById('report-data-table').getElementsByTagName('tr');
+
+    // Add header row
+    const headerRow = ['Location', 'Barcode', 'Item Description', 'Download Date'];
+    tableData.push(headerRow.join(','));
+
+    for (let i = 0; i < tableRows.length; i++) { 
+        const row = tableRows[i];
+        const rowData = [];
+        const cells = row.getElementsByTagName('td');
+
+        // Only include report_location, report_barcode, and report_item_description
+        rowData.push(cells[1].innerText); // report_location
+        rowData.push(cells[2].innerText); // report_barcode
+        rowData.push(cells[3].innerText); // report_item_description
+
+        // Add download date
+        const currentDate = new Date().toLocaleDateString();
+        rowData.push(currentDate);
+
+        tableData.push(rowData.join(','));
+    }
+
+    console.log('Asset Condtion Data:', tableData);
+    downloadCSV('Asset Condition', tableData);
+}
+function printBorrowerTable() {
+    const tableData = [];
+    const tableRows = document.getElementById('borrower-data-table').getElementsByTagName('tr');
+
+    // Add header row
+    const headerRow = ['Name', 'Email', 'User ID', 'Asset Type', 'Barcode', 'Borrow Date', 'Return Date', 'Status', 'Download Date'];
+    tableData.push(headerRow.join(','));
+
+    for (let i = 0; i < tableRows.length; i++) { 
+        const row = tableRows[i];
+        const rowData = [];
+        const cells = row.getElementsByTagName('td');
+
+        // Check if there are enough cells in the row
+        if (cells.length >= 8) {
+            // Include all columns starting from the first one
+            for (let j = 0; j < 8; j++) {
+                rowData.push(cells[j].innerText);
             }
+
+            // Add download date
+            const currentDate = new Date().toLocaleDateString();
+            rowData.push(currentDate);
+
+            tableData.push(rowData.join(','));
+        } else {
+            console.error('Row ' + i + ' does not have enough cells.');
+        }
+    }
+
+    console.log('Borrower Table Data:', tableData);
+    console.log('Asset Lending Data:', tableData);
+    downloadCSV('Lending Report', tableData);
+}
     
 function downloadCSV(fileName, tableData) {
                         const csvContent = tableData.join('\n');
@@ -1562,7 +1634,44 @@ function downloadRTF() { // RDF FORM
             link.click();
             // Remove the anchor element from the body
             document.body.removeChild(link);
+            
         }
+
+        async function fetchItemDescriptionReport() {
+    const barcode = document.getElementById("report_barcode").value;
+
+    try {
+        const response = await fetch(`/report_item_description?barcode=${barcode}`);
+        console.log('Request URL:', response.url); // Add this line to log the request URL
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            const data = await response.json();
+            console.log('Received data:', data); // Add this line to log the received data
+            if (data.description) {
+                // Split the description and location by comma
+                const [description, location] = data.description.split(', ');
+                // Set the values of both description and location
+                document.getElementById("report_item_description").value = description;
+                document.getElementById("report_location").value = location;
+                return; // Exit the function if description is found
+            }
+        } else {
+            throw new Error("Response is not JSON");
+        }
+
+        // If description is not found, clear the item description and location fields
+        document.getElementById("report_item_description").value = "";
+        document.getElementById("report_location").value = "";
+
+    } catch (error) {
+        console.error('Error fetching item description:', error);
+    }
+}
 
     </script>
 
@@ -1597,29 +1706,32 @@ function downloadRTF() { // RDF FORM
     <form id="reportForm">
 
         <div class="form-container">
-            <label for="report_location">Location:</label>
-            <input type="text" id="report_location" name="report_location" required>
-
             <label for="report_barcode">Barcode:</label>
-            <input type="text" id="report_barcode" required>
+            <input type="text" id="report_barcode" required onchange="fetchItemDescriptionReport()">
+
+            <label for="report_location">Location:</label>
+            <input type="text" id="report_location" name="report_location" readonly required class="readonly">
 
             <label for="report_item_description">Item Description:</label>
-            <input type="text" id="report_item_description" required>
+            <input type="text" id="report_item_description" readonly required class="readonly">
 
             <label for="report_issue">Issue:</label>
             <textarea id="report_issue" rows="4" required></textarea>
         </div>
         <!-- Add more fields as needed -->
         <button class="add-button" type="submit" id="reportsubmit">Submit</button>
-<div id="reportSuccessMessage" style="display: none;"></div>
-<div id="reportErrorMessage" style="display: none;"></div>
+        <div id="reportSuccessMessage" style="display: none;"></div>
+        <div id="reportErrorMessage" style="display: none;"></div>
     </form>
 </div>
+
+
 <!-- Borrower display table -->
 <div class="content" id="borrower-content" style="display: none; margin-top: 50px;">
     <h1>Borrower Table</h1>
-
+    <button class="report-button" onclick="printBorrowerTable()">Print Table</button>
     <table class="borrower-table">
+        
         <thead>
             <tr>
                 <th>Name</th>

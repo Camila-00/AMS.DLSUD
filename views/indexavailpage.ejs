@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- montserrat font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <title>Table Design</title>
+
+    <!-- css internal sheet -->
+    <style>
+        body {
+            font-family: "Montserrat", sans-serif;
+            color: #333333;
+        }
+
+        h2 {
+            font-weight: bold;
+            font-size: 30px;
+            /* should match the other container's margin */
+            margin-right: 300px;
+        }
+
+        .itemsCountContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 20px 20px 10px;
+            max-width: 1356px;
+            background-color: #D9D9D9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .counts-table {
+            width: 80%;
+            margin-bottom: 30px;
+        }
+        .counts-table-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            background-color: #1DB954;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .counts-table-cell {
+            flex: 1;
+            text-align: center;
+            padding: 5px;
+        }
+        .counts-table-row:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        .counts-table-row:nth-child(even) {
+            background-color: #ececec;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- background container for table -->
+    <div class="itemsCountContainer">
+
+        <!-- main table -->
+        <h2>Item Availability</h2>
+        <div class="counts-table">
+            <div class="counts-table-header">
+                <div class="counts-table-cell">Category</div>
+                <div class="counts-table-cell">dBoard201 Count</div>
+                <div class="counts-table-cell">dBoard202 Count</div>
+            </div>
+            <div id="countsTableBody" class="counts-table-body">
+            </div>
+        </div>
+    </div>
+
+    <!-- javascript -->
+    <script>
+
+        // Function to fetch item counts and update the HTML content
+        async function displayItemCounts() {
+            try {
+                const response = await fetch('/availability/items'); // Fetch data from the server
+                const data = await response.json(); // Parse JSON response
+
+                // Get the counts table body
+                const countsTableBody = document.getElementById('countsTableBody');
+
+                // Populate the counts table
+                for (const category in data.counts201) {
+                    const countsTableRow = document.createElement('div');
+                    countsTableRow.classList.add('counts-table-row');
+
+                    const categoryCell = document.createElement('div');
+                    categoryCell.classList.add('counts-table-cell');
+                    categoryCell.textContent = category;
+                    countsTableRow.appendChild(categoryCell);
+
+                    const count201Cell = document.createElement('div');
+                    count201Cell.classList.add('counts-table-cell');
+                    count201Cell.textContent = data.counts201[category];
+                    countsTableRow.appendChild(count201Cell);
+
+                    const count202Cell = document.createElement('div');
+                    count202Cell.classList.add('counts-table-cell');
+                    count202Cell.textContent = data.counts202[category];
+                    countsTableRow.appendChild(count202Cell);
+
+                    countsTableBody.appendChild(countsTableRow);
+                }
+            } catch (error) {
+                console.error('Error fetching item counts:', error);
+            }
+        }
+
+        // Call the function when the page loads
+        displayItemCounts();
+    </script>
+</body>
+</html>
