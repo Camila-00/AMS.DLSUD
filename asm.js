@@ -115,13 +115,10 @@ app.use(session({
   saveUninitialized: false,
 }));
 
-
 // Serve the HTML files
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'System')));
-
-
 
 app.get('/', (req, res) => {
   res.render("indexwelcomepage");
@@ -166,10 +163,14 @@ app.get('/indexfacultyreportinput', (req, res) => {
   res.render('indexfacultyreportinput');
 });
 
-
 app.get('/indexarchivepage', (req, res) => {
   // Render the indexarchivepage.ejs file
   res.render('indexarchivepage');
+});
+
+// Define a route to render the indexavailpage.ejs file
+app.get('/indexavailpage', (req, res) => {
+  res.render('indexavailpage'); // Render indexavailpage.ejs
 });
 
 
@@ -224,7 +225,6 @@ app.get('/assetcount202', async (req, res) => {
   }
 });
 
-
 app.get('/totalassetscount', async(req, res) => { // TOTAL ASSETS ON DASHBOARD CONTENT
   const dBoard201DbCollection = dBoard201Db.collection(dBoard201DbCollectionName);
   const dBoard202DbCollection = dBoard202Db.collection(dBoard202DbCollectionName);
@@ -257,9 +257,6 @@ app.get('/indexborroweditem', async (req, res) => {
 
   res.status(201).send({ count });
 });
-
-
-
 
 app.post('/indexregisterborrowerpage', async (req, res) => { // BORROWER REGISTER
   // Handle registration logic here
@@ -343,7 +340,6 @@ app.post('/indexborrowerlogin', async (req, res) => { // BORROWER LOGIN
     res.status(500).render('indexborrowerlogin.ejs', { message: 'An error occurred during login.' });
   }
 });
-
 
 app.post('/indexassettable', async (req, res) => { // ADD ASSET FORM FOR ASSET TABLE
   const {
@@ -455,7 +451,6 @@ app.put('/assetsupdate/dBoard201', async (req, res) => {
   }
 });
 
-
 app.put('/data/dBoard201/:id', async (req, res) => { // WHAT THE HELL IS THIS // Route for fetching data from dBoard201Db
   try {
     // Check if the database connection is established
@@ -485,7 +480,6 @@ app.put('/data/dBoard201/:id', async (req, res) => { // WHAT THE HELL IS THIS //
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 
 app.get('/data/dBoard201', async (req, res) => { // Route for fetching data from dBoard201Db
   try {
@@ -574,7 +568,6 @@ app.get('/indexfacultyreportinputdata', async (req, res) => { // BROKEN ITEM REP
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 
 app.post('/indexborrowforms', async (req, res) => { //BORROWER FORMS
   const {
@@ -828,10 +821,10 @@ app.put('/assetsupdate/dBoard201/:serial_number', async (req, res) => {
   }
 });
 
-
 app.put('/assetsupdate/dBoard202/:serial_number', async (req, res) => {
   try {
     const serialNumber = req.params.serial_number;
+    
 
     // Merge all fields into the update operation
     const updateFields = {
@@ -862,6 +855,30 @@ app.put('/assetsupdate/dBoard202/:serial_number', async (req, res) => {
   }
 });
 
+app.put('/softdelete/dBoard202', async (req, res) => {
+  try {
+    // Update based on your criteria since you're not using the serial number
+    // In this example, let's assume you want to archive all assets
+    const assets = await dBoard202Db.collection(dBoard202DbCollectionName).find({}).toArray();
+
+    if (assets.length > 0) {
+      // Add a softDeleteAt timestamp to mark the documents as soft deleted
+      await dBoard202Db.collection(dBoard202DbCollectionName).updateMany(
+        {}, // Update all documents
+        { $set: { isDeleted: true } } // Mark as soft deleted
+      );
+
+      // Send a success response
+      return res.json({ success: true, message: 'Asset data soft deleted successfully' });
+    } else {
+      // If no assets found, send an error response
+      return res.status(404).json({ error: 'No assets found' });
+    }
+  } catch (error) {
+    console.error('Error soft deleting:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 app.get('/alldata', async (req, res) => {
@@ -927,12 +944,6 @@ app.get('/availability/items', async (req, res) => {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-});
-
-
-// Define a route to render the indexavailpage.ejs file
-app.get('/indexavailpage', (req, res) => {
-  res.render('indexavailpage'); // Render indexavailpage.ejs
 });
 
 connectToDatabases()

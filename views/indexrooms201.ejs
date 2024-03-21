@@ -262,9 +262,7 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="indexcustodianhomepage.ejs">
-            ICTC Asset Management
-        </a>
+        <a class="navbar-brand" href="indexcustodianhomepage.ejs">ICTC Asset Management</a>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -325,20 +323,23 @@
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Row Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Row Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Row details will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!-- Add Archive button -->
+                <button type="button" class="btn btn-danger" id="archiveButton">Archive</button>
+            </div>
         </div>
-        <div class="modal-body">
-          <!-- Row details will be populated here -->
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
+
   
 
 <!-- Modal -->
@@ -353,25 +354,31 @@
             <div class="modal-body">
                 <div class="mb-3">
                     <label for="asset_status" class="form-label">Asset Status:</label>
-                    <input type="text" class="form-control" id="asset_status">
+                    <select class="form-select" id="asset_status">
+                        <option value="Good">Good</option>
+                        <option value="In Storage">In Storage</option>
+                        <option value="Under Maintenance">Under Maintenance</option>
+                        <option value="Transferred">Transferred</option>
+                        <option value="Disposed">Disposed</option>
+                    </select>
                 </div>
-                
                 <!-- New input fields -->
                 <div class="mb-3">
                     <label for="rdf_input" class="form-label">RDF Number:</label>
-                    <input type="text" class="form-control" id="rdf_input">
+                    <input type="text" class="form-control" id="rdf_input" data-field="rdf_number">
                 </div>
+                
                 <div class="mb-3">
                     <label for="rtf_input" class="form-label">RTF Number:</label>
-                    <input type="text" class="form-control" id="rtf_input">
+                    <input type="text" class="form-control" id="rtf_input" data-field="rtf_number">
                 </div>
                 <div class="mb-3">
                     <label for="rtf_input" class="form-label">Room:</label>
-                    <input type="text" class="form-control" id="room_input">
+                    <input type="text" class="form-control" id="room_input" data-field="room_input">
                 </div>
                     <div class="mb-3">
                         <label for="rtf_input" class="form-label">Location:</label>
-                        <input type="text" class="form-control" id="location_input">
+                        <input type="text" class="form-control" id="location_input" data-field="location_input">
                     </div>
                     <div class="mb-3">
                         <label for="rtf_input" class="form-label">Category:</label>
@@ -421,29 +428,28 @@
 let previousData = {};
 
 async function showAuthUsers() {
-        let usersName = document.getElementById("authUsers");
-        usersName.innerText = await localStorage.getItem('lastName');
-    }
-
+    let usersName = document.getElementById("authUsers");
+    usersName.innerText = await localStorage.getItem('lastName');
+}
 
 function borrowercount() {
-        fetch('/assetcount201')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch report data. Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(result => {
-                document.getElementById('assetcount201').innerHTML = result.count201;
-            })
-            .catch(error => {
-                console.error('Error fetching report data:', error);
-            });
-    }
+    fetch('/assetcount201')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to fetch report data. Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(result => {
+            document.getElementById('assetcount201').innerHTML = result.count201;
+        })
+        .catch(error => {
+            console.error('Error fetching report data:', error);
+        });
+}
 
-    // Call borrowercount function when the page loads
-    window.onload = borrowercount;
+// Call borrowercount function when the page loads
+window.onload = borrowercount;
 
 let updatedAsset; // Define updatedAsset at a higher scope
 
@@ -458,84 +464,83 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     async function showModalWithData(row) {
-    try {
-        const response = await fetch('/data/dBoard201');
-        if (!response.ok) {
-            throw new Error(`Failed to fetch data. Status: ${response.status}`);
+        try {
+            const response = await fetch('/data/dBoard201');
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data. Status: ${response.status}`);
+            }
+            const data = await response.json();
+            console.log('Fetched data:', data);
+
+            // Get modal element
+            const modal = document.getElementById('exampleModal');
+            if (!modal) {
+                throw new Error('Modal element not found');
+            }
+
+            // Set modal title
+            modal.querySelector('.modal-title').textContent = 'Row Details';
+            // Get modal body container
+            const modalBody = modal.querySelector('.modal-body');
+            // Clear existing data
+            modalBody.innerHTML = '';
+
+            // Find the index of the row in the fetched data
+            const rowIndex = Array.from(row.parentNode.children).indexOf(row);
+            const rowData = data[rowIndex];
+
+            // Custom field names
+            const fieldNames = {
+                "room": "Room",
+                "location": "Location",
+                "category": "Category",
+                "item_description": "Item Description",
+                "property_number": "Property Number",
+                "serial_number": "Serial Number",
+                "unit_cost": "Unit Cost",
+                "rdf_number": "RDF Number",
+                "rtf_number": "RTF Number",
+                "asset_status": "Status",
+                "accountability": "Accountability",
+                "action": "Action",
+                "barcode": "Barcode"
+            };
+
+            // Assuming data is the array containing table row data
+            const dataList = document.createElement('ul');
+            dataList.classList.add('list-group');
+
+            // Iterate over the row data and create list items
+            for (const [key, value] of Object.entries(rowData)) {
+                // Skip _id field
+                if (key === '_id') continue;
+                const customFieldName = fieldNames[key] || key;
+                const listItem = document.createElement('li');
+                listItem.classList.add('list-group-item');
+                listItem.innerHTML = `<strong>${customFieldName}:</strong> ${value}`;
+                dataList.appendChild(listItem);
+            }
+
+            // Append the list to the modal body
+            modalBody.appendChild(dataList);
+
+            // Show modal
+            $(modal).modal('show');
+        } catch (error) {
+            console.error('Error showing modal with data:', error);
         }
-        const data = await response.json();
-        console.log('Fetched data:', data);
-
-        // Get modal element
-        const modal = document.getElementById('exampleModal');
-        if (!modal) {
-            throw new Error('Modal element not found');
-        }
-
-        // Set modal title
-        modal.querySelector('.modal-title').textContent = 'Row Details';
-        // Get modal body container
-        const modalBody = modal.querySelector('.modal-body');
-        // Clear existing data
-        modalBody.innerHTML = '';
-
-        // Find the index of the row in the fetched data
-        const rowIndex = Array.from(row.parentNode.children).indexOf(row);
-        const rowData = data[rowIndex];
-
-        // Custom field names
-        const fieldNames = {
-            "room": "Room",
-            "location": "Location",
-            "category": "Category",
-            "item_description": "Item Description",
-            "property_number": "Property Number",
-            "serial_number": "Serial Number",
-            "unit_cost": "Unit Cost",
-            "rdf_number": "RDF Number",
-            "rtf_number": "RTF Number",
-            "asset_status": "Status",
-            "accountability": "Accountability",
-            "action": "Action",
-            "barcode": "Barcode"
-        };
-
-        // Assuming data is the array containing table row data
-        const dataList = document.createElement('ul');
-        dataList.classList.add('list-group');
-
-        // Iterate over the row data and create list items
-        for (const [key, value] of Object.entries(rowData)) {
-            // Skip _id field
-            if (key === '_id') continue;
-            const customFieldName = fieldNames[key] || key;
-            const listItem = document.createElement('li');
-            listItem.classList.add('list-group-item');
-            listItem.innerHTML = `<strong>${customFieldName}:</strong> ${value}`;
-            dataList.appendChild(listItem);
-        }
-
-        // Append the list to the modal body
-        modalBody.appendChild(dataList);
-
-        // Show modal
-        $(modal).modal('show');
-    } catch (error) {
-        console.error('Error fetching data:', error);
     }
-}
 
-document.addEventListener('DOMContentLoaded', function () {
-    const tableRows = document.querySelectorAll('#data-table tr');
+    document.addEventListener('DOMContentLoaded', function () {
+        const tableRows = document.querySelectorAll('#data-table tr');
 
-    // Add click event listener to each table row
-    tableRows.forEach(row => {
-        row.addEventListener('click', function () {
-            showModalWithData(row);
+        // Add click event listener to each table row
+        tableRows.forEach(row => {
+            row.addEventListener('click', function () {
+                showModalWithData(row);
+            });
         });
     });
-});
-
 
     async function fetchData(pageNumber, itemsPerPage, filterText = '') {
         try {
@@ -574,107 +579,135 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function populatePage(assetsList){
+    function populatePage(assetsList) {
         const tableBody = document.getElementById('data-table');
         tableBody.innerHTML = ''; // Clear existing data
 
         assetsList.forEach(item => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${item.room}</td>
-                <td>${item.location}</td>
-                <td>${item.category}</td>
-                <td>${item.item_description}</td>
-                <td>${item.serial_number}</td>
-                <td>${item.unit_cost}</td>
-                <td>${item.asset_status}</td>
-                <td>
-                    <button class="update-button">Update</button>
-                </td>
-            `;
+            // Check if the item is deleted
+            if (!item.isDeleted) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.room}</td>
+                    <td>${item.location}</td>
+                    <td>${item.category}</td>
+                    <td>${item.item_description}</td>
+                    <td>${item.serial_number}</td>
+                    <td>${item.unit_cost}</td>
+                    <td>${item.asset_status}</td>
+                    <td>
+                        <button class="update-button">Update</button>
+                    </td>
+                `;
 
-            // Add click event listener to the row
-            row.addEventListener('click', function () {
-                showModalWithData(row);
-            });
+                // Add click event listener to the row
+                row.addEventListener('click', function () {
+                    showModalWithData(row);
+                });
 
-            // Add click event listener to the update button
-            const updateButton = row.querySelector('.update-button');
-            updateButton.addEventListener('click', function (event) {
-                event.stopPropagation(); // Prevent row click event from firing
+                // Add click event listener to the update button
+                const updateButton = row.querySelector('.update-button');
+                updateButton.addEventListener('click', function (event) {
+                    event.stopPropagation(); // Prevent row click event from firing
 
-                // Show modal
-                $('#updateModal').modal('show');
+                    // Fetch the data of the corresponding row
+                    const rowData = getCurrentRowData(row);
 
-//FOR UPDATE OF THE TABLE DATA
+                    // Show modal
+                    $('#updateModal').modal('show');
 
-// Define an object to store the previous data for each row
-const previousData = {};
+                    // Function to fetch data of the current row
+                    function getCurrentRowData(row) {
+                        const rowData = {};
+                        const cells = row.querySelectorAll('td');
+                        cells.forEach(cell => {
+                            const fieldName = cell.getAttribute('data-field');
+                            const fieldValue = cell.textContent;
+                            rowData[fieldName] = fieldValue;
+                        });
+                        return rowData;
+                    }
 
+                    // Function to populate modal fields with fetched data
+                    function populateModalFields(data) {
+                        document.getElementById('rdf_input').value = data.rdf_number || '';
+                        document.getElementById('rtf_input').value = data.rtf_number || '';
+                        document.getElementById('room_input').value = data.room || '';
+                        document.getElementById('location_input').value = data.location || '';
+                        document.getElementById('category_input').value = data.category || '';
+                        document.getElementById('item_description_input').value
+                        document.getElementById('item_description_input').value = data.item_description || '';
+                    document.getElementById('property_number_input').value = data.property_number || '';
+                    document.getElementById('unit_cost_input').value = data.unit_cost || '';
+                    document.getElementById('accountability_input').value = data.accountability || '';
+                    document.getElementById('barcode_input').value = data.barcode || '';
+                }
 
-document.getElementById('updateStatusBtn').addEventListener('click', function () {
-  // Assuming 'item' is the row being updated
-  const serialNumber = item.serial_number; // Ensure this references the correct row's serial number
+                // FOR UPDATE OF THE TABLE DATA
+                // Define an object to store the previous data for each row
+                const previousData = {};
 
-  // Get all input values
-  const assetStatusValue = document.getElementById('asset_status').value;
-  const rdfValue = document.getElementById('rdf_input').value;
-  const rtfValue = document.getElementById('rtf_input').value;
-  const roomValue = document.getElementById('room_input').value;
-  const locValue = document.getElementById('location_input').value;
-  const catvalue = document.getElementById('category_input').value;
-  const itemdescValue = document.getElementById('item_description_input').value;
-  const propValue = document.getElementById('property_number_input').value;
-  const unitValue = document.getElementById('unit_cost_input').value;
-  const accountValue = document.getElementById('accountability_input').value;
-  const barValue = document.getElementById('barcode_input').value;
+                document.getElementById('updateStatusBtn').addEventListener('click', function () {
+                    // Assuming 'item' is the row being updated
+                    const serialNumber = item.serial_number; // Ensure this references the correct row's serial number
 
+                    // Get all input values
+                    const assetStatusValue = document.getElementById('asset_status').value;
+                    const rdfValue = document.getElementById('rdf_input').value;
+                    const rtfValue = document.getElementById('rtf_input').value;
+                    const roomValue = document.getElementById('room_input').value;
+                    const locValue = document.getElementById('location_input').value;
+                    const catvalue = document.getElementById('category_input').value;
+                    const itemdescValue = document.getElementById('item_description_input').value;
+                    const propValue = document.getElementById('property_number_input').value;
+                    const unitValue = document.getElementById('unit_cost_input').value;
+                    const accountValue = document.getElementById('accountability_input').value;
+                    const barValue = document.getElementById('barcode_input').value;
 
-  // Define the data object to be sent to the backend
-const data = {
-asset_status: assetStatusValue, // Add asset_status to the data object
-  rdf_number: rdfValue,
-  rtf_number: rtfValue,
-  room: roomValue,
-  location: locValue,
-  category: catvalue,
-  item_description: itemdescValue,
-  property_number: propValue,
-  unit_cost: unitValue,
-  accountability: accountValue,
-  barcode: barValue,
-};
+                    // Define the data object to be sent to the backend
+                    const data = {
+                        asset_status: assetStatusValue, // Add asset_status to the data object
+                        rdf_number: rdfValue,
+                        rtf_number: rtfValue,
+                        room: roomValue,
+                        location: locValue,
+                        category: catvalue,
+                        item_description: itemdescValue,
+                        property_number: propValue,
+                        unit_cost: unitValue,
+                        accountability: accountValue,
+                        barcode: barValue,
+                    };
 
-
-  // Send data to backend endpoint for updating all fields
-  fetch(`/assetsupdate/dBoard201/${serialNumber}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data.message); // Log the server response
-    // Optionally, you can handle success response here
-  })
-  .catch(error => {
-    console.error('Error updating:', error);
-    // Optionally, you can handle error here
-  });
-});
-
+                    // Send data to backend endpoint for updating all fields
+                    fetch(`/assetsupdate/dBoard201/${serialNumber}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data.message); // Log the server response
+                            // Optionally, you can handle success response here
+                        })
+                        .catch(error => {
+                            console.error('Error updating:', error);
+                            // Optionally, you can handle error here
+                        });
+                });
+                // FOR UPDATE OF THE TABLE DATA - END
             });
             showAuthUsers();
             tableBody.appendChild(row);
-        });
-    }
-
-//FOR UPDATE OF THE TABLE DATA - END
+        }
+    });
+}
 
 // Add an event listener to the modal to clear fields when it is shown
-$('#updateModal').on('show.bs.modal', function (event) {// Clear input fields in the modal
+$('#updateModal').on('show.bs.modal', function (event) {
+    // Clear input fields in the modal
     document.getElementById('rdf_input').value = '';
     document.getElementById('rtf_input').value = '';
     document.getElementById('room_input').value = '';
@@ -687,75 +720,71 @@ $('#updateModal').on('show.bs.modal', function (event) {// Clear input fields in
     document.getElementById('barcode_input').value = '';
 });
 
+function createPagination(totalItems, itemsPerPage, currentPage) {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
 
-    function createPagination(totalItems, itemsPerPage, currentPage) {
-        const totalPages = Math.ceil(totalItems / itemsPerPage);
-        const pagination = document.getElementById('pagination');
-        pagination.innerHTML = '';
-
-        for (let i = 1; i <= totalPages; i++) {
-            const pageLink = document.createElement('a');
-            pageLink.href = '#';
-            pageLink.textContent = i;
-            if (i === currentPage) {
-                pageLink.classList.add('active');
-            }
-            pageLink.addEventListener('click', function () {
-                fetchData(i, itemsPerPage);
-            });
-            pagination.appendChild(pageLink);
+    for (let i = 1; i <= totalPages; i++) {
+        const pageLink = document.createElement('a');
+        pageLink.href = '#';
+        pageLink.textContent = i;
+        if (i === currentPage) {
+            pageLink.classList.add('active');
         }
+        pageLink.addEventListener('click', function () {
+            fetchData(i, itemsPerPage);
+        });
+        pagination.appendChild(pageLink);
     }
+}
 
-    const itemsPerPage = 10;
-    fetchData(1, itemsPerPage);
-
-
-
-
+const itemsPerPage = 10;
+fetchData(1, itemsPerPage);
 
 function printAssetTable() {
-            // Fetch data from the server
-            fetch('/data/dBoard201')
-                .then(response => response.json())
-.then(data => {
-                    const tableData = [];
-                    // Assuming data is an array of objects, each representing a row in the table
-                    // Define the desired order of columns and their respective labels
-                    const columnLabels = {
-                        "room": "Room",
-                        "location": "Location",
-                        "category": "Category",
-                        "item_description": "Item Description",
-                        "property_number": "Property Number",
-                        "serial_number": "Serial Number",
-                        "unit_cost": "Unit Cost",
-                        "rdf_number": "RDF Number",
-                        "rtf_number": "RTF Number",
-                        "asset_status": "Status",
-                        "accountability": "Accountability",
-                        "barcode": "Barcode"
-                    };
-                    const headers = Object.keys(columnLabels);
-                    tableData.push(headers.map(header => columnLabels[header]).join(','));
+    // Fetch data from the server
+    fetch('/data/dBoard201')
+        .then(response => response.json())
+        .then(data => {
+            const tableData = [];
+            // Assuming data is an array of objects, each representing a row in the table
+            // Define the desired order of columns and their respective labels
+            const columnLabels = {
+                "room": "Room",
+                "location": "Location",
+                "category": "Category",
+                "item_description": "Item Description",
+                "property_number": "Property Number",
+                "serial_number": "Serial Number",
+                "unit_cost": "Unit Cost",
+                "rdf_number": "RDF Number",
+                "rtf_number": "RTF Number",
+                "asset_status": "Status",
+                "accountability": "Accountability",
+                "barcode": "Barcode"
+            };
+            const headers = Object.keys(columnLabels);
+            tableData.push(headers.map(header => columnLabels[header]).join(','));
 
-                    // Extracting rows
-                    data.forEach(row => {
-                        const rowData = [];
-                        headers.forEach(header => {
-                            rowData.push(`"${row[header] || ''}"`);
-                        });
-                        tableData.push(rowData.join(','));
-                    });
-
-                    // Download CSV
-                    downloadCSV('asset_data_Room201.csv', tableData);
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
+            // Extracting rows
+            data.forEach(row => {
+                const rowData = [];
+                headers.forEach(header => {
+                    rowData.push(`"${row[header] || ''}"`);
                 });
-        }
-        function downloadCSV(filename, data) {
+                tableData.push(rowData.join(','));
+            });
+
+            // Download CSV
+            downloadCSV('asset_data_Room201.csv', tableData);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+}
+
+function downloadCSV(filename, data) {
     const csv = data.join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 
@@ -775,12 +804,11 @@ function printAssetTable() {
     }
 }
 
-        // Add event listener to the button
-        document.querySelector('.print-table').addEventListener('click', printAssetTable);
-    });
+// Add event listener to the button
+document.querySelector('.print-table').addEventListener('click', printAssetTable);
 
-
-    </script>
+});
+</script>
 
 </body>
 </html>

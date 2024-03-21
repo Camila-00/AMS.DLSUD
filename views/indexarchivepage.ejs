@@ -78,16 +78,16 @@
             overflow-x: auto; /* Allow horizontal scroll */
             animation: fadeIn 0.5s ease-in-out;
         }
-        .asset-table h1, .report-table h1 {
+         .asset-table h1, .report-table h1 {
             margin-left: 10px;
             margin-top: 50px;
             font-family: 'Montserrat', sans-serif;
         }
 
-        .asset-table th,
+         .asset-table th,
         .asset-table td,
         .report-table th,
-        .report-table td {
+        .report-table td  {
             padding: 10px;
             text-align: left;
             border-bottom: 1px solid #ddd;
@@ -179,12 +179,102 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
+        <a href="#" onclick="showRoomContent('201')">Room 201</a>
+        <a href="#" onclick="showRoomContent('202')">Room 202</a>
         <a href="#" class="borrower-link" onclick="showBorrowerContent()">Borrower</a>
         <a href="#" class="borrower-link" onclick="showReportContent()">Asset Status Condition</a>
     </div>
 
+    <!-- Asset content ROOM 201 -->
+    <div class="content" id="asset-content201">
+        <h1>ICTC 201 Asset Table</h1>
+        <input type="text" id="searchInput201" class="filter-input" placeholder="Filter">
+        <button class="print-table">Print Table</button>
 
-    <div class="content" id="borrower-content" style="display: none;">
+        <table class="asset-table">
+            <thead>
+                <tr>
+                    <th>Room</th>
+                    <th>Location</th>
+                    <th>Category</th>
+                    <th>Item Description</th>
+                    <th>Serial Number</th>
+                    <th>Unit Cost</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="data-table201"></tbody>
+        </table>
+
+        <!-- Pagination HTML -->
+        <div class="pagination" id="pagination201"></div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal201" tabindex="-1" aria-labelledby="exampleModalLabel201" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Row Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <!-- Row details will be populated here -->
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Asset content ROOM 202 -->
+    <div class="content" id="asset-content202">
+        <h1>ICTC 202 Asset Table</h1>
+        <input type="text" id="searchInput202" class="filter-input" placeholder="Filter">
+        <button class="print-table">Print Table</button>
+
+        <table class="asset-table">
+            <thead>
+                <tr>
+                    <th>Room</th>
+                    <th>Location</th>
+                    <th>Category</th>
+                    <th>Item Description</th>
+                    <th>Serial Number</th>
+                    <th>Unit Cost</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="data-table202"></tbody>
+        </table>
+
+        <!-- Pagination HTML -->
+        <div class="pagination" id="pagination202"></div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal202" tabindex="-1" aria-labelledby="exampleModalLabel202" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Row Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <!-- Row details will be populated here -->
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+
+<div class="content" id="borrower-content" style="display: none;">
         <h1>Borrower Table</h1>
         <table class="asset-table">
             <thead>
@@ -222,53 +312,60 @@
     </div>
 
     <script>
-
-async function showAuthUsers() {
-        let usersName = document.getElementById("authUsers");
-        usersName.innerText = await localStorage.getItem('lastName');
-    }
-
+        let currentRoom = '201'; // Ensure currentRoom is defined globally
         const itemsPerPage = 10; // Define itemsPerPage globally
     
-
-// Initialize the currentRoom variable to 'report' to match the initially displayed tab
-var currentRoom = 'report';
-
-
-function hideAllTabs() {
-    document.getElementById('borrower-content').style.display = 'none'; // Hide borrower tab
+        function showRoomContent(room) {
+            hideAllTabs(); // Hide all other tabs
+            document.getElementById('asset-content' + room).style.display = 'block';
+            currentRoom = room;
+            fetchData(1, itemsPerPage, '', room); // Fetch data for the selected room
+        }
+    
+        function hideAllTabs() {
+            document.getElementById('asset-content201').style.display = 'none';
+            document.getElementById('asset-content202').style.display = 'none';
+             document.getElementById('borrower-content').style.display = 'none'; // Hide borrower tab
     document.getElementById('report-content').style.display = 'none'; // Hide report tab
-}
-
-
+            
+            // Add similar lines for other tabs if exists
+        }
     
         function populatePage(assetsList) {
-    const tableBody = document.getElementById('data-table' + currentRoom);
-    tableBody.innerHTML = ''; // Clear existing data
+            const tableBody = document.getElementById('data-table' + currentRoom);
+            tableBody.innerHTML = ''; // Clear existing data
+    
+            assetsList.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.room}</td>
+                    <td>${item.location}</td>
+                    <td>${item.category}</td>
+                    <td>${item.item_description}</td>
+                    <td>${item.serial_number}</td>
+                    <td>${item.unit_cost}</td>
+                    <td>${item.asset_status}</td>
+                `;
+     // Determine whether to hide the row based on isDeleted
+     const shouldHide = isReportHidden(item.isDeleted);
+        row.style.display = shouldHide ? 'none' : 'table-row'; // Hide if report is hidden
 
-    assetsList.forEach(item => {
-        // Check if the item is not deleted before populating
-        if (item.isDeleted) {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${item.room}</td>
-                <td>${item.location}</td>
-                <td>${item.category}</td>
-                <td>${item.item_description}</td>
-                <td>${item.serial_number}</td>
-                <td>${item.unit_cost}</td>
-                <td>${item.asset_status}</td>
-            `;
 
-            // Add click event listener to the row
-            row.addEventListener('click', function () {
-                showModalWithData(row);
+                // Add click event listener to the row
+                row.addEventListener('click', function () {
+                    showModalWithData(row);
+                    showReportContent();
+                    showBorrowerContent();
+                });
+    
+                tableBody.appendChild(row);
             });
 
-            tableBody.appendChild(row);
-        }
-    });
+            function isReportHidden(isDeleted) { // FOR ASSET CONDITION
+    return !isDeleted; 
 }
+
+        }
     
         function createPagination(totalItems, itemsPerPage, currentPage, room) {
             const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -291,26 +388,25 @@ function hideAllTabs() {
     
         async function fetchData(pageNumber, itemsPerPage, filterText = '', room) {
     try {
-        const response = await fetch('/data/dBoard' + room);
+        const response = await fetch('/data/dBoard' + room + '?isDeleted=true'); // Modified endpoint to fetch only deleted items
         if (!response.ok) {
             throw new Error(`Failed to fetch data. Status: ${response.status}`);
         }
         const data = await response.json();
         console.log('Fetched data:', data);
 
-        // Filter data based on input text and isDeleted field
+        // Filter data based on input text
         const filteredData = data.filter(item => {
             const searchableFields = ['room', 'location', 'category', 'item_description', 'serial_number', 'unit_cost', 'asset_status'];
             const isMatch = searchableFields.some(field => {
                 const fieldValue = item[field];
                 if (typeof fieldValue === 'string') {
                     const lowercaseValue = fieldValue.toLowerCase();
-                    return lowercaseValue.includes(filterText.toLowerCase());
+                    return lowercaseValue.includes(filterText.toLowerCase().trim());
                 }
                 return false;
             });
-            // Check if isDeleted is true
-            return isMatch && item.isDeleted === true;
+            return isMatch;
         });
 
         const startIndex = (pageNumber - 1) * itemsPerPage;
@@ -324,10 +420,13 @@ function hideAllTabs() {
         console.error('Error fetching data:', error);
     }
 }
+
+
+
     
         document.addEventListener('DOMContentLoaded', function () {
-            showReportContent();
-            showAuthUsers();
+            showRoomContent(currentRoom);
+    
             // Event listener for filter input in Room 201
             const searchInput201 = document.getElementById('searchInput201');
             searchInput201.addEventListener('input', function () {
@@ -346,72 +445,79 @@ function hideAllTabs() {
         });
     
         async function showModalWithData(row) {
-            try {
-                const response = await fetch('/data/dBoard' + currentRoom);
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch data. Status: ${response.status}`);
-                }
-                const data = await response.json();
-                console.log('Fetched data:', data);
-    
-                // Get modal element for current room
-                const modal = document.getElementById('exampleModal' + currentRoom);
-                if (!modal) {
-                    throw new Error('Modal element not found');
-                }
-    
-                // Set modal title
-                modal.querySelector('.modal-title').textContent = 'Row Details';
-                // Get modal body container
-                const modalBody = modal.querySelector('.modal-body');
-                // Clear existing data
-                modalBody.innerHTML = '';
-    
-                // Find the index of the row in the fetched data
-                const rowIndex = Array.from(row.parentNode.children).indexOf(row);
-                const rowData = data[rowIndex];
-    
-                // Custom field names
-                const fieldNames = {
-                    "room": "Room",
-                    "location": "Location",
-                    "category": "Category",
-                    "item_description": "Item Description",
-                    "property_number": "Property Number",
-                    "serial_number": "Serial Number",
-                    "unit_cost": "Unit Cost",
-                    "rdf_number": "RDF Number",
-                    "rtf_number": "Rtf Number",
-                    "asset_status": "Status",
-                    "accountability": "Accountability",
-                    "action": "Action",
-                    "barcode": "Barcode"
-                };
-    
-                // Assuming data is the array containing table row data
-                const dataList = document.createElement('ul');
-                dataList.classList.add('list-group');
-    
-                // Iterate over the row data and create list items
-                for (const [key, value] of Object.entries(rowData)) {
-                    // Skip _id field
-                    if (key === '_id') continue;
-                    const customFieldName = fieldNames[key] || key;
-                    const listItem = document.createElement('li');
-                    listItem.classList.add('list-group-item');
-                    listItem.innerHTML = `<strong>${customFieldName}:</strong> ${value}`;
-                    dataList.appendChild(listItem);
-                }
-    
-                // Append the list to the modal body
-                modalBody.appendChild(dataList);
-    
-                // Show modal
-                $(modal).modal('show');
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
+    try {
+        const response = await fetch('/data/dBoard' + currentRoom);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data. Status: ${response.status}`);
         }
+        const data = await response.json();
+        console.log('Fetched data:', data);
+
+        // Get modal element for current room
+        const modal = document.getElementById('exampleModal' + currentRoom);
+        if (!modal) {
+            throw new Error('Modal element not found');
+        }
+
+        // Set modal title
+        modal.querySelector('.modal-title').textContent = 'Row Details';
+        // Get modal body container
+        const modalBody = modal.querySelector('.modal-body');
+        // Clear existing data
+        modalBody.innerHTML = '';
+
+        // Find the index of the row in the fetched data
+        const rowIndex = Array.from(row.parentNode.children).indexOf(row);
+        const rowData = data[rowIndex];
+
+        // Custom field names
+        const fieldNames = {
+            "room": "Room",
+            "location": "Location",
+            "category": "Category",
+            "item_description": "Item Description",
+            "property_number": "Property Number",
+            "serial_number": "Serial Number",
+            "unit_cost": "Unit Cost",
+            "rdf_number": "RDF Number",
+            "rtf_number": "Rtf Number",
+            "asset_status": "Status",
+            "accountability": "Accountability",
+            "action": "Action",
+            "barcode": "Barcode"
+        };
+
+        // Assuming data is the array containing table row data
+        const dataList = document.createElement('ul');
+        dataList.classList.add('list-group');
+
+        // Iterate over the row data and create list items
+        for (const [key, value] of Object.entries(rowData)) {
+            // Skip _id field
+            if (key === '_id') continue;
+            const customFieldName = fieldNames[key] || key;
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item');
+            listItem.innerHTML = `<strong>${customFieldName}:</strong> ${value}`;
+            dataList.appendChild(listItem);
+        }
+
+        // Append the list to the modal body
+        modalBody.appendChild(dataList);
+
+        // Show modal
+        $(modal).modal('show');
+        
+        // Close modal without switching tabs when modal is closed
+        $(modal).on('hidden.bs.modal', function () {
+            showRoomContent(currentRoom);
+        });
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+
     
         document.addEventListener('DOMContentLoaded', function () {
             const tableRows = document.querySelectorAll('#data-table' + currentRoom + ' tr');
@@ -462,6 +568,9 @@ function hideAllTabs() {
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
+
+
+
 
         function showBorrowerContent() {
     hideAllTabs(); // Hide all other tabs
@@ -548,11 +657,12 @@ function isReportHidden(isDeleted) { // FOR ASSET CONDITION
 }
 
 
-
     </script>
-<!-- Borrower content -->
+    
+    
 
 
+    <!-- Your JavaScript code for fetching data, filtering, pagination, and modals goes here... -->
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
