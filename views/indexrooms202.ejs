@@ -187,7 +187,7 @@
     }
 
  /* Select Styles */
- #asset_status {
+ #asset_status, #category_input {
         width: 100%;
         padding: 10px;
         border: 1px solid #ccc;
@@ -196,7 +196,7 @@
         transition: border-color 0.3s ease;
     }
 
-    #asset_status:focus {
+    #asset_status:focus, #category_input:focus {
         outline: none;
         border-color: #00c600;
     }
@@ -362,6 +362,19 @@
                         <option value="Disposed">Disposed</option>
                     </select>
                 </div>
+                <div class="mb-3">
+                    <label for="category_input" class="form-label">Category:</label>
+                    <select class="form-select" id="category_input">
+                        <option value="Uninterrupted Power Supply">Uninterrupted Power Supply</option>
+                        <option value="System Unit">System Unit</option>
+                        <option value="LCD Monitor">LCD Monitor</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Appliance">Appliance</option>
+                        <option value="Air Conditioner">Air Conditioner</option>
+                        <option value="Add">Add New</option>
+                        <!-- Add more options as needed -->
+                    </select>
+                </div>
                 <!-- New input fields -->
                 <div class="mb-3">
                     <label for="rdf_input" class="form-label">RDF Number:</label>
@@ -380,10 +393,7 @@
                         <label for="rtf_input" class="form-label">Location:</label>
                         <input type="text" class="form-control" id="location_input" data-field="location_input">
                     </div>
-                    <div class="mb-3">
-                        <label for="rtf_input" class="form-label">Category:</label>
-                        <input type="text" class="form-control" id="category_input">
-                    </div>
+
                     <div class="mb-3">
                         <label for="rtf_input" class="form-label">Item Description:</label>
                         <input type="text" class="form-control" id="item_description_input">
@@ -424,11 +434,96 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.js"></script>
 
 <script>
-    document.getElementById('archiveButton').addEventListener('click', async function() {
+    document.addEventListener("DOMContentLoaded", function () {
+    const categoryDropdown = document.getElementById("category_input");
+    const localStorageKey = "categories";
+
+    // Load categories from localStorage or use default if not available
+    let categories = JSON.parse(localStorage.getItem(localStorageKey)) || [
+        "Uninterrupted Power Supply", "System Unit", "LCD Monitor", "Furniture", "Appliance", "Air Conditioner", "Printer"
+    ];
+
+    // Populate category dropdown
+    updateCategoryDropdown(categories);
+
+    categoryDropdown.addEventListener("change", function () {
+        const selectedCategory = categoryDropdown.value;
+
+        if (selectedCategory === "Add") {
+            const newCategory = prompt("Enter the new category:");
+            if (newCategory !== null && newCategory.trim() !== "") {
+                addNewCategory(newCategory);
+            } else {
+                // User canceled or entered an empty category
+                // You can handle this case if needed
+            }
+        }
+    });
+
+    // Function to add the new category to the list permanently
+    function addNewCategory(newCategory) {
+        // Add new category to categories array
+        categories.push(newCategory);
+
+        // Update localStorage with the updated categories
+        localStorage.setItem(localStorageKey, JSON.stringify(categories));
+
+        // Update the Category dropdown with the new category
+        updateCategoryDropdown(categories);
+
+        showNotification("Category added successfully!", "alert-success");
+    }
+
+// Function to update the Category dropdown with the new categories
+function updateCategoryDropdown(categories) {
+        categoryDropdown.innerHTML = ""; // Clear the dropdown
+
+        categories.forEach(category => {
+            const option = document.createElement("option");
+            option.value = category;
+            option.textContent = category;
+            categoryDropdown.appendChild(option);
+        });
+
+        // Add "Add New" option at the end
+        const addNewOption = document.createElement("option");
+        addNewOption.value = "Add";
+        addNewOption.textContent = "Add New";
+        categoryDropdown.appendChild(addNewOption);
+    }
+
+    // Function to show notification
+    function showNotification(message, alertClass) {
+        // Create notification element
+        const notification = document.createElement("div");
+        notification.classList.add("alert", alertClass, "mt-3", "fade", "show");
+        notification.setAttribute("role", "alert");
+        notification.textContent = message;
+
+        // Add close button
+        const closeButton = document.createElement("button");
+        closeButton.classList.add("btn-close");
+        closeButton.setAttribute("type", "button");
+        closeButton.setAttribute("data-bs-dismiss", "alert");
+        notification.appendChild(closeButton);
+
+        // Append notification to the document body
+        document.body.appendChild(notification);
+
+        // Automatically close the notification after 3 seconds
+        setTimeout(function () {
+            notification.remove();
+        }, 3000);
+    }
+});
+
+document.getElementById('archiveButton').addEventListener('click', async function() {
     try {
-        const confirmation = confirm("Are you sure you want to archive this asset?");
-        if (confirmation) {
-            const response = await fetch(`/softdelete/dBoard202`, {
+        // Assuming barcode scanning returns the barcode
+        const barcode = prompt("Please scan the barcode:");
+
+        if (barcode) {
+            const response = await fetch(`/softdelete/dBoard202/${barcode}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -439,7 +534,18 @@
             const responseData = await response.json();
 
             if (response.ok) {
+                // Update counter
+                const assetCountElement = document.getElementById('assetcount202');
+                const assetCount = parseInt(assetCountElement.textContent);
+                assetCountElement.textContent = assetCount > 0 ? assetCount - 1 : 0;
+
+                // Hide pagination
+                const paginationElement = document.getElementById('pagination');
+                paginationElement.style.display = 'none';
+
                 alert(responseData.message);
+                                // Refresh the page
+                                window.location.reload();
             } else {
                 alert(responseData.error || 'Failed to archive asset');
             }
@@ -570,41 +676,62 @@
         });
     
         async function fetchData(pageNumber, itemsPerPage, filterText = '') {
-            try {
-                const response = await fetch('/data/dBoard202');
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch data. Status: ${response.status}`);
-                }
-                const data = await response.json();
-                console.log('Fetched data:', data);
-    
-                // Filter data based on input text
-                const filteredData = data.filter(item => {
-                    const searchableFields = ['room', 'location', 'category', 'item_description', 'serial_number', 'unit_cost', 'asset_status'];
-                    const isMatch = searchableFields.some(field => {
-                        const fieldValue = item[field];
-                        if (typeof fieldValue === 'string') {
-                            const lowercaseValue = fieldValue.toLowerCase();
-                            console.log(`Field: ${field}, Value: ${lowercaseValue}`);
-                            return lowercaseValue.includes(filterText.toLowerCase());
-                        }
-                        return false;
-                    });
-                    console.log('Is Match:', isMatch);
-                    return isMatch;
-                });
-    
-                const startIndex = (pageNumber - 1) * itemsPerPage;
-                const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
-                const currentPageData = filteredData.slice(startIndex, endIndex);
-    
-                populatePage(currentPageData);
-                createPagination(filteredData.length, itemsPerPage, pageNumber);
-    
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
+    try {
+        const response = await fetch('/data/dBoard202');
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data. Status: ${response.status}`);
         }
+        const data = await response.json();
+        console.log('Fetched data:', data);
+
+        // Filter out deleted entries
+        const activeData = data.filter(item => !item.isDeleted || item.isDeleted === false);
+
+        // Filter data based on input text
+        const filteredData = activeData.filter(item => matchesFilter(item, filterText));
+
+        const startIndex = (pageNumber - 1) * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
+        const currentPageData = filteredData.slice(startIndex, endIndex);
+
+        populatePage(currentPageData);
+        updateCounter(filteredData.length);
+
+        createPagination(filteredData.length, itemsPerPage, pageNumber);
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+
+    // Function to check if an item matches the filter text
+    function matchesFilter(item, filterText) {
+        // Add conditions here to check if item fields match the filter text
+        // For example:
+        // return item.room.toLowerCase().includes(filterText.toLowerCase()) ||
+        //        item.location.toLowerCase().includes(filterText.toLowerCase());
+        // Adjust according to your filtering needs
+        return true; // For now, return true to include all items
+    }
+
+// Function to update the counter based on the number of active assets
+function updateCounter() {
+    const visibleRows = document.querySelectorAll('#data-table tr:not(.hidden)');
+    let activeAssetCount = 0;
+
+    visibleRows.forEach(row => {
+        const rowData = JSON.parse(row.getAttribute('data-row'));
+        // Check if the row is not deleted or if isDeleted is explicitly set to false
+        if (!rowData.isDeleted || rowData.isDeleted === false) {
+            activeAssetCount++;
+        }
+    });
+
+    const counterElement = document.getElementById('assetcount202');
+    counterElement.textContent = activeAssetCount;
+}
+
     
         function populatePage(assetsList) {
     const tableBody = document.getElementById('data-table');
@@ -674,55 +801,57 @@
                 const previousData = {};
 
                 document.getElementById('updateStatusBtn').addEventListener('click', function () {
-                    // Assuming 'item' is the row being updated
-                    const serialNumber = item.serial_number; // Ensure this references the correct row's serial number
+    // Assuming 'item' is the row being updated
+    const serialNumber = item.serial_number; // Ensure this references the correct row's serial number
 
-                    // Get all input values
-                    const assetStatusValue = document.getElementById('asset_status').value;
-                    const rdfValue = document.getElementById('rdf_input').value;
-                    const rtfValue = document.getElementById('rtf_input').value;
-                    const roomValue = document.getElementById('room_input').value;
-                    const locValue = document.getElementById('location_input').value;
-                    const catvalue = document.getElementById('category_input').value;
-                    const itemdescValue = document.getElementById('item_description_input').value;
-                    const propValue = document.getElementById('property_number_input').value;
-                    const unitValue = document.getElementById('unit_cost_input').value;
-                    const accountValue = document.getElementById('accountability_input').value;
-                    const barValue = document.getElementById('barcode_input').value;
+    // Get all input values
+    const assetStatusValue = document.getElementById('asset_status').value;
+    const rdfValue = document.getElementById('rdf_input').value;
+    const rtfValue = document.getElementById('rtf_input').value;
+    const roomValue = document.getElementById('room_input').value;
+    const locValue = document.getElementById('location_input').value;
+    const catValue = document.getElementById('category_input').value; // Get the selected category value from dropdown
+    const itemDescValue = document.getElementById('item_description_input').value;
+    const propValue = document.getElementById('property_number_input').value;
+    const unitValue = document.getElementById('unit_cost_input').value;
+    const accountValue = document.getElementById('accountability_input').value;
+    const barValue = document.getElementById('barcode_input').value;
 
-                    // Define the data object to be sent to the backend
-                    const data = {
-                        asset_status: assetStatusValue, // Add asset_status to the data object
-                        rdf_number: rdfValue,
-                        rtf_number: rtfValue,
-                        room: roomValue,
-                        location: locValue,
-                        category: catvalue,
-                        item_description: itemdescValue,
-                        property_number: propValue,
-                        unit_cost: unitValue,
-                        accountability: accountValue,
-                        barcode: barValue,
-                    };
+    // Define the data object to be sent to the backend
+    const data = {
+        asset_status: assetStatusValue, // Add asset_status to the data object
+        rdf_number: rdfValue,
+        rtf_number: rtfValue,
+        room: roomValue,
+        location: locValue,
+        category: catValue, // Assign the selected category value
+        item_description: itemDescValue,
+        property_number: propValue,
+        unit_cost: unitValue,
+        accountability: accountValue,
+        barcode: barValue,
+    };
 
-                    // Send data to backend endpoint for updating all fields
-                    fetch(`/assetsupdate/dBoard202/${serialNumber}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(data.message); // Log the server response
-                            // Optionally, you can handle success response here
-                        })
-                        .catch(error => {
-                            console.error('Error updating:', error);
-                            // Optionally, you can handle error here
-                        });
-                });
+    // Send data to backend endpoint for updating all fields
+    fetch(`/assetsupdate/dBoard202/${serialNumber}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message); // Log the server response
+            window.location.reload(); // Refresh the page
+        })
+        .catch(error => {
+            console.error('Error updating:', error);
+            // Optionally, you can handle error here
+        });
+});
+
+
                 // FOR UPDATE OF THE TABLE DATA - END
             });
             showAuthUsers();
@@ -766,7 +895,6 @@
         }
     }
 
-    
     const itemsPerPage = 10;
     fetchData(1, itemsPerPage);
 

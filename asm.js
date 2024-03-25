@@ -218,7 +218,7 @@ app.get('/assetcount201', async (req, res) => {
 app.get('/assetcount202', async (req, res) => { 
   try {
     const dBoard202DbCollection = dBoard202Db.collection(dBoard202DbCollectionName);
-    const count202 = await dBoard202DbCollection.countDocuments(); // Changed from count() to countDocuments() as count() is deprecated
+    const count202 = await dBoard202DbCollection.countDocuments({ isDeleted: { $ne: true } }); // Exclude documents with isDeleted: true
     res.status(200).json({ count202 }); // Changed from 201 to 200 as it's a success response
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' }); // Handle errors gracefully
@@ -791,6 +791,7 @@ app.get('/report_item_description', async (req, res) => { // ASSET CONDITION FOR
 app.put('/assetsupdate/dBoard201/:serial_number', async (req, res) => {
   try {
     const serialNumber = req.params.serial_number;
+    
 
     // Merge all fields into the update operation
     const updateFields = {
@@ -818,6 +819,49 @@ app.put('/assetsupdate/dBoard201/:serial_number', async (req, res) => {
   } catch (error) {
     console.error('Error updating:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.put('/softdelete/dBoard201/:barcode', async (req, res) => {
+  const { barcode } = req.params;
+  const updatedAsset = req.body;
+
+  console.log('Received barcode:', barcode);
+  console.log('Request Body:', updatedAsset);
+
+  try {
+    // Find all documents in the database based on the barcode
+    const assets = await dBoard201Db.collection(dBoard201DbCollectionName).find({ barcode: barcode }).toArray();
+
+    if (assets.length === 0) {
+      res.status(404).json({ message: 'No assets found with the given barcode' });
+      return;
+    }
+
+    let successCount = 0;
+    for (const asset of assets) {
+      const result = await dBoard201Db.collection(dBoard201DbCollectionName).updateOne(
+        { _id: asset._id }, // Use the found document's _id
+        { $set: updatedAsset }
+      );
+
+      if (result.modifiedCount === 1) {
+        successCount++;
+      }
+    }
+
+    if (successCount > 0) {
+      if (updatedAsset.isDeleted) {
+        res.status(200).json({ message: `${successCount} assets soft deleted successfully` });
+      } else {
+        res.status(200).json({ message: `${successCount} assets updated successfully` });
+      }
+    } else {
+      res.status(500).json({ message: 'Failed to update any assets' });
+    }
+  } catch (err) {
+    console.error('Error updating assets:', err);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
@@ -855,31 +899,48 @@ app.put('/assetsupdate/dBoard202/:serial_number', async (req, res) => {
   }
 });
 
-app.put('/softdelete/dBoard202', async (req, res) => {
-  try {
-    // Update based on your criteria since you're not using the serial number
-    // In this example, let's assume you want to archive all assets
-    const assets = await dBoard202Db.collection(dBoard202DbCollectionName).find({}).toArray();
+app.put('/softdelete/dBoard202/:barcode', async (req, res) => {
+  const { barcode } = req.params;
+  const updatedAsset = req.body;
 
-    if (assets.length > 0) {
-      // Add a softDeleteAt timestamp to mark the documents as soft deleted
-      await dBoard202Db.collection(dBoard202DbCollectionName).updateMany(
-        {}, // Update all documents
-        { $set: { isDeleted: true } } // Mark as soft deleted
+  console.log('Received barcode:', barcode);
+  console.log('Request Body:', updatedAsset);
+
+  try {
+    // Find all documents in the database based on the barcode
+    const assets = await dBoard202Db.collection(dBoard202DbCollectionName).find({ barcode: barcode }).toArray();
+
+    if (assets.length === 0) {
+      res.status(404).json({ message: 'No assets found with the given barcode' });
+      return;
+    }
+
+    let successCount = 0;
+    for (const asset of assets) {
+      const result = await dBoard202Db.collection(dBoard202DbCollectionName).updateOne(
+        { _id: asset._id }, // Use the found document's _id
+        { $set: updatedAsset }
       );
 
-      // Send a success response
-      return res.json({ success: true, message: 'Asset data soft deleted successfully' });
-    } else {
-      // If no assets found, send an error response
-      return res.status(404).json({ error: 'No assets found' });
+      if (result.modifiedCount === 1) {
+        successCount++;
+      }
     }
-  } catch (error) {
-    console.error('Error soft deleting:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+
+    if (successCount > 0) {
+      if (updatedAsset.isDeleted) {
+        res.status(200).json({ message: `${successCount} assets soft deleted successfully` });
+      } else {
+        res.status(200).json({ message: `${successCount} assets updated successfully` });
+      }
+    } else {
+      res.status(500).json({ message: 'Failed to update any assets' });
+    }
+  } catch (err) {
+    console.error('Error updating assets:', err);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
-
 
 
 app.get('/alldata', async (req, res) => {
