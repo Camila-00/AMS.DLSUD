@@ -179,11 +179,13 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
+        <a href="#" class="borrower-link" onclick="showRoom201Content()">201</a>
+        <a href="#" class="borrower-link" onclick="showRoom202Content()">202</a>
         <a href="#" class="borrower-link" onclick="showBorrowerContent()">Borrower</a>
         <a href="#" class="borrower-link" onclick="showReportContent()">Asset Status Condition</a>
     </div>
 
-
+    <!-- Borrower content -->
     <div class="content" id="borrower-content" style="display: none;">
         <h1>Borrower Table</h1>
         <table class="asset-table">
@@ -221,27 +223,208 @@
         </table>
     </div>
 
-    <script>
+<!-- Room 201 Content -->
+<div class="content" id="room-201-content" style="display: none;">
+    <h1>Room 201 Table</h1>
+    <input type="text" id="searchInput201" placeholder="Search...">
+    <table class="asset-table" id="data-table201">
+        <thead>
+            <tr>
+                <th>Room</th>
+                <th>Location</th>
+                <th>Category</th>
+                <th>Item Description</th>
+                <th>Serial Number</th>
+                <th>Unit Cost</th>
+                <th>Asset Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data for Room 201 will be populated here -->
+        </tbody>
+    </table>
+    <div id="pagination201"></div>
+</div>
 
-async function showAuthUsers() {
-        let usersName = document.getElementById("authUsers");
-        usersName.innerText = await localStorage.getItem('lastName');
+<!-- Room 202 Content -->
+<div class="content" id="room-202-content" style="display: none;">
+    <h1>Room 202 Table</h1>
+    <input type="text" id="searchInput202" placeholder="Search...">
+    <table class="asset-table" id="data-table202">
+        <thead>
+            <tr>
+                <th>Room</th>
+                <th>Location</th>
+                <th>Category</th>
+                <th>Item Description</th>
+                <th>Serial Number</th>
+                <th>Unit Cost</th>
+                <th>Asset Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data for Room 202 will be populated here -->
+        </tbody>
+    </table>
+    <div id="pagination202"></div>
+</div>
+
+    <script>
+     async function fetchData(pageNumber, itemsPerPage, filterText = '', room) {
+        try {
+            const response = await fetch(`/data/dBoard${room}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data for Room ${room}. Status: ${response.status}`);
+            }
+            const data = await response.json();
+            console.log(`Fetched data for Room ${room}:`, data);
+
+            // Filter data based on input text and isDeleted field
+            const filteredData = data.filter(item => {
+                const searchableFields = ['room', 'location', 'category', 'item_description', 'serial_number', 'unit_cost', 'asset_status'];
+                const isMatch = searchableFields.some(field => {
+                    const fieldValue = item[field];
+                    if (typeof fieldValue === 'string') {
+                        const lowercaseValue = fieldValue.toLowerCase();
+                        return lowercaseValue.includes(filterText.toLowerCase());
+                    }
+                    return false;
+                });
+                // Check if isDeleted is true
+                return isMatch && item.isDeleted === true;
+            });
+
+            const startIndex = (pageNumber - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
+            const currentPageData = filteredData.slice(startIndex, endIndex);
+
+            populatePage(currentPageData, room);
+            createPagination(filteredData.length, itemsPerPage, pageNumber, room);
+
+        } catch (error) {
+            console.error(`Error fetching data for Room ${room}:`, error);
+        }
     }
 
-        const itemsPerPage = 10; // Define itemsPerPage globally
-    
+    function populatePage(assetsList, room) {
+        const tableBody = document.getElementById(`data-table${room}`);
+        tableBody.innerHTML = ''; // Clear existing data
 
+        assetsList.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.room}</td>
+                <td>${item.location}</td>
+                <td>${item.category}</td>
+                <td>${item.item_description}</td>
+                <td>${item.serial_number}</td>
+                <td>${item.unit_cost}</td>
+                <td>${item.asset_status}</td>
+            `;
+
+            // Add click event listener to the row
+            row.addEventListener('click', function () {
+                showModalWithData(row, room);
+            });
+
+            tableBody.appendChild(row);
+        });
+    }
+
+    const itemsPerPage = 10; // Define itemsPerPage globally
+
+    function showRoom201Content() {
+    hideAllTabs(); // Hide all other tabs
+    const room201Content = document.getElementById('room-201-content');
+    room201Content.style.display = 'block';
+    fetchData(1, itemsPerPage, '', '201'); // Fetch data for Room 201
+    populatePageForRoom201();
+}
+
+    function showRoom202Content() {
+    hideAllTabs(); // Hide all other tabs
+    const room201Content = document.getElementById('room-202-content');
+    room201Content.style.display = 'block';
+    fetchData(1, itemsPerPage, '', '202'); // Fetch data for Room 201
+    populatePageForRoom202();
+
+    function populatePageForRoom201(assetsList, room) {
+    const tableBody = document.getElementById('data-table201');
+    if (!tableBody) {
+        console.error(`Table body for Room ${room} not found.`);
+        return; // Exit the function if the element is not found
+    }
+
+    tableBody.innerHTML = ''; // Clear existing data
+
+    assetsList.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.room}</td>
+            <td>${item.location}</td>
+            <td>${item.category}</td>
+            <td>${item.item_description}</td>
+            <td>${item.serial_number}</td>
+            <td>${item.unit_cost}</td>
+            <td>${item.asset_status}</td>
+        `;
+
+        // Add click event listener to the row
+        row.addEventListener('click', function () {
+            showModalWithData(row, room);
+        });
+
+        tableBody.appendChild(row);
+    });
+}
+
+
+function populatePageForRoom202(assetsList, room) {
+    const tableBody = document.getElementById('data-table202'); // Changed to data-table202
+    if (!tableBody) {
+        console.error(`Table body for Room ${room} not found.`);
+        return;
+    }
+
+    if (!Array.isArray(assetsList)) {
+        console.error('Invalid assetsList provided. Expected an array.');
+        return;
+    }
+
+    tableBody.innerHTML = ''; // Clear existing data
+
+    assetsList.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.room}</td>
+            <td>${item.location}</td>
+            <td>${item.category}</td>
+            <td>${item.item_description}</td>
+            <td>${item.serial_number}</td>
+            <td>${item.unit_cost}</td>
+            <td>${item.asset_status}</td>
+        `;
+
+        // Add click event listener to the row
+        row.addEventListener('click', function () {
+            showModalWithData(row, room);
+        });
+
+        tableBody.appendChild(row);
+    });
+}
+
+
+}
+    
 // Initialize the currentRoom variable to 'report' to match the initially displayed tab
 var currentRoom = 'report';
-
 
 function hideAllTabs() {
     document.getElementById('borrower-content').style.display = 'none'; // Hide borrower tab
     document.getElementById('report-content').style.display = 'none'; // Hide report tab
 }
 
-
-    
         function populatePage(assetsList) {
     const tableBody = document.getElementById('data-table' + currentRoom);
     tableBody.innerHTML = ''; // Clear existing data
@@ -270,19 +453,19 @@ function hideAllTabs() {
     });
 }
     
-        function createPagination(totalItems, itemsPerPage, currentPage, room) {
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
-            const pagination = document.getElementById('pagination' + room);
-            pagination.innerHTML = '';
-    
-            for (let i = 1; i <= totalPages; i++) {
-                const pageLink = document.createElement('a');
-                pageLink.href = '#';
-                pageLink.textContent = i;
-                if (i === currentPage) {
-                    pageLink.classList.add('active');
-                }
-                pageLink.addEventListener('click', function () {
+function createPagination(totalItems, itemsPerPage, currentPage, room) {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const pagination = document.getElementById(`pagination${room}`);
+        pagination.innerHTML = '';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageLink = document.createElement('a');
+            pageLink.href = '#';
+            pageLink.textContent = i;
+            if (i === currentPage) {
+                pageLink.classList.add('active');
+            }
+            pageLink.addEventListener('click', function (){
                     fetchData(i, itemsPerPage, '', room);
                 });
                 pagination.appendChild(pageLink);
@@ -327,7 +510,7 @@ function hideAllTabs() {
     
         document.addEventListener('DOMContentLoaded', function () {
             showReportContent();
-            showAuthUsers();
+    
             // Event listener for filter input in Room 201
             const searchInput201 = document.getElementById('searchInput201');
             searchInput201.addEventListener('input', function () {
@@ -547,13 +730,7 @@ function isReportHidden(isDeleted) { // FOR ASSET CONDITION
     return !isDeleted; 
 }
 
-
-
     </script>
-<!-- Borrower content -->
-
-
-
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

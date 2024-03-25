@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
+    <title>Item Availability</title>
 
     <!-- montserrat font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
-    <title>Table Design</title>
-
-    <!-- css internal sheet -->
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- CSS internal sheet -->
     <style>
         body {
             font-family: "Montserrat", sans-serif;
@@ -21,8 +24,9 @@
         h2 {
             font-weight: bold;
             font-size: 30px;
-            /* should match the other container's margin */
-            margin-right: 300px;
+            text-align: center;
+            margin-top: 10px;
+            color: white;
         }
 
         .itemsCountContainer {
@@ -31,96 +35,193 @@
             align-items: center;
             margin: 20px 20px 20px 10px;
             max-width: 1356px;
-            background-color: #D9D9D9;
+            background-color: #818181;
             border: 1px solid #ddd;
             border-radius: 5px;
             position: relative;
+            margin-left: 93px;
         }
 
         .counts-table {
             width: 80%;
             margin-bottom: 30px;
+            overflow: hidden;
+            border-collapse: collapse;
         }
+
         .counts-table-header {
             display: flex;
             justify-content: space-between;
-            padding: 5px;
+            padding: 15px;
             background-color: #1DB954;
             color: #ffffff;
             font-weight: 600;
+            animation: fadeInDown 1s ease forwards;
         }
-        .counts-table-cell {
+
+        .counts-table-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            background-color: #ffffff;
+            animation: fadeInUp 1s ease forwards;
+            transform: translateY(50px);
+            opacity: 0;
+        }
+
+        .counts-table-category,
+        .counts-table-201,
+        .counts-table-202 {
             flex: 1;
             text-align: center;
-            padding: 5px;
         }
-        .counts-table-row:nth-child(odd) {
-            background-color: #ffffff;
+
+        /* Animation Keyframes */
+        @keyframes fadeInUp {
+            0% {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
-        .counts-table-row:nth-child(even) {
-            background-color: #ececec;
+
+        @keyframes fadeInDown {
+            0% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
+
+    /* Navbar styling */
+    .navbar {
+        background-color: #f8f9fa; /* Change to desired color */
+        z-index: 1000; /* Ensure it stays on top */
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .dropdown-menu {
+        background-color: #f8f9fa; /* Change to desired color */
+    }
 
     </style>
 </head>
 <body>
-    <!-- background container for table -->
-    <div class="itemsCountContainer">
 
-        <!-- main table -->
-        <h2>Item Availability</h2>
-        <div class="counts-table">
-            <div class="counts-table-header">
-                <div class="counts-table-cell">Category</div>
-                <div class="counts-table-cell">dBoard201 Count</div>
-                <div class="counts-table-cell">dBoard202 Count</div>
-            </div>
-            <div id="countsTableBody" class="counts-table-body">
-            </div>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="indexcustodianhomepage.ejs">ICTC Asset Management</a>
+        <div class="dropdown">
+            <button class="btn dropdown-toggle" type="button" id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <span id="welcomeText">Welcome, </span><span id="authUsers">Admin</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="indexwelcomepage.ejs">Logout</a></li>
+            </ul>
         </div>
     </div>
+</nav>
 
-    <!-- javascript -->
-    <script>
+<!-- Background container for table -->
+<div class="itemsCountContainer">
+    <!-- Main table -->
+    <h2>Item Availability</h2>
+    <div class="counts-table">
+        <div class="counts-table-header">
+            <div class="counts-table-category">Category</div>
+            <div class="counts-table-201">ICT201 Count</div>
+            <div class="counts-table-202">ICT202 Count</div>
+        </div>
+        <div id="countsTableBody" class="counts-table-body"></div>
+    </div>
+</div>
 
-        // Function to fetch item counts and update the HTML content
-        async function displayItemCounts() {
-            try {
-                const response = await fetch('/availability/items'); // Fetch data from the server
-                const data = await response.json(); // Parse JSON response
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-                // Get the counts table body
-                const countsTableBody = document.getElementById('countsTableBody');
+<!-- JavaScript -->
+<script>
+    async function showAuthUsers() {
+        let usersName = document.getElementById("authUsers");
+        usersName.innerText = await localStorage.getItem('lastName');
+    }
 
-                // Populate the counts table
-                for (const category in data.counts201) {
+    // Function to fetch item counts and update the HTML content
+    async function displayItemCounts() {
+        try {
+            const response = await fetch('/availability/items'); // Fetch data from the server
+            const data = await response.json(); // Parse JSON response
+
+            // Get the counts table body
+            const countsTableBody = document.getElementById('countsTableBody');
+
+            // Populate the counts table
+            for (const category in data.counts201) {
+                const countsTableRow = document.createElement('div');
+                countsTableRow.classList.add('counts-table-row');
+
+                const categoryCell = document.createElement('div');
+                categoryCell.classList.add('counts-table-category');
+                categoryCell.textContent = category;
+                countsTableRow.appendChild(categoryCell);
+
+                const count201Cell = document.createElement('div');
+                count201Cell.classList.add('counts-table-201');
+                count201Cell.textContent = data.counts201[category];
+                countsTableRow.appendChild(count201Cell);
+
+                const count202Cell = document.createElement('div');
+                count202Cell.classList.add('counts-table-202');
+                count202Cell.textContent = data.counts202[category] || 0; // Use 0 if category not found in counts202
+                countsTableRow.appendChild(count202Cell);
+
+                countsTableBody.appendChild(countsTableRow);
+            }
+
+            // Add categories from counts202 that are not in counts201
+            for (const category in data.counts202) {
+                if (!(category in data.counts201)) {
                     const countsTableRow = document.createElement('div');
                     countsTableRow.classList.add('counts-table-row');
 
                     const categoryCell = document.createElement('div');
-                    categoryCell.classList.add('counts-table-cell');
+                    categoryCell.classList.add('counts-table-category');
                     categoryCell.textContent = category;
                     countsTableRow.appendChild(categoryCell);
 
                     const count201Cell = document.createElement('div');
-                    count201Cell.classList.add('counts-table-cell');
-                    count201Cell.textContent = data.counts201[category];
+                    count201Cell.classList.add('counts-table-201');
+                    count201Cell.textContent = 0; // Set count as 0 for counts201
                     countsTableRow.appendChild(count201Cell);
 
                     const count202Cell = document.createElement('div');
-                    count202Cell.classList.add('counts-table-cell');
+                    count202Cell.classList.add('counts-table-202');
                     count202Cell.textContent = data.counts202[category];
                     countsTableRow.appendChild(count202Cell);
 
                     countsTableBody.appendChild(countsTableRow);
                 }
-            } catch (error) {
-                console.error('Error fetching item counts:', error);
             }
-        }
 
-        // Call the function when the page loads
-        displayItemCounts();
-    </script>
+        } catch (error) {
+            console.error('Error fetching item counts:', error);
+        }
+    }
+    showAuthUsers();
+    // Call the function when the page loads
+    displayItemCounts();
+</script>
 </body>
 </html>
