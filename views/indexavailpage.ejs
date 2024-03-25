@@ -118,19 +118,31 @@
     </style>
 </head>
 <body>
-    <!-- background container for table -->
-    <div class="itemsCountContainer">
 
-        <!-- main table -->
-        <h2>Item Availability</h2>
-        <div class="counts-table">
-            <div class="counts-table-header">
-                <div class="counts-table-cell">Category</div>
-                <div class="counts-table-cell">dBoard201 Count</div>
-                <div class="counts-table-cell">dBoard202 Count</div>
-            </div>
-            <div id="countsTableBody" class="counts-table-body">
-            </div>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="indexcustodianhomepage.ejs">ICTC Asset Management</a>
+        <div class="dropdown">
+            <button class="btn dropdown-toggle" type="button" id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <span id="welcomeText">Welcome, </span><span id="authUsers">Admin</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="indexwelcomepage.ejs">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Background container for table -->
+<div class="itemsCountContainer">
+    <!-- Main table -->
+    <h2>Item Availability</h2>
+    <div class="counts-table">
+        <div class="counts-table-header">
+            <div class="counts-table-category">Category</div>
+            <div class="counts-table-201">dBoard201 Count</div>
+            <div class="counts-table-202">dBoard202 Count</div>
         </div>
         <div id="countsTableBody" class="counts-table-body"></div>
     </div>
@@ -214,3 +226,4 @@
 </script>
 </body>
 </html>
+

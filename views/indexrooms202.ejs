@@ -187,7 +187,7 @@
     }
 
  /* Select Styles */
- #asset_status, #category_input {
+ #asset_status {
         width: 100%;
         padding: 10px;
         border: 1px solid #ccc;
@@ -196,7 +196,7 @@
         transition: border-color 0.3s ease;
     }
 
-    #asset_status:focus, #category_input:focus {
+    #asset_status:focus {
         outline: none;
         border-color: #00c600;
     }
@@ -362,7 +362,6 @@
                         <option value="Disposed">Disposed</option>
                     </select>
                 </div>
-                
                 <!-- New input fields -->
                 <div class="mb-3">
                     <label for="rdf_input" class="form-label">RDF Number:</label>
@@ -381,7 +380,10 @@
                         <label for="rtf_input" class="form-label">Location:</label>
                         <input type="text" class="form-control" id="location_input" data-field="location_input">
                     </div>
-
+                    <div class="mb-3">
+                        <label for="rtf_input" class="form-label">Category:</label>
+                        <input type="text" class="form-control" id="category_input">
+                    </div>
                     <div class="mb-3">
                         <label for="rtf_input" class="form-label">Item Description:</label>
                         <input type="text" class="form-control" id="item_description_input">
@@ -422,10 +424,37 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.js"></script>
 
 <script>
-// Define an object to store the previous data for each row
-let previousData = {};
+    document.getElementById('archiveButton').addEventListener('click', async function() {
+    try {
+        const confirmation = confirm("Are you sure you want to archive this asset?");
+        if (confirmation) {
+            const response = await fetch(`/softdelete/dBoard202`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ isDeleted: true })
+            });
 
-async function showAuthUsers() {
+            const responseData = await response.json();
+
+            if (response.ok) {
+                alert(responseData.message);
+            } else {
+                alert(responseData.error || 'Failed to archive asset');
+            }
+        }
+    } catch (error) {
+        console.error('Error archiving asset:', error);
+        alert('An error occurred while archiving the asset');
+    }
+});
+
+    
+    // Define an object to store the previous data for each row
+    let previousData = {};
+    
+    async function showAuthUsers() {
         let usersName = document.getElementById("authUsers");
         usersName.innerText = await localStorage.getItem('lastName');
     }
@@ -448,139 +477,138 @@ async function showAuthUsers() {
     
     // Call borrowercount function when the page loads
     window.onload = borrowercount;
-
-let updatedAsset; // Define updatedAsset at a higher scope
-
-document.addEventListener('DOMContentLoaded', function () {
-
-    // Event listener for filter input
-    const searchInput = document.getElementById('searchInput202');
-    searchInput.addEventListener('input', function () {
-        const filterText = this.value.trim();
-        console.log('Filter text:', filterText); // Log filter text
-        fetchData(1, itemsPerPage, filterText);
-    });
-
-    async function showModalWithData(row) {
-    try {
-        const response = await fetch('/data/dBoard202');
-        if (!response.ok) {
-            throw new Error(`Failed to fetch data. Status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log('Fetched data:', data);
-
-        // Get modal element
-        const modal = document.getElementById('exampleModal');
-        if (!modal) {
-            throw new Error('Modal element not found');
-        }
-
-        // Set modal title
-        modal.querySelector('.modal-title').textContent = 'Row Details';
-        // Get modal body container
-        const modalBody = modal.querySelector('.modal-body');
-        // Clear existing data
-        modalBody.innerHTML = '';
-
-        // Find the index of the row in the fetched data
-        const rowIndex = Array.from(row.parentNode.children).indexOf(row);
-        const rowData = data[rowIndex];
-
-        // Custom field names
-        const fieldNames = {
-            "room": "Room",
-            "location": "Location",
-            "category": "Category",
-            "item_description": "Item Description",
-            "property_number": "Property Number",
-            "serial_number": "Serial Number",
-            "unit_cost": "Unit Cost",
-            "rdf_number": "RDF Number",
-            "rtf_number": "RTF Number",
-            "asset_status": "Status",
-            "accountability": "Accountability",
-            "action": "Action",
-            "barcode": "Barcode"
-        };
-
-        // Assuming data is the array containing table row data
-        const dataList = document.createElement('ul');
-        dataList.classList.add('list-group');
-
-        // Iterate over the row data and create list items
-        for (const [key, value] of Object.entries(rowData)) {
-            // Skip _id field
-            if (key === '_id') continue;
-            const customFieldName = fieldNames[key] || key;
-            const listItem = document.createElement('li');
-            listItem.classList.add('list-group-item');
-            listItem.innerHTML = `<strong>${customFieldName}:</strong> ${value}`;
-            dataList.appendChild(listItem);
-        }
-
-        // Append the list to the modal body
-        modalBody.appendChild(dataList);
-
-        // Show modal
-        $(modal).modal('show');
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    const tableRows = document.querySelectorAll('#data-table tr');
-
-    // Add click event listener to each table row
-    tableRows.forEach(row => {
-        row.addEventListener('click', function () {
-            showModalWithData(row);
+    
+    let updatedAsset; // Define updatedAsset at a higher scope
+    
+    document.addEventListener('DOMContentLoaded', function () {
+    
+        // Event listener for filter input
+        const searchInput = document.getElementById('searchInput202');
+        searchInput.addEventListener('input', function () {
+            const filterText = this.value.trim();
+            console.log('Filter text:', filterText); // Log filter text
+            fetchData(1, itemsPerPage, filterText);
         });
-    });
-});
-
-
-    async function fetchData(pageNumber, itemsPerPage, filterText = '') {
-        try {
-            const response = await fetch('/data/dBoard202');
-            if (!response.ok) {
-                throw new Error(`Failed to fetch data. Status: ${response.status}`);
+    
+        async function showModalWithData(row) {
+            try {
+                const response = await fetch('/data/dBoard202');
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch data. Status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Fetched data:', data);
+    
+                // Get modal element
+                const modal = document.getElementById('exampleModal');
+                if (!modal) {
+                    throw new Error('Modal element not found');
+                }
+    
+                // Set modal title
+                modal.querySelector('.modal-title').textContent = 'Row Details';
+                // Get modal body container
+                const modalBody = modal.querySelector('.modal-body');
+                // Clear existing data
+                modalBody.innerHTML = '';
+    
+                // Find the index of the row in the fetched data
+                const rowIndex = Array.from(row.parentNode.children).indexOf(row);
+                const rowData = data[rowIndex];
+    
+                // Custom field names
+                const fieldNames = {
+                    "room": "Room",
+                    "location": "Location",
+                    "category": "Category",
+                    "item_description": "Item Description",
+                    "property_number": "Property Number",
+                    "serial_number": "Serial Number",
+                    "unit_cost": "Unit Cost",
+                    "rdf_number": "RDF Number",
+                    "rtf_number": "RTF Number",
+                    "asset_status": "Status",
+                    "accountability": "Accountability",
+                    "action": "Action",
+                    "barcode": "Barcode"
+                };
+    
+                // Assuming data is the array containing table row data
+                const dataList = document.createElement('ul');
+                dataList.classList.add('list-group');
+    
+                // Iterate over the row data and create list items
+                for (const [key, value] of Object.entries(rowData)) {
+                    // Skip _id field
+                    if (key === '_id') continue;
+                    const customFieldName = fieldNames[key] || key;
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('list-group-item');
+                    listItem.innerHTML = `<strong>${customFieldName}:</strong> ${value}`;
+                    dataList.appendChild(listItem);
+                }
+    
+                // Append the list to the modal body
+                modalBody.appendChild(dataList);
+    
+                // Show modal
+                $(modal).modal('show');
+            } catch (error) {
+                console.error('Error showing modal with data:', error);
             }
-            const data = await response.json();
-            console.log('Fetched data:', data);
-
-            // Filter data based on input text
-            const filteredData = data.filter(item => {
-                const searchableFields = ['room', 'location', 'category', 'item_description', 'serial_number', 'unit_cost', 'asset_status'];
-                const isMatch = searchableFields.some(field => {
-                    const fieldValue = item[field];
-                    if (typeof fieldValue === 'string') {
-                        const lowercaseValue = fieldValue.toLowerCase();
-                        console.log(`Field: ${field}, Value: ${lowercaseValue}`);
-                        return lowercaseValue.includes(filterText.toLowerCase());
-                    }
-                    return false;
-                });
-                console.log('Is Match:', isMatch);
-                return isMatch;
-            });
-
-            const startIndex = (pageNumber - 1) * itemsPerPage;
-            const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
-            const currentPageData = filteredData.slice(startIndex, endIndex);
-
-            populatePage(currentPageData);
-            createPagination(filteredData.length, itemsPerPage, pageNumber);
-
-        } catch (error) {
-            console.error('Error fetching data:', error);
         }
-    }
-
-    function populatePage(assetsList){
-        const tableBody = document.getElementById('data-table');
-        tableBody.innerHTML = ''; // Clear existing data
+    
+        document.addEventListener('DOMContentLoaded', function () {
+            const tableRows = document.querySelectorAll('#data-table tr');
+    
+            // Add click event listener to each table row
+            tableRows.forEach(row => {
+                row.addEventListener('click', function () {
+                    showModalWithData(row);
+                });
+            });
+        });
+    
+        async function fetchData(pageNumber, itemsPerPage, filterText = '') {
+            try {
+                const response = await fetch('/data/dBoard202');
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch data. Status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Fetched data:', data);
+    
+                // Filter data based on input text
+                const filteredData = data.filter(item => {
+                    const searchableFields = ['room', 'location', 'category', 'item_description', 'serial_number', 'unit_cost', 'asset_status'];
+                    const isMatch = searchableFields.some(field => {
+                        const fieldValue = item[field];
+                        if (typeof fieldValue === 'string') {
+                            const lowercaseValue = fieldValue.toLowerCase();
+                            console.log(`Field: ${field}, Value: ${lowercaseValue}`);
+                            return lowercaseValue.includes(filterText.toLowerCase());
+                        }
+                        return false;
+                    });
+                    console.log('Is Match:', isMatch);
+                    return isMatch;
+                });
+    
+                const startIndex = (pageNumber - 1) * itemsPerPage;
+                const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
+                const currentPageData = filteredData.slice(startIndex, endIndex);
+    
+                populatePage(currentPageData);
+                createPagination(filteredData.length, itemsPerPage, pageNumber);
+    
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+    
+        function populatePage(assetsList) {
+    const tableBody = document.getElementById('data-table');
+    tableBody.innerHTML = ''; // Clear existing data
 
     assetsList.forEach(item => {
         // Check if the item is deleted
@@ -645,59 +673,57 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Define an object to store the previous data for each row
                 const previousData = {};
 
-document.getElementById('updateStatusBtn').addEventListener('click', function () {
-  // Assuming 'item' is the row being updated
-  const serialNumber = item.serial_number; // Ensure this references the correct row's serial number
+                document.getElementById('updateStatusBtn').addEventListener('click', function () {
+                    // Assuming 'item' is the row being updated
+                    const serialNumber = item.serial_number; // Ensure this references the correct row's serial number
 
-  // Get all input values
-  const assetStatusValue = document.getElementById('asset_status').value;
-  const rdfValue = document.getElementById('rdf_input').value;
-  const rtfValue = document.getElementById('rtf_input').value;
-  const roomValue = document.getElementById('room_input').value;
-  const locValue = document.getElementById('location_input').value;
-  const catvalue = document.getElementById('category_input').value;
-  const itemdescValue = document.getElementById('item_description_input').value;
-  const propValue = document.getElementById('property_number_input').value;
-  const unitValue = document.getElementById('unit_cost_input').value;
-  const accountValue = document.getElementById('accountability_input').value;
-  const barValue = document.getElementById('barcode_input').value;
+                    // Get all input values
+                    const assetStatusValue = document.getElementById('asset_status').value;
+                    const rdfValue = document.getElementById('rdf_input').value;
+                    const rtfValue = document.getElementById('rtf_input').value;
+                    const roomValue = document.getElementById('room_input').value;
+                    const locValue = document.getElementById('location_input').value;
+                    const catvalue = document.getElementById('category_input').value;
+                    const itemdescValue = document.getElementById('item_description_input').value;
+                    const propValue = document.getElementById('property_number_input').value;
+                    const unitValue = document.getElementById('unit_cost_input').value;
+                    const accountValue = document.getElementById('accountability_input').value;
+                    const barValue = document.getElementById('barcode_input').value;
 
+                    // Define the data object to be sent to the backend
+                    const data = {
+                        asset_status: assetStatusValue, // Add asset_status to the data object
+                        rdf_number: rdfValue,
+                        rtf_number: rtfValue,
+                        room: roomValue,
+                        location: locValue,
+                        category: catvalue,
+                        item_description: itemdescValue,
+                        property_number: propValue,
+                        unit_cost: unitValue,
+                        accountability: accountValue,
+                        barcode: barValue,
+                    };
 
-  // Define the data object to be sent to the backend
-const data = {
-asset_status: assetStatusValue, // Add asset_status to the data object
-  rdf_number: rdfValue,
-  rtf_number: rtfValue,
-  room: roomValue,
-  location: locValue,
-  category: catvalue,
-  item_description: itemdescValue,
-  property_number: propValue,
-  unit_cost: unitValue,
-  accountability: accountValue,
-  barcode: barValue,
-};
-
-
-  // Send data to backend endpoint for updating all fields
-  fetch(`/assetsupdate/dBoard202/${serialNumber}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data.message); // Log the server response
-    // Optionally, you can handle success response here
-  })
-  .catch(error => {
-    console.error('Error updating:', error);
-    // Optionally, you can handle error here
-  });
-});
-
+                    // Send data to backend endpoint for updating all fields
+                    fetch(`/assetsupdate/dBoard202/${serialNumber}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data.message); // Log the server response
+                            // Optionally, you can handle success response here
+                        })
+                        .catch(error => {
+                            console.error('Error updating:', error);
+                            // Optionally, you can handle error here
+                        });
+                });
+                // FOR UPDATE OF THE TABLE DATA - END
             });
             showAuthUsers();
             tableBody.appendChild(row);
@@ -806,12 +832,12 @@ asset_status: assetStatusValue, // Add asset_status to the data object
         }
     }
 
-        // Add event listener to the button
-        document.querySelector('.print-table').addEventListener('click', printAssetTable);
-    });
+    // Add event listener to the button
+    document.querySelector('.print-table').addEventListener('click', printAssetTable);
 
-
-    </script>
+});
+</script>
+    
 
 </body>
 </html>
