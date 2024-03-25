@@ -881,6 +881,7 @@ app.put('/softdelete/dBoard202', async (req, res) => {
 });
 
 
+
 app.get('/alldata', async (req, res) => {
   try {
     // Fetch all data from the MongoDB collections for Borrower, Report, dBoard201, and dBoard202
