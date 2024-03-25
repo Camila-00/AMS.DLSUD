@@ -180,102 +180,12 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <a href="#" onclick="showRoomContent('201')">Room 201</a>
-        <a href="#" onclick="showRoomContent('202')">Room 202</a>
         <a href="#" class="borrower-link" onclick="showBorrowerContent()">Borrower</a>
         <a href="#" class="borrower-link" onclick="showReportContent()">Asset Status Condition</a>
     </div>
 
-    <!-- Asset content ROOM 201 -->
-    <div class="content" id="asset-content201">
-        <h1>ICTC 201 Asset Table</h1>
-        <input type="text" id="searchInput201" class="filter-input" placeholder="Filter">
-        <button class="print-table">Print Table</button>
 
-        <table class="asset-table">
-            <thead>
-                <tr>
-                    <th>Room</th>
-                    <th>Location</th>
-                    <th>Category</th>
-                    <th>Item Description</th>
-                    <th>Serial Number</th>
-                    <th>Unit Cost</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="data-table201"></tbody>
-        </table>
-
-        <!-- Pagination HTML -->
-        <div class="pagination" id="pagination201"></div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal201" tabindex="-1" aria-labelledby="exampleModalLabel201" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Row Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <!-- Row details will be populated here -->
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
-    </div>
-
-    <!-- Asset content ROOM 202 -->
-    <div class="content" id="asset-content202">
-        <h1>ICTC 202 Asset Table</h1>
-        <input type="text" id="searchInput202" class="filter-input" placeholder="Filter">
-        <button class="print-table">Print Table</button>
-
-        <table class="asset-table">
-            <thead>
-                <tr>
-                    <th>Room</th>
-                    <th>Location</th>
-                    <th>Category</th>
-                    <th>Item Description</th>
-                    <th>Serial Number</th>
-                    <th>Unit Cost</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="data-table202"></tbody>
-        </table>
-
-        <!-- Pagination HTML -->
-        <div class="pagination" id="pagination202"></div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal202" tabindex="-1" aria-labelledby="exampleModalLabel202" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Row Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <!-- Row details will be populated here -->
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
-    </div>
-
-
-<div class="content" id="borrower-content" style="display: none;">
+    <div class="content" id="borrower-content" style="display: none;">
         <h1>Borrower Table</h1>
         <table class="asset-table">
             <thead>
@@ -312,25 +222,72 @@
         </table>
     </div>
 
+<!-- Room 201 Content -->
+<div class="content" id="room-201-content" style="display: none;">
+    <h1>Room 201 Table</h1>
+    <input type="text" id="searchInput201" placeholder="Search...">
+    <table class="asset-table" id="data-table201">
+        <thead>
+            <tr>
+                <th>Room</th>
+                <th>Location</th>
+                <th>Category</th>
+                <th>Item Description</th>
+                <th>Serial Number</th>
+                <th>Unit Cost</th>
+                <th>Asset Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data for Room 201 will be populated here -->
+        </tbody>
+    </table>
+    <div id="pagination201"></div>
+</div>
+
+<!-- Room 202 Content -->
+<div class="content" id="room-202-content" style="display: none;">
+    <h1>Room 202 Table</h1>
+    <input type="text" id="searchInput202" placeholder="Search...">
+    <table class="asset-table" id="data-table202">
+        <thead>
+            <tr>
+                <th>Room</th>
+                <th>Location</th>
+                <th>Category</th>
+                <th>Item Description</th>
+                <th>Serial Number</th>
+                <th>Unit Cost</th>
+                <th>Asset Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data for Room 202 will be populated here -->
+        </tbody>
+    </table>
+    <div id="pagination202"></div>
+</div>
+
     <script>
-        let currentRoom = '201'; // Ensure currentRoom is defined globally
+
+async function showAuthUsers() {
+        let usersName = document.getElementById("authUsers");
+        usersName.innerText = await localStorage.getItem('lastName');
+    }
+
         const itemsPerPage = 10; // Define itemsPerPage globally
     
-        function showRoomContent(room) {
-            hideAllTabs(); // Hide all other tabs
-            document.getElementById('asset-content' + room).style.display = 'block';
-            currentRoom = room;
-            fetchData(1, itemsPerPage, '', room); // Fetch data for the selected room
-        }
-    
-        function hideAllTabs() {
-            document.getElementById('asset-content201').style.display = 'none';
-            document.getElementById('asset-content202').style.display = 'none';
-             document.getElementById('borrower-content').style.display = 'none'; // Hide borrower tab
+
+// Initialize the currentRoom variable to 'report' to match the initially displayed tab
+var currentRoom = 'report';
+
+
+function hideAllTabs() {
+    document.getElementById('borrower-content').style.display = 'none'; // Hide borrower tab
     document.getElementById('report-content').style.display = 'none'; // Hide report tab
-            
-            // Add similar lines for other tabs if exists
-        }
+}
+
+
     
         function populatePage(assetsList) {
             const tableBody = document.getElementById('data-table' + currentRoom);
@@ -368,19 +325,19 @@
 
         }
     
-        function createPagination(totalItems, itemsPerPage, currentPage, room) {
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
-            const pagination = document.getElementById('pagination' + room);
-            pagination.innerHTML = '';
-    
-            for (let i = 1; i <= totalPages; i++) {
-                const pageLink = document.createElement('a');
-                pageLink.href = '#';
-                pageLink.textContent = i;
-                if (i === currentPage) {
-                    pageLink.classList.add('active');
-                }
-                pageLink.addEventListener('click', function () {
+function createPagination(totalItems, itemsPerPage, currentPage, room) {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const pagination = document.getElementById(`pagination${room}`);
+        pagination.innerHTML = '';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageLink = document.createElement('a');
+            pageLink.href = '#';
+            pageLink.textContent = i;
+            if (i === currentPage) {
+                pageLink.classList.add('active');
+            }
+            pageLink.addEventListener('click', function (){
                     fetchData(i, itemsPerPage, '', room);
                 });
                 pagination.appendChild(pageLink);
@@ -426,8 +383,8 @@
 
     
         document.addEventListener('DOMContentLoaded', function () {
-            showRoomContent(currentRoom);
-    
+            showReportContent();
+            showAuthUsers();
             // Event listener for filter input in Room 201
             const searchInput201 = document.getElementById('searchInput201');
             searchInput201.addEventListener('input', function () {
@@ -658,12 +615,11 @@ function isReportHidden(isDeleted) { // FOR ASSET CONDITION
 }
 
 
+
     </script>
-    
-    
+<!-- Borrower content -->
 
 
-    <!-- Your JavaScript code for fetching data, filtering, pagination, and modals goes here... -->
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

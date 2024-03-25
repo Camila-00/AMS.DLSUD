@@ -701,9 +701,9 @@
     <label for="category">Category:</label>
     <select id="category" required>
         <option value="select"></option>
-        <option value="UPS">UPS</option>
+        <option value="Uninterrupted Power Supply">Uninterrupted Power Supply</option>
         <option value="System Unit">System Unit</option>
-        <option value="LCD">LCD Monitor</option>
+        <option value="LCD Monitor">LCD Monitor</option>
         <option value="Furniture">Furniture</option>
         <option value="Appliance">Appliance</option>
         <option value="Air Conditioner">Air Conditioner</option>
@@ -732,10 +732,10 @@
     <input type="text" id="rtf_number">
 
     <label for="asset_status">Status:</label>
-    <select id="asset_status">
+    <select id="asset_status" required>
         <option value="" disabled selected style="color: grey;"></option>
-        <option value="Good/Instock">Good</option>
-        <option value="NotWorking">Instock</option>
+        <option value="Good">Good</option>
+        <option value="In Storage">In Storage</option>
     </select>
         </div>
      
@@ -751,13 +751,13 @@
         window.location.href = "/indexavailpage"; // Redirect to indexavailpage.ejs
     }
 
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
     const categoryDropdown = document.getElementById("category");
     const localStorageKey = "categories";
 
     // Load categories from localStorage or use default if not available
     let categories = JSON.parse(localStorage.getItem(localStorageKey)) || [
-    "UPS", "System Unit", "LCD Monitor", "Furniture", "Appliance", "Air Conditioner", "Printer"
+    "Uninterrupted Power Supply", "System Unit", "LCD Monitor", "Furniture", "Appliance", "Air Conditioner", "Printer"
     ];
 
     // Populate category dropdown
@@ -770,6 +770,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const newCategory = prompt("Enter the new category:");
             if (newCategory !== null && newCategory.trim() !== "") {
                 addNewCategory(newCategory);
+                showNotification("New category added", newCategory);
             } else {
                 // User canceled or entered an empty category
                 // You can handle this case if needed
@@ -787,6 +788,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Update the Category dropdown with the new category
         updateCategoryDropdown(categories);
+        // Log to check if the function is called
+    console.log("New category added:", newCategory);
     }
 
     // Function to update the Category dropdown with the new categories
@@ -806,6 +809,21 @@ document.addEventListener("DOMContentLoaded", function () {
         addNewOption.textContent = "Add New";
         categoryDropdown.appendChild(addNewOption);
     }
+    function showNotification(title, body) {
+    console.log("Showing notification:", title, body); // Log to check if the function is called
+
+    if (Notification.permission === "granted") {
+        // If permission is already granted, show the notification
+        new Notification(title, { body: body });
+    } else if (Notification.permission !== "denied") {
+        // Otherwise, request permission
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                new Notification(title, { body: body });
+            }
+        });
+    }
+}
 });
 
 
@@ -1638,7 +1656,7 @@ function downloadRTF() { // RDF FORM
             
         }
 
-        async function fetchItemDescriptionReport() {
+async function fetchItemDescriptionReport() {
     const barcode = document.getElementById("report_barcode").value;
 
     try {
