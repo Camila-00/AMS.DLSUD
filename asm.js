@@ -1008,6 +1008,8 @@ app.get('/availability/items', async (req, res) => {
   }
 });
 
+
+
 connectToDatabases()
   .then(() => {
     app.listen(port, () => {
