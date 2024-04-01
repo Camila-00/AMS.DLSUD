@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
     <title>Asset Management</title>
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
@@ -680,7 +681,7 @@
 
 
 <!-- Add Asset content -->
-    <div class="content" id="add-asset-content" style="display: none;">
+<div class="content" id="add-asset-content" style="display: none;">
     <h1>Add Asset</h1>
     <!-- Pinalipat ni jaden -->
 
@@ -747,7 +748,7 @@
 
 
 <script>
-      function redirect() {
+function redirect() {
         window.location.href = "/indexavailpage"; // Redirect to indexavailpage.ejs
     }
 
@@ -1240,7 +1241,8 @@ function showDashboard() { // this is the problem
                 hideAllTabs();
                 document.getElementById('dashboard-content').style.display = 'block';
             }
-                   
+                 
+            
 function showReport() {
                 showReportContent(); // Call the renamed function
                 hideAllTabs();
@@ -1655,7 +1657,7 @@ function downloadRTF() { // RDF FORM
             
         }
 
-async function fetchItemDescriptionReport() {
+        async function fetchItemDescriptionReport() {
     const barcode = document.getElementById("report_barcode").value;
 
     try {

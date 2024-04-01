@@ -5,252 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
     <title>ICTC Asset Management</title>
+    <link rel="stylesheet" href="/css/indexroom202.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.6.0/pagination.css"
     integrity="sha512-TH+vnrhByFI2RzNvaHSqt6EwoJ9Bp+yGAGTWp84qTuTx315ebnypxtyGHpli55Rm4N4J+N/0W9xAL2b5RZ2ZSA=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.js"></script>
-   <style>
-.update-button {
-        background-color: transparent;
-        color: #1db954; /* Green */
-        border: 2px solid transparent;
-        border-radius: 4px;
-        padding: 8px 16px;
-        cursor: pointer;
-        margin-right: 5px;
-        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-    }
 
-    .update-button:hover {
-        background-color: #28a745; /* Green */
-        color: #fff; /* White text color on hover */
-        border-color: #28a745; /* Green border on hover */
-    }
-
-    /* Navbar styling */
-    .navbar {
-        background-color: #f8f9fa; /* Change to desired color */
-        z-index: 1000; /* Ensure it stays on top */
-    }
-
-    .navbar-brand {
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
-
-    .dropdown-menu {
-        background-color: #f8f9fa; /* Change to desired color */
-    }
-
-    
-    #asset-content202 table {
-        width: 99%;
-        max-width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        margin-left: 5px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        overflow-x: auto; /* Allow horizontal scroll */
-        animation: fadeIn 0.5s ease-in-out;
-    }
-
-    #asset-content202 h1 { 
-        margin-left: 10px;
-    }
-
-    #asset-content202 th,
-    #asset-content202 td {
-        padding: 10px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-        font-size: 15px;
-    }
-
-    #asset-content202 th {
-        background-color: #f2f2f2;
-    }
-
-    #searchInput202 {
-        margin-left: 10px; /* Adjust as needed */
-    }
-
-    .print-table { 
-        background-color: #1db954; /* Same green color as the Print Table button */
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 15px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        margin-left: 5px;    
-    }
-
-    .print-table:hover {
-        background-color: #116e30; /* Darker green on hover */
-    }
-
-    #welcomeText {
-        font-weight: bold;
-    }
-
-    #authUsers {
-        text-transform: capitalize; /* Capitalize the first letter of the username */
-    }
-
-    /* Pagination styling */
-    #pagination {
-        display: block;
-            width: 440px;
-            margin: 10px auto;
-            align-content: center;
-    }
-
-    #pagination a {
-        display: inline-block;
-        padding: 5px 10px;
-        margin-right: 5px;
-        background-color: #f8f9fa;
-        border: 1px solid #ccc;
-        text-decoration: none;
-        color: #333;
-    }
-
-    #pagination a.active {
-        background-color: #00a100;
-        color: #fff;
-    }
-
-    .pagination a:hover:not(.active) {
-        background-color: #ddd;
-    }
-
-    .content h1 {
-            font-family: 'Montserrat', sans-serif;
-            
-        }
-        #searchInput202 {
-        width: 445px; /* Adjusted width to accommodate the print button */
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
-        transition: border-color 0.3s ease;
-    }
-
-    #searchInput202:focus {
-        outline: none;
-        border-color: #087830;
-    }
-
-    #searchInput202::placeholder {
-        color: #aaa;
-    }
-
-    /* Modal Styles */
-    .modal-content {
-        border-radius: 10px;
-    }
-
-    .modal-header {
-        background-color: #1db954;
-        color: #fff;
-        border-radius: 10px 10px 0 0;
-    }
-
-    .modal-footer {
-        border-radius: 0 0 10px 10px;
-    }
-
-    /* Animation */
-    @keyframes modalFadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-50%);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes modalFadeOut {
-        from {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        to {
-            opacity: 0;
-            transform: translateY(-50%);
-        }
-    }
-
- /* Select Styles */
- #asset_status, #category_input {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f8f9fa;
-        transition: border-color 0.3s ease;
-    }
-
-    #asset_status:focus, #category_input:focus {
-        outline: none;
-        border-color: #00c600;
-    }
-#updateStatusBtn {
-    background-color: #1db954;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.controls-container {
-    display: flex;
-    align-items: center; /* Align items vertically in the center */
-}
-
-.controls {
-    display: flex;
-    align-items: center; /* Align items to the center */
-}
-
-#assetcount202 {
-    display: flex;
-    flex-direction: column; /* Arrange child elements in a column */
-    align-items: center; /* Center items horizontally */
-    font-size: 18px; /* Adjust font size as needed */
-    font-weight: bold; /* Make the text bold */
-    color: #ffffff; /* Set text color */
-    margin-left: 10px; /* Add some margin to separate it from other controls */
-    margin-top: 5px;
-}
-
-
-
-.main-content {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-.asset-summary-container {
-    background-color: #333333;; /* Gray background */
-    float: right; /* Align to the right */
-    padding: 10px; /* Add padding for spacing */
-    margin-top: -20px;
-    margin-left: 775px; /* Adjust margin-left as needed */
-    border-radius: 10px; /* Rounded borders */
-    color: white; /* White text */
-}
-
-
-   </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -434,6 +194,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.js"></script>
 
 <script>
+    let filterText = '';
     document.addEventListener("DOMContentLoaded", function () {
     const categoryDropdown = document.getElementById("category_input");
     const localStorageKey = "categories";
@@ -589,12 +350,13 @@ document.getElementById('archiveButton').addEventListener('click', async functio
     document.addEventListener('DOMContentLoaded', function () {
     
         // Event listener for filter input
-        const searchInput = document.getElementById('searchInput202');
-        searchInput.addEventListener('input', function () {
-            const filterText = this.value.trim();
-            console.log('Filter text:', filterText); // Log filter text
-            fetchData(1, itemsPerPage, filterText);
-        });
+// Event listener for filter input
+const searchInput = document.getElementById('searchInput202');
+    searchInput.addEventListener('input', function () {
+        filterText = this.value.trim(); // Update global filter text
+        console.log('Filter text:', filterText);
+        fetchData(1, itemsPerPage, filterText); // Pass filter text to fetchData
+    });
     
         async function showModalWithData(row) {
             try {
@@ -677,6 +439,7 @@ document.getElementById('archiveButton').addEventListener('click', async functio
     
         async function fetchData(pageNumber, itemsPerPage, filterText = '') {
     try {
+        // Fetch data from the server
         const response = await fetch('/data/dBoard202');
         if (!response.ok) {
             throw new Error(`Failed to fetch data. Status: ${response.status}`);
@@ -694,26 +457,33 @@ document.getElementById('archiveButton').addEventListener('click', async functio
         const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
         const currentPageData = filteredData.slice(startIndex, endIndex);
 
-        populatePage(currentPageData);
-        updateCounter(filteredData.length);
+// Inside fetchData function
+populatePage(currentPageData);
+createPagination(filteredData.length, itemsPerPage, pageNumber);
 
-        createPagination(filteredData.length, itemsPerPage, pageNumber);
+
+        // Pagination event listener
+        createPagination(filteredData.length, itemsPerPage, pageNumber, filterText); // Pass filter text to createPagination
 
     } catch (error) {
         console.error('Error fetching data:', error);
     }
 }
 
+// Function to check if an item matches the filter text
+function matchesFilter(item, filterText) {
+    const searchableFields = ['room', 'location', 'category', 'item_description', 'serial_number', 'asset_status'];
+    return searchableFields.some(field => {
+        // Ensure item[field] is a string before calling toLowerCase()
+        if (typeof item[field] === 'string') {
+            return item[field].toLowerCase().includes(filterText.toLowerCase());
+        } else {
+            return false; // Return false for non-string values
+        }
+    });
+}
 
-    // Function to check if an item matches the filter text
-    function matchesFilter(item, filterText) {
-        // Add conditions here to check if item fields match the filter text
-        // For example:
-        // return item.room.toLowerCase().includes(filterText.toLowerCase()) ||
-        //        item.location.toLowerCase().includes(filterText.toLowerCase());
-        // Adjust according to your filtering needs
-        return true; // For now, return true to include all items
-    }
+
 
 // Function to update the counter based on the number of active assets
 function updateCounter() {
@@ -876,24 +646,27 @@ function updateCounter() {
         document.getElementById('barcode_input').value = '';
     });
 
-    function createPagination(totalItems, itemsPerPage, currentPage) {
-        const totalPages = Math.ceil(totalItems / itemsPerPage);
-        const pagination = document.getElementById('pagination');
-        pagination.innerHTML = '';
+// Function to create pagination
+function createPagination(totalItems, itemsPerPage, currentPage, filterText) {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
 
-        for (let i = 1; i <= totalPages; i++) {
-            const pageLink = document.createElement('a');
-            pageLink.href = '#';
-            pageLink.textContent = i;
-            if (i === currentPage) {
-                pageLink.classList.add('active');
-            }
-            pageLink.addEventListener('click', function () {
-                fetchData(i, itemsPerPage);
-            });
-            pagination.appendChild(pageLink);
+    for (let i = 1; i <= totalPages; i++) {
+        const pageLink = document.createElement('a');
+        pageLink.href = '#';
+        pageLink.textContent = i;
+        if (i === currentPage) {
+            pageLink.classList.add('active');
         }
+        pageLink.addEventListener('click', function () {
+            fetchData(i, itemsPerPage, filterText); // Pass filter text to fetchData
+        });
+        pagination.appendChild(pageLink);
     }
+}
+
+
 
     const itemsPerPage = 10;
     fetchData(1, itemsPerPage);

@@ -1,0 +1,146 @@
+        /* Navbar styling */
+        .navbar {
+            background-color: #f8f9fa; /* Change to desired color */
+            z-index: 1000; /* Ensure it stays on top */
+            position: fixed; /* Fix the navbar position */
+            top: 0; /* Position it at the top */
+            width: 100%; /* Occupy full width */
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        
+        .dropdown-menu {
+            background-color: #f8f9fa; /* Change to desired color */
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            background-color: #333333;
+            color: white;
+            height: 100vh;
+            width: 150px; /* Adjusted sidebar width */
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-x: hidden;
+            padding-top: 60px;
+            transition: 0.3s;
+            z-index: 900;
+            margin-top: 20px;
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            display: block;
+            transition: 0.3s;
+            color: white; /* Text color */
+        }
+
+        .sidebar a:hover {
+            background-color: #11950092; /* Change hover background color */
+        }
+
+        /* Page content */
+        .content {
+            padding: 20px;
+            transition: margin-left 0.3s;
+            padding-left: 150px; /* Adjusted content padding */
+            margin-top: 50px;
+        }
+
+        /* Room specific CSS */
+        .asset-table, .report-table {
+            width: 99%;
+            max-width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-left: 5px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow-x: auto; /* Allow horizontal scroll */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+         .asset-table h1, .report-table h1 {
+            margin-left: 10px;
+            margin-top: 50px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+         .asset-table th,
+        .asset-table td,
+        .report-table th,
+        .report-table td  {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 15px;
+        }
+
+        .asset-table th, .report-table th {
+            background-color: #f2f2f2;
+        }
+
+        .filter-input {
+            width: 445px; /* Adjusted width to accommodate the print button */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: #087830;
+        }
+
+        .filter-input::placeholder {
+            color: #aaa;
+        }
+
+        .print-table {
+            background-color: #1db954; /* Same green color as the Print Table button */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 5px;
+        }
+
+        .print-table:hover {
+            background-color: #116e30; /* Darker green on hover */
+        }
+
+        /* Pagination styling */
+        .pagination {
+            display: block;
+            width: 440px;
+            margin: 10px auto;
+            align-content: center;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 5px 10px;
+            margin-right: 5px;
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .pagination a.active {
+            background-color: #00a100;
+            color: #fff;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }

@@ -118,7 +118,10 @@ app.use(session({
 // Serve the HTML files
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+// Serve static files such as HTML, CSS, and JavaScript
 app.use(express.static(path.join(__dirname, 'System')));
+app.use('/css', express.static(path.join(__dirname, 'views', 'css'), { 'extensions': ['css'] }));
+
 
 app.get('/', (req, res) => {
   res.render("indexwelcomepage");
@@ -224,7 +227,6 @@ app.get('/assetcount202', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' }); // Handle errors gracefully
   }
 });
-
 
 app.get('/totalassetscount', async(req, res) => { // TOTAL ASSETS ON DASHBOARD CONTENT
   const dBoard201DbCollection = dBoard201Db.collection(dBoard201DbCollectionName);
@@ -792,6 +794,7 @@ app.get('/report_item_description', async (req, res) => { // ASSET CONDITION FOR
 app.put('/assetsupdate/dBoard201/:serial_number', async (req, res) => {
   try {
     const serialNumber = req.params.serial_number;
+    
 
     // Merge all fields into the update operation
     const updateFields = {
@@ -819,6 +822,49 @@ app.put('/assetsupdate/dBoard201/:serial_number', async (req, res) => {
   } catch (error) {
     console.error('Error updating:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.put('/softdelete/dBoard201/:barcode', async (req, res) => {
+  const { barcode } = req.params;
+  const updatedAsset = req.body;
+
+  console.log('Received barcode:', barcode);
+  console.log('Request Body:', updatedAsset);
+
+  try {
+    // Find all documents in the database based on the barcode
+    const assets = await dBoard201Db.collection(dBoard201DbCollectionName).find({ barcode: barcode }).toArray();
+
+    if (assets.length === 0) {
+      res.status(404).json({ message: 'No assets found with the given barcode' });
+      return;
+    }
+
+    let successCount = 0;
+    for (const asset of assets) {
+      const result = await dBoard201Db.collection(dBoard201DbCollectionName).updateOne(
+        { _id: asset._id }, // Use the found document's _id
+        { $set: updatedAsset }
+      );
+
+      if (result.modifiedCount === 1) {
+        successCount++;
+      }
+    }
+
+    if (successCount > 0) {
+      if (updatedAsset.isDeleted) {
+        res.status(200).json({ message: `${successCount} assets soft deleted successfully` });
+      } else {
+        res.status(200).json({ message: `${successCount} assets updated successfully` });
+      }
+    } else {
+      res.status(500).json({ message: 'Failed to update any assets' });
+    }
+  } catch (err) {
+    console.error('Error updating assets:', err);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
@@ -900,7 +946,6 @@ app.put('/softdelete/dBoard202/:barcode', async (req, res) => {
 });
 
 
-
 app.get('/alldata', async (req, res) => {
   try {
     // Fetch all data from the MongoDB collections for Borrower, Report, dBoard201, and dBoard202
@@ -965,6 +1010,8 @@ app.get('/availability/items', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
 
 connectToDatabases()
   .then(() => {
