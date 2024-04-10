@@ -113,12 +113,21 @@ app.use(session({
   secret: 'your-secret-key',
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    secure: true, // Note: Change this to true if you are using HTTPS
+    httpOnly: true,
+    sameSite: 'lax', // 'lax' or 'strict' based on your requirements
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+  }
 }));
 
 // Serve the HTML files
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+// Serve static files such as HTML, CSS, and JavaScript
 app.use(express.static(path.join(__dirname, 'System')));
+app.use('/css', express.static(path.join(__dirname, 'views', 'css'), { 'extensions': ['css'] }));
+
 
 app.get('/', (req, res) => {
   res.render("indexwelcomepage");

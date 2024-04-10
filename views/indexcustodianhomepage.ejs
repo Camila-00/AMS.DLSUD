@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
     <title>Asset Management</title>
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
@@ -14,18 +15,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
     <style>
       
-      .redirect-button{ background-color: #1db954; /* Same green color as the Print Table button */
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-left: 5px;}
-
-    .redirect-button:hover {
-    background-color: #14843a; /* Darker green on hover */
-}
 
  /* New styles for the update button */
  
@@ -261,6 +250,7 @@
 .add-button:hover, .pdd-button:hover, .rdf-button:hover {
     background-color: #14843a; /* Darker green on hover */
 }
+
 .report-button{ background-color: #1db954; /* Same green color as the Print Table button */
     color: #fff;
     border: none;
@@ -300,20 +290,20 @@
     margin-bottom: 10px;
 }
 
-/* Add button styling */
-.add-button, .pdd-button, .rdf-button {
+.add-button, .pdd-button, .rdf-button, .redirect-button {
     background-color: #1db954; /* Same green color as the Print Table button */
     color: #fff;
     border: none;
     border-radius: 5px;
-    padding: 10px 66px;
+    padding: 10px 20px; /* Updated padding to 10px top/bottom, 20px left/right */
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.add-button:hover, .pdd-button:hover, .rdf-button:hover {
+.add-button:hover, .pdd-button:hover, .rdf-button:hover, .redirect-button:hover {
     background-color: #14843a; /* Darker green on hover */
 }
+
 
 /* Borrower table styling */
 #borrower-content table {
@@ -354,21 +344,20 @@
     flex-direction: column;
     align-items: center;
     margin: 20px 20px 20px 10px;
-    overflow-y: auto;
-    max-height: 300px;
-    width: 1356px;
+    /* Remove max-height to allow container to expand based on content */
+    width: 100%; /* Adjust width to fill available space */
     background-color: #f2f2f2;
     border: 1px solid #ddd;
     border-radius: 5px;
     position: relative;
-    height: 150px;
+    /* Remove fixed height to allow container to expand based on content */
 }
 
 .room-row {
     display: flex;
     margin-top: 15px;
     flex-direction: row;
-    justify-content: space-around; /* Changed to space-around */
+    justify-content: space-around;
     align-items: center;
     width: 100%; /* Added to ensure full width */
 }
@@ -381,8 +370,12 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    flex: 1; /* Added to ensure equal spacing */
-    text-align: center; 
+    text-align: center;
+    flex-grow: 1; /* Equal distribution of available space */
+    /* Set a minimum height to ensure consistent button sizes */
+    min-height: 50px; /* Adjust the value as needed */
+    /* Optionally, set a fixed height instead of min-height */
+    /* height: 50px; */
 }
 
 .room:hover {
@@ -390,6 +383,7 @@
     color: black;
     text-decoration: none;
 }
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -405,6 +399,8 @@
 .room-container {
     animation: fadeInUp 0.5s ease-in-out;
 }
+
+
 
 
 /* Borrowers box styling */
@@ -592,6 +588,8 @@
     color: #666; 
     cursor: not-allowed; 
 }
+
+
 
            </style>
 </head>
