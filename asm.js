@@ -212,9 +212,13 @@ app.get('/indexcustodianhomepage', async (req, res) => { // CUSTODIAN HOMEPAGE C
 
 //different room counter - ROOM 201
 app.get('/assetcount201', async (req, res) => { 
+  try {
   const dBoard201DbCollection = dBoard201Db.collection(dBoard201DbCollectionName);
-  const count201 = await dBoard201DbCollection.count();
-  res.status(201).send({ count201 });
+  const count201 = await dBoard201DbCollection.countDocuments({ isDeleted: { $ne: true } }); 
+  res.status(200).json({ count201 }); // Changed from 201 to 200 as it's a success response
+} catch (error) {
+  res.status(500).json({ error: 'Internal server error' }); // Handle errors gracefully
+  }
 });
 
 // Server-side route to get asset count for ROOM 202
@@ -232,13 +236,15 @@ app.get('/totalassetscount', async(req, res) => { // TOTAL ASSETS ON DASHBOARD C
   const dBoard201DbCollection = dBoard201Db.collection(dBoard201DbCollectionName);
   const dBoard202DbCollection = dBoard202Db.collection(dBoard202DbCollectionName);
 
-  const count201 = await dBoard201DbCollection.count();
-  const count202 = await dBoard202DbCollection.count();
+  // Count documents without isDeleted:true for both collections
+  const count201 = await dBoard201DbCollection.countDocuments({ isDeleted: { $ne: true } });
+  const count202 = await dBoard202DbCollection.countDocuments({ isDeleted: { $ne: true } });
 
   const totalCount = count201 + count202;
 
-  res.status(201).send({totalCount});
+  res.status(201).send({ totalCount });
 })
+
 
 app.get('/indexreportcount', async (req, res) => { // REPORT COUNTER ON CUSTODIAN HOMEPAGE
   try {
@@ -717,6 +723,57 @@ app.put('/assetsupdate/:id', async (req, res) => { // BORROWER DATA UPDATE AND A
   }
 });
 
+app.get('/assets', async (req, res) => { // BORROWER DATA
+  try {
+    // Assuming you don't have a user authentication mechanism,
+    // and you want to fetch all assets without filtering by user
+    if (!lendingDb) {
+      console.log('Lending database connection is not established yet.');
+      return res.status(500).json({ error: 'Lending database connection is not ready.' });
+    }
+
+    const assets = await lendingDb.collection(lendingCollectionName)
+      .find({ _id: { $exists: true, $ne: null } })
+      .toArray();
+
+    res.json(assets);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+// Assume you already have the MongoDB client and database connection set up
+
+app.put('/assetsupdate/:id', async (req, res) => { // BORROWER DATA UPDATE AND ARCHIVE BUTTON
+  const { id } = req.params; // Ensure that this is the correct variable name
+  const updatedAsset = req.body;
+
+  console.log('Received Database ID:', id);
+  console.log('Request Body:', updatedAsset);
+
+  try {
+    const result = await lendingDb.collection(lendingCollectionName).updateOne(
+      { _id: new ObjectId(id) }, // Use ObjectId directly for the _id
+      { $set: updatedAsset } // Update all fields in the document
+    );
+
+    console.log('Database Update Result:', result);
+
+    if (result.modifiedCount === 1) {
+      if (updatedAsset.isDeleted) {
+        res.status(200).json({ message: 'Asset soft deleted successfully' });
+      } else {
+        res.status(200).json({ message: 'Asset updated successfully' });
+      }
+    } else {
+      res.status(404).json({ message: 'Asset not found' });
+    }
+  } catch (err) {
+    console.error('Error updating asset:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 app.get('/item_description', async (req, res) => { // BORROWER FORM AFTER SCANNING ON PLACEHOLDER
   try {
       // Check if the barcode parameter is present
@@ -945,7 +1002,6 @@ app.put('/softdelete/dBoard202/:barcode', async (req, res) => {
   }
 });
 
-
 app.get('/alldata', async (req, res) => {
   try {
     // Fetch all data from the MongoDB collections for Borrower, Report, dBoard201, and dBoard202
@@ -971,43 +1027,44 @@ app.get('/alldata', async (req, res) => {
 
 app.get('/availability/items', async (req, res) => {
   try {
-    // Check if the database connections are established
-    if (!dBoard201Db || !dBoard202Db) {
-      console.log('Database connections are not established yet.');
-      return res.status(500).json({ error: 'Database connections are not ready.' });
-    }
+      // Check if the database connections are established
+      if (!dBoard201Db || !dBoard202Db) {
+          console.log('Database connections are not established yet.');
+          return res.status(500).json({ error: 'Database connections are not ready.' });
+      }
 
-    // Fetch data from the MongoDB collections for dBoard201Db and dBoard202Db
-    const data201 = await dBoard201Db.collection(dBoard201DbCollectionName).find({}).toArray();
-    const data202 = await dBoard202Db.collection(dBoard202DbCollectionName).find({}).toArray();
+      // Fetch data from the MongoDB collections for dBoard201Db and dBoard202Db
+      const data201 = await dBoard201Db.collection(dBoard201DbCollectionName).find({ isDeleted: { $ne: true }}).toArray();
+      const data202 = await dBoard202Db.collection(dBoard202DbCollectionName).find({ isDeleted: { $ne: true }}).toArray();
 
-    // Count the number of items in each category for each collection
-    const counts201 = {
-      UPS: data201.filter(item => item.category === 'UPS').length,
-      'SYSTEM UNIT': data201.filter(item => item.category === 'SYSTEM UNIT').length,
-      PRINTER: data201.filter(item => item.category === 'PRINTER').length,
-      'LCD MONITOR': data201.filter(item => item.category === 'LCD MONITOR').length,
-      FURNITURE: data201.filter(item => item.category === 'FURNITURE').length,
-      APPLIANCE: data201.filter(item => item.category === 'APPLIANCE').length,
-      'A/C': data201.filter(item => item.category === 'A/C').length
-    };
+      // Count the number of items in each category for each collection
+      const counts201 = {};
+      const counts202 = {};
 
-    const counts202 = {
-      UPS: data202.filter(item => item.category === 'UPS').length,
-      'SYSTEM UNIT': data202.filter(item => item.category === 'SYSTEM UNIT').length,
-      PRINTER: data202.filter(item => item.category === 'PRINTER').length,
-      'LCD MONITOR': data202.filter(item => item.category === 'LCD MONITOR').length,
-      FURNITURE: data202.filter(item => item.category === 'FURNITURE').length,
-      APPLIANCE: data202.filter(item => item.category === 'APPLIANCE').length,
-      'A/C': data202.filter(item => item.category === 'A/C').length
-    };
+      // Count items for data201
+      data201.forEach(item => {
+          if (counts201[item.category]) {
+              counts201[item.category]++;
+          } else {
+              counts201[item.category] = 1;
+          }
+      });
 
-    // Send the counts as part of the response
-    res.json({ counts201, counts202 });
+      // Count items for data202
+      data202.forEach(item => {
+          if (counts202[item.category]) {
+              counts202[item.category]++;
+          } else {
+              counts202[item.category] = 1;
+          }
+      });
+
+      // Send the counts as part of the response
+      res.json({ counts201, counts202 });
   } catch (error) {
-    // Handle errors and send an error response
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      // Handle errors and send an error response
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

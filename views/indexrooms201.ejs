@@ -117,6 +117,7 @@
                     <select class="form-select" id="asset_status">
                         <option value="Good">Good</option>
                         <option value="In Storage">In Storage</option>
+                        <option value="Borrowed">Borrowed</option>
                         <option value="Under Maintenance">Under Maintenance</option>
                         <option value="Transferred">Transferred</option>
                         <option value="Disposed">Disposed</option>
@@ -136,15 +137,17 @@
                     </select>
                 </div>
                 <!-- New input fields -->
+                                
                 <div class="mb-3">
-                    <label for="rdf_input" class="form-label">RDF Number:</label>
-                    <input type="text" class="form-control" id="rdf_input" data-field="rdf_number">
+                    <label for="rtf_input" class="form-label">Request for Transfer of Furniture/Equipment Number:</label>
+                    <input type="text" class="form-control" id="rtf_input" data-field="rtf_number">
                 </div>
                 
                 <div class="mb-3">
-                    <label for="rtf_input" class="form-label">RTF Number:</label>
-                    <input type="text" class="form-control" id="rtf_input" data-field="rtf_number">
+                    <label for="rdf_input" class="form-label">Request for Disposal of Furniture/Equipment Number:</label>
+                    <input type="text" class="form-control" id="rdf_input" data-field="rdf_number">
                 </div>
+
                 <div class="mb-3">
                     <label for="rtf_input" class="form-label">Room:</label>
                     <input type="text" class="form-control" id="room_input" data-field="room_input">
@@ -194,6 +197,35 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.js"></script>
 
 <script>
+    
+// Add an event listener to the asset_status dropdown
+const assetStatusDropdown = document.getElementById('asset_status');
+assetStatusDropdown.addEventListener('change', function () {
+    const selectedStatus = this.value;
+    const rdfInput = document.getElementById('rdf_input');
+    const rtfInput = document.getElementById('rtf_input');
+
+    // Hide both RDF and RTF inputs by default
+    rdfInput.style.display = 'none';
+    rtfInput.style.display = 'none';
+
+    // Show only the relevant input based on the selected status
+    if (selectedStatus === 'Transferred') {
+        rtfInput.style.display = 'block'; // Show RTF input
+    } else if (selectedStatus === 'Disposed') {
+        rdfInput.style.display = 'block'; // Show RDF input
+    }
+});
+
+// Hide RDF and RTF inputs by default
+window.addEventListener('DOMContentLoaded', function () {
+    const rdfInput = document.getElementById('rdf_input');
+    const rtfInput = document.getElementById('rtf_input');
+    rdfInput.style.display = 'none';
+    rtfInput.style.display = 'none';
+});
+
+
     let filterText = '';
     document.addEventListener("DOMContentLoaded", function () {
     const categoryDropdown = document.getElementById("category_input");
@@ -393,8 +425,8 @@ const searchInput = document.getElementById('searchInput201');
                     "property_number": "Property Number",
                     "serial_number": "Serial Number",
                     "unit_cost": "Unit Cost",
-                    "rdf_number": "RDF Number",
-                    "rtf_number": "RTF Number",
+                    "rdf_number": "Request for Disposal of Furniture/Equipment Number",
+                    "rtf_number": "Request for Transform of Furniture Number",
                     "asset_status": "Status",
                     "accountability": "Accountability",
                     "action": "Action",

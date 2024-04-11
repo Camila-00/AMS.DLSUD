@@ -1,16 +1,15 @@
-        /* Navbar styling */
-        .navbar {
-            background-color: #f8f9fa; /* Change to desired color */
-            z-index: 1000; /* Ensure it stays on top */
-            position: fixed; /* Fix the navbar position */
-            top: 0; /* Position it at the top */
-            width: 100%; /* Occupy full width */
-        }
+.navbar {
+    background-color: #f8f9fa; /* Change to desired color */
+    z-index: 1000; /* Ensure it stays on top */
+    position: fixed; /* Fix the navbar position */
+    top: 0; /* Position it at the top */
+    width: 100%; /* Occupy full width */
+}
 
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
+.navbar-brand {
+    font-size: 2rem; /* Adjust the font size as needed */
+    font-weight: bold;
+}
 
         
         .dropdown-menu {
@@ -44,7 +43,10 @@
 
         .sidebar a:hover {
             background-color: #11950092; /* Change hover background color */
+            text-decoration: none; /* Remove underline on hover */
+            color: white; /* Change text color on hover */
         }
+        
 
         /* Page content */
         .content {
@@ -143,4 +145,21 @@
 
         .pagination a:hover:not(.active) {
             background-color: #ddd;
+        }
+
+        #asset-content201 h1 {
+            margin-top: -50px;
+            font-family: Arial, sans-serif;
+        }
+        #asset-content202 h1 {
+            margin-top: -50px;
+            font-family: Arial, sans-serif;
+        }
+        #borrower-content h1 {
+            margin-top: -50px;
+            font-family: Arial, sans-serif;
+        }
+        #report-content h1 {
+            margin-top: -50px;
+            font-family: Arial, sans-serif;
         }

@@ -55,69 +55,52 @@
 
     // Function to fetch item counts and update the HTML content
     async function displayItemCounts() {
-        try {
-            const response = await fetch('/availability/items'); // Fetch data from the server
-            const data = await response.json(); // Parse JSON response
+    try {
+        const response = await fetch('/availability/items'); // Fetch data from the server
+        const data = await response.json(); // Parse JSON response
 
-            // Get the counts table body
-            const countsTableBody = document.getElementById('countsTableBody');
+        console.log("Received data from server:", data); // Log the received data
 
-            // Populate the counts table
-            for (const category in data.counts201) {
-                const countsTableRow = document.createElement('div');
-                countsTableRow.classList.add('counts-table-row');
+        // Get the counts table body
+        const countsTableBody = document.getElementById('countsTableBody');
 
-                const categoryCell = document.createElement('div');
-                categoryCell.classList.add('counts-table-category');
-                categoryCell.textContent = category;
-                countsTableRow.appendChild(categoryCell);
+        // Clear previous data
+        countsTableBody.innerHTML = '';
 
-                const count201Cell = document.createElement('div');
-                count201Cell.classList.add('counts-table-201');
-                count201Cell.textContent = data.counts201[category];
-                countsTableRow.appendChild(count201Cell);
+        // Populate the counts table
+        for (const category in data.counts201) {
+            console.log("Processing category:", category); // Log each category being processed
 
-                const count202Cell = document.createElement('div');
-                count202Cell.classList.add('counts-table-202');
-                count202Cell.textContent = data.counts202[category] || 0; // Use 0 if category not found in counts202
-                countsTableRow.appendChild(count202Cell);
+            const countsTableRow = document.createElement('div');
+            countsTableRow.classList.add('counts-table-row');
 
-                countsTableBody.appendChild(countsTableRow);
-            }
+            const categoryCell = document.createElement('div');
+            categoryCell.classList.add('counts-table-category');
+            categoryCell.textContent = category;
+            countsTableRow.appendChild(categoryCell);
 
-            // Add categories from counts202 that are not in counts201
-            for (const category in data.counts202) {
-                if (!(category in data.counts201)) {
-                    const countsTableRow = document.createElement('div');
-                    countsTableRow.classList.add('counts-table-row');
+            const count201Cell = document.createElement('div');
+            count201Cell.classList.add('counts-table-201');
+            count201Cell.textContent = data.counts201[category] || 0;
+            countsTableRow.appendChild(count201Cell);
 
-                    const categoryCell = document.createElement('div');
-                    categoryCell.classList.add('counts-table-category');
-                    categoryCell.textContent = category;
-                    countsTableRow.appendChild(categoryCell);
+            const count202Cell = document.createElement('div');
+            count202Cell.classList.add('counts-table-202');
+            count202Cell.textContent = data.counts202[category] || 0;
+            countsTableRow.appendChild(count202Cell);
 
-                    const count201Cell = document.createElement('div');
-                    count201Cell.classList.add('counts-table-201');
-                    count201Cell.textContent = 0; // Set count as 0 for counts201
-                    countsTableRow.appendChild(count201Cell);
-
-                    const count202Cell = document.createElement('div');
-                    count202Cell.classList.add('counts-table-202');
-                    count202Cell.textContent = data.counts202[category];
-                    countsTableRow.appendChild(count202Cell);
-
-                    countsTableBody.appendChild(countsTableRow);
-                }
-            }
-
-            
-        } catch (error) {
-            console.error('Error fetching item counts:', error);
+            countsTableBody.appendChild(countsTableRow);
         }
+    } catch (error) {
+        console.error('Error fetching item counts:', error);
     }
+}
+
     showAuthUsers();
     // Call the function when the page loads
     displayItemCounts();
 </script>
+
+
 </body>
 </html>

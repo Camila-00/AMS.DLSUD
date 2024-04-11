@@ -15,586 +15,583 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
     <style>
       
-      .redirect-button{ background-color: #1db954; /* Same green color as the Print Table button */
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-left: 5px;}
 
-    .redirect-button:hover {
-    background-color: #14843a; /* Darker green on hover */
-}
-
- /* New styles for the update button */
- 
- td button.update-button {
-        background-color: #1db954;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        padding: 5px 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    td button.update-button:hover {
-        background-color: #1fd860;
-    }
-
-    h1 {
-        padding-left: 10px;
-    }
-
-    /* New styles for the delete button */
-    td button.delete-button {
-        background-color: #D95353;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        padding: 5px 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    td button.delete-button:hover {
-        background-color: #a63434;
-    }
-
-    #searchInput {
-        margin-left: 10px; /* Adjust as needed */
-    }
-    #barcodeInput {
-        margin-left: 10px; /* Adjust as needed */
-    }
-
-    /* Add padding to the left of the print table button */
-    .report-button {
-        margin-left: 5px; /* Adjust as needed */
-    }
-
-        /* Custom CSS */
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        /* Navbar styling */
-        .navbar {
-    background-color: #f8f9fa; /* Change to desired color */
-    z-index: 1000; /* Ensure it stays on top */
-    position: fixed; /* Fix the navbar position */
-    top: 0; /* Position it at the top */
-    width: 100%; /* Occupy full width */
-}
-
-.navbar-brand {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-.dropdown-menu {
-    background-color: #f8f9fa; /* Change to desired color */
-}
-
-
-        /* Sidebar styling */
-        .sidebar {
-        background-color: #333333;
-        color: white;
-        height: 100vh;
-        width: 150px; /* Adjusted sidebar width */
-        position: fixed;
-        top: 0;
-        left: 0;
-        overflow-x: hidden;
-        padding-top: 60px;
-        transition: 0.3s;
-        z-index: 900;
-        margin-top: 20px;
-    }
-
-        .sidebar a {
-            padding: 10px 15px;
-            text-decoration: none;
-            font-size: 1.2rem;
-            display: block;
-            transition: 0.3s;
-            color: white; /* Text color */
-        }
-
-        .sidebar a:hover {
-            background-color: #11950092; /* Change hover background color */
-        }
-
-        /* Page content */
-        .content {
-        padding: 20px;
-        transition: margin-left 0.3s;
-        padding-left: 150px; /* Adjusted content padding */
-    }
-
-        /* Table styling */
-        table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        margin-left: 10px ;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        overflow-x: auto; /* Add horizontal scrollbar if necessary */
-        animation: fadeIn 0.5s ease-in-out;
-    }
-
-    th, td {
-        padding: 5px; /* Adjusted padding */
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-        white-space: nowrap; /* Prevent text wrapping */
+        /* New styles for the update button */
         
-    }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        /* Animation */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        /* Add these styles to your existing styles in the head of your HTML document */
-
-/* Report content styling */
-#report-content {
-    margin-top: 50px;
-    padding: 20px;
-    animation: fadeIn 0.5s ease-in-out;
-    margin-left: 0; /* Adjusted margin to accommodate the sidebar width */
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
-    max-width: 97%; /* Set a maximum width */
-
-}
-
-
-.report-actions {
-    margin-bottom: 20px;
-    display: flex; /* Use flexbox to align items horizontally */
-    align-items: center; /* Center items vertically within the flex container */
-}
-
-#report-content .add-button, .pdd-button, .rdf-button {
-    background-color: #1db954;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-left: 135px;
-}
-
-.add-button:hover, .pdd-button:hover, .rdf-button:hover {
-    background-color: #2fd667;
-}
-
-.filter-button {
-    background-color: #ddd;
-    color: #333;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    margin-left: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.filter-button:hover {
-    background-color: #ccc;
-}
-
-.report-table {
-    width: 95%; /* Set the width to 100% to take the full width of the available space */
-    border-collapse: collapse;
-    margin-top: 20px;
-    margin-left: 135px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    overflow-x: auto;
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-.report-table th,
-.report-table td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-
-}
-
-.report-table th {
-    background-color: #f2f2f2;
-}
-#report-content h1 {
-    margin-left: 125px;
-}
-
-
-
-/* Add button styling */
-.add-button, .pdd-button, .rdf-button {
-    background-color: #1db954; /* Same green color as the Print Table button */
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-left: 5px; /* Adjust the margin as needed */
-}
-
-.add-button:hover, .pdd-button:hover, .rdf-button:hover {
-    background-color: #14843a; /* Darker green on hover */
-}
-.report-button{ background-color: #1db954; /* Same green color as the Print Table button */
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-left: 5px;}
-
-    .report-button:hover {
-    background-color: #14843a; /* Darker green on hover */
-}
-
-
-
-/* Additional styles for Add Asset page */
-#add-asset-content {
-    margin-top: 50px;
-    animation: fadeIn 0.5s ease-in-out;
-    margin-left: 0; /* Adjusted margin to accommodate the sidebar width */
-}
-
-.form-container {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-    margin-left: 5px;
-}
-
-.form-container label {
-    margin-bottom: 5px;
-}
-
-.form-container input,
-.form-container select {
-    padding: 8px;
-    margin-bottom: 10px;
-}
-
-/* Add button styling */
-.add-button, .pdd-button, .rdf-button {
-    background-color: #1db954; /* Same green color as the Print Table button */
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 66px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.add-button:hover, .pdd-button:hover, .rdf-button:hover {
-    background-color: #14843a; /* Darker green on hover */
-}
-
-/* Borrower table styling */
-#borrower-content table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    overflow-x: auto;
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-#borrower-content th,
-#borrower-content td {
-    padding: 15px; /* Increased padding for better readability */
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    font-size: 12px;
-}
-
-#borrower-content th {
-    background-color: #f2f2f2;
-}
-
-/* Borrower content animation */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.room-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px 20px 20px 10px;
-    overflow-y: auto;
-    max-height: 300px;
-    width: 1356px;
-    background-color: #f2f2f2;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    position: relative;
-    height: 150px;
-}
-
-.room-row {
-    display: flex;
-    margin-top: 15px;
-    flex-direction: row;
-    justify-content: space-around; /* Changed to space-around */
-    align-items: center;
-    width: 100%; /* Added to ensure full width */
-}
-
-.room {
-    background-color: #1db954;
-    color: #fff;
-    padding: 10px 20px;
-    margin: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    flex: 1; /* Added to ensure equal spacing */
-    text-align: center; 
-}
-
-.room:hover {
-    background-color: #18863f;
-    color: black;
-    text-decoration: none;
-}
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Apply animation to the room container */
-.room-container {
-    animation: fadeInUp 0.5s ease-in-out;
-}
-
-
-/* Borrowers box styling */
-.borrowers-container {
-    display: flex; /* Set display to flex to enable flexbox layout */
-    justify-content: space-around; /* Adjust as needed */
-}
-
-.borrowers-box {
-    flex: 0.5; /* Half the size of the room container */
-    margin-left: 10px; /* Add space between the containers */
-    margin-top: 20px; /* Add margin at the top for separation */
-    background-color: #333333; /* Light gray background */
-    border: 1px solid #ddd; /* Border for a simple box */
-    border-radius: 5px; /* Rounded corners */
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    align-items: left;
-    max-height: 200px; /* Set a maximum height for the container */
-    width: 200px; /* Set a fixed width for the container */
-    height: 150px;
-    overflow-y: auto; /* Add scroll wheel for overflow */
-    position: relative; /* To position the Borrowers Number box */
-}
-
-.borrowers-box p {
-    margin-top: 10px;
-    font-weight: bold;
-    font-size: 20px;
-    margin-left: 10px;
-    color: white;
-}
-
-.borrowers-counter {
-    font-size: 50px;
-    margin-top: 5px;
-    margin-left: 10px;
-    color: white;
-}
-
-.borrowers-box-2 {
-    flex: 0.5; /* Half the size of the room container */
-    margin-left: 10px; /* Add space between the containers */
-    margin-top: 20px; /* Add margin at the top for separation */
-    background-color: #333333; /* Light gray background */
-    border: 1px solid #ddd; /* Border for a simple box */
-    border-radius: 5px; /* Rounded corners */
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    align-items: left;
-    max-height: 200px; /* Set a maximum height for the container */
-    width: 200px; /* Set a fixed width for the container */
-    overflow-y: auto; /* Add scroll wheel for overflow */
-    position: relative; /* To position the Borrowers Number box */
-}
-
-.borrowers-box-2 p {
-    margin-top: 10px;
-    font-weight: bold;
-    font-size: 20px;
-    margin-left: 10px;
-    color: white;
-}
-
-.borrowers-counter-2 {
-    font-size: 50px;
-    margin-top: 5px;
-    margin-left: 10px;
-    color: white;
-}
-
-#report-form-content {
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-#report-form-content .form-container textarea {
-    resize: vertical; /* Allow vertical resizing of the textarea */
-}
-
-#report-form-content .add-button {
-    margin-top: 10px; /* Adjust the margin as needed */
-}
-
-/* Report content styling */
-#report-content {
-    padding: 20px;
-    animation: fadeIn 0.5s ease-in-out;
-    margin-left: 0; /* Adjusted margin to accommodate the sidebar width */
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
-}
-
-#welcomeText {
-    font-weight: bold;
-}
-#authUsers {
-    text-transform: capitalize; /* Capitalize the first letter of the username */
-}
-
-.return-button, .archive-button {
-    background-color: rgb(0, 207, 0);
-    color: white;
-    border: none;
-    padding: 5px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: block; /* Changed to block */
-    font-size: 12px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
-
-.archive-button {
-    margin-top: 10px; /* Added margin-top to separate the buttons */
-}
-
-.return-button:hover, .archive-button:hover {
-    background-color: rgb(0, 158, 0);
-}
-
-.return-button:hover, .archive-button:hover {
-    animation: pulse 0.5s infinite alternate;
-}
-
-
-#successMessage, #errorMessage {
-    display: none;
-    padding: 10px;
-    margin-left: 5px;
-    margin-top: 10px;
-    border-radius: 5px;
-    font-weight: bold;
-    text-align: center;
-    }
-
-    #successMessage {
-        background-color: #1db954; /* Green */
-        color: #ffffff; /* Dark green */
-    }
-
-    #errorMessage {
-        background-color: #c50000; /* Red */
-        color: white; /* Dark red */
-    }
-    @keyframes fadeInOut {
-    0% { opacity: 0; }
-    5% { opacity: 1; }
-    95% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
-#reportSuccessMessage, #reportErrorMessage {
-    display: none;
-    padding: 10px;
-    margin-left: 5px;
-    margin-top: 10px;
-    border-radius: 5px;
-    font-weight: bold;
-    text-align: center;
-    animation: fadeInOut 3s ease-in-out; /* Apply fade in/out animation */
-}
-
-#reportSuccessMessage {
-    background-color: #1db954; /* Green */
-    color: #ffffff; /* Dark green */
-}
-
-#reportErrorMessage {
-    background-color: #c50000; /* Red */
-    color: white; /* Dark red */
-}
-
-@keyframes fadeInOut {
-    0% { opacity: 0; }
-    5% { opacity: 1; }
-    95% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
-.readonly {
-    background-color: #f2f2f2; 
-    color: #666; 
-    cursor: not-allowed; 
-}
-
-           </style>
+        td button.update-button {
+               background-color: #1db954;
+               color: #fff;
+               border: none;
+               border-radius: 5px;
+               padding: 5px 5px;
+               cursor: pointer;
+               transition: background-color 0.3s ease;
+           }
+       
+           td button.update-button:hover {
+               background-color: #1fd860;
+           }
+       
+           h1 {
+               padding-left: 10px;
+           }
+       
+           /* New styles for the delete button */
+           td button.delete-button {
+               background-color: #D95353;
+               color: #fff;
+               border: none;
+               border-radius: 5px;
+               padding: 5px 5px;
+               cursor: pointer;
+               transition: background-color 0.3s ease;
+           }
+       
+           td button.delete-button:hover {
+               background-color: #a63434;
+           }
+       
+           #searchInput {
+               margin-left: 10px; /* Adjust as needed */
+           }
+           #barcodeInput {
+               margin-left: 10px; /* Adjust as needed */
+           }
+       
+           /* Add padding to the left of the print table button */
+           .report-button {
+               margin-left: 5px; /* Adjust as needed */
+           }
+       
+               /* Custom CSS */
+               body {
+                   margin: 0;
+                   font-family: Arial, sans-serif;
+               }
+       
+               /* Navbar styling */
+               .navbar {
+           background-color: #f8f9fa; /* Change to desired color */
+           z-index: 1000; /* Ensure it stays on top */
+           position: fixed; /* Fix the navbar position */
+           top: 0; /* Position it at the top */
+           width: 100%; /* Occupy full width */
+       }
+       
+       .navbar-brand {
+           font-size: 1.5rem;
+           font-weight: bold;
+       }
+       
+       .dropdown-menu {
+           background-color: #f8f9fa; /* Change to desired color */
+       }
+       
+       
+               /* Sidebar styling */
+               .sidebar {
+               background-color: #333333;
+               color: white;
+               height: 100vh;
+               width: 150px; /* Adjusted sidebar width */
+               position: fixed;
+               top: 0;
+               left: 0;
+               overflow-x: hidden;
+               padding-top: 60px;
+               transition: 0.3s;
+               z-index: 900;
+               margin-top: 20px;
+           }
+       
+               .sidebar a {
+                   padding: 10px 15px;
+                   text-decoration: none;
+                   font-size: 1.2rem;
+                   display: block;
+                   transition: 0.3s;
+                   color: white; /* Text color */
+               }
+       
+               .sidebar a:hover {
+                   background-color: #11950092; /* Change hover background color */
+               }
+       
+               /* Page content */
+               .content {
+               padding: 20px;
+               transition: margin-left 0.3s;
+               padding-left: 150px; /* Adjusted content padding */
+           }
+       
+               /* Table styling */
+               table {
+               width: 100%;
+               border-collapse: collapse;
+               margin-top: 20px;
+               margin-left: 10px ;
+               box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+               overflow-x: auto; /* Add horizontal scrollbar if necessary */
+               animation: fadeIn 0.5s ease-in-out;
+           }
+       
+           th, td {
+               padding: 5px; /* Adjusted padding */
+               text-align: left;
+               border-bottom: 1px solid #ddd;
+               white-space: nowrap; /* Prevent text wrapping */
+               
+           }
+       
+               th {
+                   background-color: #f2f2f2;
+               }
+       
+               /* Animation */
+               @keyframes fadeIn {
+                   from {
+                       opacity: 0;
+                       transform: translateY(-20px);
+                   }
+                   to {
+                       opacity: 1;
+                       transform: translateY(0);
+                   }
+               }
+               /* Add these styles to your existing styles in the head of your HTML document */
+       
+       /* Report content styling */
+       #report-content {
+           margin-top: 50px;
+           padding: 20px;
+           animation: fadeIn 0.5s ease-in-out;
+           margin-left: 0; /* Adjusted margin to accommodate the sidebar width */
+           box-sizing: border-box; /* Include padding and border in the element's total width and height */
+           max-width: 97%; /* Set a maximum width */
+       
+       }
+       
+       
+       .report-actions {
+           margin-bottom: 20px;
+           display: flex; /* Use flexbox to align items horizontally */
+           align-items: center; /* Center items vertically within the flex container */
+       }
+       
+       #report-content .add-button, .pdd-button, .rdf-button {
+           background-color: #1db954;
+           color: #fff;
+           border: none;
+           border-radius: 5px;
+           padding: 10px 10px;
+           cursor: pointer;
+           transition: background-color 0.3s ease;
+           margin-left: 135px;
+       }
+       
+       .add-button:hover, .pdd-button:hover, .rdf-button:hover {
+           background-color: #2fd667;
+       }
+       
+       .filter-button {
+           background-color: #ddd;
+           color: #333;
+           border: none;
+           border-radius: 5px;
+           padding: 10px 15px;
+           margin-left: 5px;
+           cursor: pointer;
+           transition: background-color 0.3s ease;
+       }
+       
+       .filter-button:hover {
+           background-color: #ccc;
+       }
+       
+       .report-table {
+           width: 95%; /* Set the width to 100% to take the full width of the available space */
+           border-collapse: collapse;
+           margin-top: 20px;
+           margin-left: 135px;
+           box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+           overflow-x: auto;
+           animation: fadeIn 0.5s ease-in-out;
+       }
+       
+       .report-table th,
+       .report-table td {
+           padding: 10px;
+           text-align: left;
+           border-bottom: 1px solid #ddd;
+       
+       }
+       
+       .report-table th {
+           background-color: #f2f2f2;
+       }
+       #report-content h1 {
+           margin-left: 125px;
+       }
+       
+       
+       
+       /* Add button styling */
+       .add-button, .pdd-button, .rdf-button {
+           background-color: #1db954; /* Same green color as the Print Table button */
+           color: #fff;
+           border: none;
+           border-radius: 5px;
+           padding: 10px 15px;
+           cursor: pointer;
+           transition: background-color 0.3s ease;
+           margin-left: 5px; /* Adjust the margin as needed */
+       }
+       
+       .add-button:hover, .pdd-button:hover, .rdf-button:hover {
+           background-color: #14843a; /* Darker green on hover */
+       }
+       
+       .report-button{ background-color: #1db954; /* Same green color as the Print Table button */
+           color: #fff;
+           border: none;
+           border-radius: 5px;
+           padding: 10px 15px;
+           cursor: pointer;
+           transition: background-color 0.3s ease;
+           margin-left: 5px;}
+       
+           .report-button:hover {
+           background-color: #14843a; /* Darker green on hover */
+       }
+       
+       
+       
+       /* Additional styles for Add Asset page */
+       #add-asset-content {
+           margin-top: 50px;
+           animation: fadeIn 0.5s ease-in-out;
+           margin-left: 0; /* Adjusted margin to accommodate the sidebar width */
+       }
+       
+       .form-container {
+           display: flex;
+           flex-direction: column;
+           margin-bottom: 20px;
+           margin-left: 5px;
+       }
+       
+       .form-container label {
+           margin-bottom: 5px;
+       }
+       
+       .form-container input,
+       .form-container select {
+           padding: 8px;
+           margin-bottom: 10px;
+       }
+       
+       .add-button, .pdd-button, .rdf-button, .redirect-button {
+           background-color: #1db954; /* Same green color as the Print Table button */
+           color: #fff;
+           border: none;
+           border-radius: 5px;
+           padding: 10px 20px; /* Updated padding to 10px top/bottom, 20px left/right */
+           cursor: pointer;
+           transition: background-color 0.3s ease;
+       }
+       
+       .add-button:hover, .pdd-button:hover, .rdf-button:hover, .redirect-button:hover {
+           background-color: #14843a; /* Darker green on hover */
+       }
+       
+       
+       /* Borrower table styling */
+       #borrower-content table {
+           width: 100%;
+           border-collapse: collapse;
+           margin-top: 20px;
+           box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+           overflow-x: auto;
+           animation: fadeIn 0.5s ease-in-out;
+       }
+       
+       #borrower-content th,
+       #borrower-content td {
+           padding: 15px; /* Increased padding for better readability */
+           text-align: left;
+           border-bottom: 1px solid #ddd;
+           font-size: 12px;
+       }
+       
+       #borrower-content th {
+           background-color: #f2f2f2;
+       }
+       
+       /* Borrower content animation */
+       @keyframes fadeIn {
+           from {
+               opacity: 0;
+               transform: translateY(-20px);
+           }
+           to {
+               opacity: 1;
+               transform: translateY(0);
+           }
+       }
+       
+       .room-container {
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+           margin: 20px 20px 20px 10px;
+           /* Remove max-height to allow container to expand based on content */
+           width: 100%; /* Adjust width to fill available space */
+           background-color: #f2f2f2;
+           border: 1px solid #ddd;
+           border-radius: 5px;
+           position: relative;
+           /* Remove fixed height to allow container to expand based on content */
+       }
+       
+       .room-row {
+           display: flex;
+           margin-top: 15px;
+           flex-direction: row;
+           justify-content: space-around;
+           align-items: center;
+           width: 100%; /* Added to ensure full width */
+       }
+       
+       .room {
+           background-color: #1db954;
+           color: #fff;
+           padding: 10px 20px;
+           margin: 5px;
+           border-radius: 5px;
+           cursor: pointer;
+           transition: background-color 0.3s ease;
+           text-align: center;
+           flex-grow: 1; /* Equal distribution of available space */
+           /* Set a minimum height to ensure consistent button sizes */
+           min-height: 50px; /* Adjust the value as needed */
+           /* Optionally, set a fixed height instead of min-height */
+           /* height: 50px; */
+       }
+       
+       .room:hover {
+           background-color: #18863f;
+           color: black;
+           text-decoration: none;
+       }
+       
+       @keyframes fadeInUp {
+           from {
+               opacity: 0;
+               transform: translateY(20px);
+           }
+           to {
+               opacity: 1;
+               transform: translateY(0);
+           }
+       }
+       
+       /* Apply animation to the room container */
+       .room-container {
+           animation: fadeInUp 0.5s ease-in-out;
+       }
+       
+       
+       
+       
+       /* Borrowers box styling */
+       .borrowers-container {
+           display: flex; /* Set display to flex to enable flexbox layout */
+           justify-content: space-around; /* Adjust as needed */
+       }
+       
+       .borrowers-box {
+           flex: 0.5; /* Half the size of the room container */
+           margin-left: 10px; /* Add space between the containers */
+           margin-top: 20px; /* Add margin at the top for separation */
+           background-color: #333333; /* Light gray background */
+           border: 1px solid #ddd; /* Border for a simple box */
+           border-radius: 5px; /* Rounded corners */
+           display: flex;
+           flex-direction: column;
+           justify-content: left;
+           align-items: left;
+           max-height: 200px; /* Set a maximum height for the container */
+           width: 200px; /* Set a fixed width for the container */
+           height: 150px;
+           overflow-y: auto; /* Add scroll wheel for overflow */
+           position: relative; /* To position the Borrowers Number box */
+       }
+       
+       .borrowers-box p {
+           margin-top: 10px;
+           font-weight: bold;
+           font-size: 20px;
+           margin-left: 10px;
+           color: white;
+       }
+       
+       .borrowers-counter {
+           font-size: 50px;
+           margin-top: 5px;
+           margin-left: 10px;
+           color: white;
+       }
+       
+       .borrowers-box-2 {
+           flex: 0.5; /* Half the size of the room container */
+           margin-left: 10px; /* Add space between the containers */
+           margin-top: 20px; /* Add margin at the top for separation */
+           background-color: #333333; /* Light gray background */
+           border: 1px solid #ddd; /* Border for a simple box */
+           border-radius: 5px; /* Rounded corners */
+           display: flex;
+           flex-direction: column;
+           justify-content: left;
+           align-items: left;
+           max-height: 200px; /* Set a maximum height for the container */
+           width: 200px; /* Set a fixed width for the container */
+           overflow-y: auto; /* Add scroll wheel for overflow */
+           position: relative; /* To position the Borrowers Number box */
+       }
+       
+       .borrowers-box-2 p {
+           margin-top: 10px;
+           font-weight: bold;
+           font-size: 20px;
+           margin-left: 10px;
+           color: white;
+       }
+       
+       .borrowers-counter-2 {
+           font-size: 50px;
+           margin-top: 5px;
+           margin-left: 10px;
+           color: white;
+       }
+       
+       #report-form-content {
+           animation: fadeIn 0.5s ease-in-out;
+       }
+       
+       #report-form-content .form-container textarea {
+           resize: vertical; /* Allow vertical resizing of the textarea */
+       }
+       
+       #report-form-content .add-button {
+           margin-top: 10px; /* Adjust the margin as needed */
+       }
+       
+       /* Report content styling */
+       #report-content {
+           padding: 20px;
+           animation: fadeIn 0.5s ease-in-out;
+           margin-left: 0; /* Adjusted margin to accommodate the sidebar width */
+           box-sizing: border-box; /* Include padding and border in the element's total width and height */
+       }
+       
+       #welcomeText {
+           font-weight: bold;
+       }
+       #authUsers {
+           text-transform: capitalize; /* Capitalize the first letter of the username */
+       }
+       
+       .return-button, .archive-button {
+           background-color: rgb(0, 207, 0);
+           color: white;
+           border: none;
+           padding: 5px 20px;
+           text-align: center;
+           text-decoration: none;
+           display: block; /* Changed to block */
+           font-size: 12px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 4px;
+           transition: background-color 0.3s ease;
+       }
+       
+       .archive-button {
+           margin-top: 10px; /* Added margin-top to separate the buttons */
+       }
+       
+       .return-button:hover, .archive-button:hover {
+           background-color: rgb(0, 158, 0);
+       }
+       
+       .return-button:hover, .archive-button:hover {
+           animation: pulse 0.5s infinite alternate;
+       }
+       
+       
+       #successMessage, #errorMessage {
+           display: none;
+           padding: 10px;
+           margin-left: 5px;
+           margin-top: 10px;
+           border-radius: 5px;
+           font-weight: bold;
+           text-align: center;
+           }
+       
+           #successMessage {
+               background-color: #1db954; /* Green */
+               color: #ffffff; /* Dark green */
+           }
+       
+           #errorMessage {
+               background-color: #c50000; /* Red */
+               color: white; /* Dark red */
+           }
+           @keyframes fadeInOut {
+           0% { opacity: 0; }
+           5% { opacity: 1; }
+           95% { opacity: 1; }
+           100% { opacity: 0; }
+       }
+       
+       #reportSuccessMessage, #reportErrorMessage {
+           display: none;
+           padding: 10px;
+           margin-left: 5px;
+           margin-top: 10px;
+           border-radius: 5px;
+           font-weight: bold;
+           text-align: center;
+           animation: fadeInOut 3s ease-in-out; /* Apply fade in/out animation */
+       }
+       
+       #reportSuccessMessage {
+           background-color: #1db954; /* Green */
+           color: #ffffff; /* Dark green */
+       }
+       
+       #reportErrorMessage {
+           background-color: #c50000; /* Red */
+           color: white; /* Dark red */
+       }
+       
+       @keyframes fadeInOut {
+           0% { opacity: 0; }
+           5% { opacity: 1; }
+           95% { opacity: 1; }
+           100% { opacity: 0; }
+       }
+       
+       .readonly {
+           background-color: #f2f2f2; 
+           color: #666; 
+           cursor: not-allowed; 
+       }
+       
+       
+       
+                  </style>
 </head>
 
 <body>
@@ -683,68 +680,67 @@
 <!-- Add Asset content -->
 <div class="content" id="add-asset-content" style="display: none;">
     <h1>Add Asset</h1>
-    <!-- Pinalipat ni jaden -->
 
     <!-- Add asset form -->
     <form id="addAssetForm">
-
         <div class="form-container">
-    <label for="room">Room:</label>
-    <select class="text" id="room" name="room" required>
-        <option value="select"></option>
-        <option value="201">201</option>
-        <option value="202">202</option>
-    </select>
+            <label for="room">Room:</label>
+            <select class="text" id="room" name="room" required>
+                <option value="select"></option>
+                <option value="201">201</option>
+                <option value="202">202</option>
+            </select>
 
-    <label for="location">Location:</label>
-    <input type="text" id="location" required>
+            <label for="location">Location:</label>
+            <input type="text" id="location" required>
 
-    <label for="category">Category:</label>
-    <select id="category" required>
-        <option value="select"></option>
-        <option value="Uninterrupted Power Supply">Uninterrupted Power Supply</option>
-        <option value="System Unit">System Unit</option>
-        <option value="LCD Monitor">LCD Monitor</option>
-        <option value="Furniture">Furniture</option>
-        <option value="Appliance">Appliance</option>
-        <option value="Air Conditioner">Air Conditioner</option>
-        <option value="Printer">Printer</option>
-        <option value="Add">Add New</option>
+            <label for="category">Category:</label>
+            <select id="category" required>
+                <option value="select"></option>
+                <option value="Uninterrupted Power Supply">Uninterrupted Power Supply</option>
+                <option value="System Unit">System Unit</option>
+                <option value="LCD Monitor">LCD Monitor</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Appliance">Appliance</option>
+                <option value="Air Conditioner">Air Conditioner</option>
+                <option value="Printer">Printer</option>
+                <option value="Add">Add New</option>
+            </select>
 
-    </select>
-    
+            <label for="item_description">Item Description:</label>
+            <input type="text" id="item_description" required>
+            
+            <label for="property_number">Property Number:</label>
+            <input type="text" id="property_number" required>
 
-    <label for="item_description">Item Description:</label>
-    <input type="text" id="item_description" required>
-    
-    <label for="property_number">Property Number:</label>
-    <input type="text" id="property_number" required>
+            <label for="serial_number">Serial Number:</label>
+            <input type="text" id="serial_number" required>
 
-    <label for="serial_number">Serial Number:</label>
-    <input type="text" id="serial_number" required>
+            <label for="unit_cost">Unit Cost:</label>
+            <input type="text" id="unit_cost" required>
 
-    <label for="unit_cost">Unit Cost:</label>
-    <input type="text" id="unit_cost" required>
+            <!-- Hidden labels and inputs -->
+            <label for="rdf_number" style="display: none;">Request for Disposal of Furniture Number:</label>
+            <input type="text" id="rdf_number" style="display: none;">
 
-    <label for="rdf_number">Request for Disposal of Furniture Number:</label>
-    <input type="text" id="rdf_number">
+            <label for="rtf_number" style="display: none;">Request for Transfer of Furniture Number:</label>
+            <input type="text" id="rtf_number" style="display: none;">
+            <!-- End of hidden labels and inputs -->
 
-    <label for="rtf_number">Rquest for Transfer of Furniture Number:</label>
-    <input type="text" id="rtf_number">
-
-    <label for="asset_status">Status:</label>
-    <select id="asset_status" required>
-        <option value="" disabled selected style="color: grey;"></option>
-        <option value="Good">Good</option>
-        <option value="In Storage">In Storage</option>
-    </select>
+            <label for="asset_status">Status:</label>
+            <select id="asset_status" required>
+                <option value="" disabled selected style="color: grey;"></option>
+                <option value="Good">Good</option>
+                <option value="In Storage">In Storage</option>
+            </select>
         </div>
-     
-<button type="submit" class="add-button" id="submitAssetButton">Submit</button>
-    <div id="successMessage" style="display: none;"></div>
-    <div id="errorMessage" style="display: none;"></div>
+        
+        <button type="submit" class="add-button" id="submitAssetButton">Submit</button>
+        <div id="successMessage" style="display: none;"></div>
+        <div id="errorMessage" style="display: none;"></div>
     </form>
 </div>
+
 
 
 <script>
