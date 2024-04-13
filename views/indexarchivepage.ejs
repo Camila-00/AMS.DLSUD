@@ -170,11 +170,6 @@
         let currentRoom = '201'; // Ensure currentRoom is defined globally
         const itemsPerPage = 10; // Define itemsPerPage globally
     
-        async function showAuthUsers() {
-        let usersName = document.getElementById("authUsers");
-        usersName.innerText = await localStorage.getItem('lastName');
-    }
-
         function showRoomContent(room) {
             hideAllTabs(); // Hide all other tabs
             document.getElementById('asset-content' + room).style.display = 'block';
@@ -516,7 +511,7 @@ function isReportHidden(isDeleted) { // FOR ASSET CONDITION
     return !isDeleted; 
 }
 
-showAuthUsers()
+
     </script>
     
     

@@ -236,4 +236,11 @@ margin-top: -20px;
 margin-left: 775px; /* Adjust margin-left as needed */
 border-radius: 10px; /* Rounded borders */
 color: white; /* White text */
+
+
+#rdf_input,
+#rtf_input {
+    display: none;
+}
+
 }
