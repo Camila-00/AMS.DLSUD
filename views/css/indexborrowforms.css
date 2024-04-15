@@ -6,6 +6,39 @@ body {
   }
 
 
+
+  .send-btn {
+    background-color: #1db954; /* Blue color */
+    color: #fff; /* White text color */
+    border: none; /* Remove border */
+    padding: 10px 20px; /* Adjust padding */
+    width: 100%; /* Make it full width (optional) */
+    transition: background-color 0.2s ease; /* Smooth transition on hover */
+    border-radius: 5px; /* Add rounded corners */
+    margin-bottom: 5px;
+  }
+
+  .logout-btn {
+    background-color: #e74c3c; /* Red color */
+    color: #fff; /* White text color */
+    border: none; /* Remove border */
+    padding: 10px 20px; /* Adjust padding */
+    width: 100%; /* Make it full width (optional) */
+    transition: background-color 0.2s ease; /* Smooth transition on hover */
+    border-radius: 5px; /* Add rounded corners */
+  }
+
+
+  .send-btn:hover {
+    background-color: #178d40; /* Hover color for send button (blue) */
+  }
+  
+  .logout-btn:hover {
+    background-color: #ac392d; /* Hover color for logout button (red) */
+  }
+
+
+
   
   .back-btn {
     position: absolute;
@@ -67,7 +100,7 @@ margin-top: 0; /* Remove top margin for the last button */
   margin-top: 10px; /* Adjusted margin */
 }
 
-send {
+.send {
   background-color: #1DB954;
 }
 
@@ -142,4 +175,10 @@ h1 {
       color: #333333;
       margin-bottom: 30px;
   }
+
+
+
+
+
+  
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
-    <title>Asset Management</title>
+    <title>AMS – Archives</title>
     <link rel="stylesheet" href="/css/indexarchive.css">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -170,6 +170,7 @@
         let currentRoom = '201'; // Ensure currentRoom is defined globally
         const itemsPerPage = 10; // Define itemsPerPage globally
     
+
         function showRoomContent(room) {
             hideAllTabs(); // Hide all other tabs
             document.getElementById('asset-content' + room).style.display = 'block';
@@ -276,7 +277,10 @@
     }
 }
 
-
+async function showAuthUsers() {
+        let usersName = document.getElementById("authUsers");
+        usersName.innerText = await localStorage.getItem('lastName');
+    }
 
     
         document.addEventListener('DOMContentLoaded', function () {
@@ -511,7 +515,7 @@ function isReportHidden(isDeleted) { // FOR ASSET CONDITION
     return !isDeleted; 
 }
 
-
+showAuthUsers()
     </script>
     
     

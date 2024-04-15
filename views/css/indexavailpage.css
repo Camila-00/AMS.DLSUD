@@ -103,3 +103,6 @@ color: white;
 #authUsers {
     text-transform: capitalize; /* Capitalize the first letter of the username */
 }
+#welcomeText {
+    font-weight: bold;
+}

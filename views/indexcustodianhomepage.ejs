@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
-    <title>Asset Management</title>
+    <title>AMS – Asset Management System</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -380,7 +380,6 @@
        
        .room:hover {
            background-color: #18863f;
-           color: black;
            text-decoration: none;
        }
        
@@ -617,18 +616,18 @@
     <div class="sidebar">
         <a href="#" onclick="showDashboard()">Dashboard</a>
         <a href="#" onclick="showReport()">Asset Condition</a>
-        <a href="#" class="borrower-link" onclick="showBorrowerContent()">Borrower</a>
+        <a href="#" class="borrower-link" onclick="showBorrowerContent()">Borrower List</a>
         <a href="/indexarchivepage">Archives</a>
     </div>
 
         <!-- Page content -->
         <div class="content" id="dashboard-content" style="display: none; margin-top: 50px;"> <!--TRANSFER FUNCTIONALITY FOR PRINT AND FILTER-->
-            <h1>Dashboard Content</h1>
+            <h1>Asset Dashboard</h1>
             <button class="add-button" id="addAssetButton">Add Asset</button>
             <button class="pdd-button" onclick="printDatabaseData()">Print Database Data</button>
             <button class="rdf-button" onclick="downloadRDF()">RDF Forms</button>
             <button class="rdf-button" onclick="downloadRTF()">RTF Forms</button>
-            <button class="redirect-button" id="redirectButton" onclick="redirect()">Item Availability</button>
+            <button class="redirect-button" id="redirectButton" onclick="redirect()" target="_blank">Item Availability</button>
 
 
 
@@ -1695,7 +1694,7 @@ function downloadRTF() { // RDF FORM
 <div class="content" id="report-content" style="display: none;">
     <h1 id="report-text">Asset Condition Status</h1>
     <div class="report-actions">
-        <button class="add-button" onclick="showReportForm()">Add</button>
+        <button class="add-button" onclick="showReportForm()">Add Report</button>
          <button class="report-button" onclick="printAssetStatusReport()">Print Table</button>
     </div>
 

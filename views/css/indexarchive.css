@@ -163,3 +163,10 @@
             margin-top: -50px;
             font-family: Arial, sans-serif;
         }
+
+        #authUsers {
+            text-transform: capitalize; /* Capitalize the first letter of the username */
+        }
+        #welcomeText {
+            font-weight: bold;
+        }
