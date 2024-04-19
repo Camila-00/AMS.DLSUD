@@ -68,7 +68,7 @@
             animation: fadeIn 0.5s ease-in-out;
         }
          .asset-table h1, .report-table h1 {
-            margin-left: 10px;
+            margin-left: 15px;
             margin-top: 50px;
             font-family: 'Montserrat', sans-serif;
         }
@@ -94,6 +94,7 @@
             border-radius: 5px;
             font-size: 16px;
             transition: border-color 0.3s ease;
+            margin-left: 5px;
         }
 
         .filter-input:focus {
@@ -170,3 +171,32 @@
         #welcomeText {
             font-weight: bold;
         }
+        
+        #borrowprint{
+            background-color: #1db954; /* Same green color as the Print Table button */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 5px;  
+        }
+
+        #borrowprint:hover{
+                background-color: #116e30; /* Darker green on hover */     
+        }
+
+        #printButtonAssetStatus{
+            background-color: #1db954; /* Same green color as the Print Table button */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 5px;
+        }
+        #printButtonAssetStatus:hover{
+            background-color: #116e30; /* Darker green on hover */     
+    }
