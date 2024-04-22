@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Asset Borrowing Form</title>
+  <title>AMS - Asset Borrowing Form</title>
   <link rel="stylesheet" href="/css/indexborrowforms.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css">
@@ -52,13 +52,13 @@
             <input type="text" class="form-control" id="return_date" readonly data-date-format="yyyy-mm-dd">
           </div>
 
-          <button type="button" class="btn btn-send btn-block send" onclick="submitForm()">Send</button>  
-
+          <button type="button" class="send-btn" onclick="submitForm()">Send</button>
+ 
           <div id="successMessage" class="alert alert-success" role="alert" style="display: none;">
             Asset stored successfully.
         </div>
         </form>
-        <button class="btn btn-send btn-block logout" onclick="logout()">Logout</button> 
+        <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
   </div>
 

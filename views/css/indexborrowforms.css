@@ -1,32 +1,65 @@
 
 body {
-    background: url('../assets/ictc.png') no-repeat center center fixed;
-    background-size: cover;
-    margin: 0;
-  }
+  background: url('../assets/ictc.png') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+}
 
 
-  
-  .back-btn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: #fff;
-    cursor: pointer;
-  }
 
-  .form-container {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-top: 50px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+.send-btn {
+  background-color: #1db954; /* Blue color */
+  color: #fff; /* White text color */
+  border: none; /* Remove border */
+  padding: 10px 20px; /* Adjust padding */
+  width: 100%; /* Make it full width (optional) */
+  transition: background-color 0.2s ease; /* Smooth transition on hover */
+  border-radius: 5px; /* Add rounded corners */
+  margin-bottom: 5px;
+}
 
-  .btn-send {
+.logout-btn {
+  background-color: #e74c3c; /* Red color */
+  color: #fff; /* White text color */
+  border: none; /* Remove border */
+  padding: 10px 20px; /* Adjust padding */
+  width: 100%; /* Make it full width (optional) */
+  transition: background-color 0.2s ease; /* Smooth transition on hover */
+  border-radius: 5px; /* Add rounded corners */
+}
+
+
+.send-btn:hover {
+  background-color: #178d40; /* Hover color for send button (blue) */
+}
+
+.logout-btn:hover {
+  background-color: #ac392d; /* Hover color for logout button (red) */
+}
+
+
+
+
+.back-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.form-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 50px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-send {
 background-color: #28a745;
 color: #fff;
 margin-top: 10px; /* Add margin to separate the buttons */
@@ -40,75 +73,75 @@ padding: 10px; /* Adjust the padding as needed */
 margin-top: 0; /* Remove top margin for the last button */
 }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
-  .animated {
-    animation: fadeIn 1s ease-in-out;
-  }
+.animated {
+  animation: fadeIn 1s ease-in-out;
+}
 
-  .container-box {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  margin: 20px; /* Adjusted margin */
+.container-box {
+background-color: white;
+padding: 20px;
+border-radius: 10px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+margin: 20px; /* Adjusted margin */
 }
 
 #successMessage {
-  display: none;
-  margin-top: 10px; /* Adjusted margin */
+display: none;
+margin-top: 10px; /* Adjusted margin */
 }
 
 #errorMessage {
-  display: none;
-  margin-top: 10px; /* Adjusted margin */
+display: none;
+margin-top: 10px; /* Adjusted margin */
 }
 
-send {
-  background-color: #1DB954;
+.send {
+background-color: #1DB954;
 }
 
 .send:hover {
-  background-color: #15863d;
-  color: #ffffff;
+background-color: #15863d;
+color: #ffffff;
 }
 
 .logout {
-  background-color: #D95353;
+background-color: #D95353;
 }
 
 .logout:hover {
-  background-color: #c62c2c;
-  color: #ffffff;;
+background-color: #c62c2c;
+color: #ffffff;;
 }
 
 /* for tablet devices */
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
 
 body {
-  overflow: visible;
+overflow: visible;
 }
 
 .form-container {
-  margin-top: 10px;
-  padding: 15px;
-  margin-bottom: 10px;
+margin-top: 10px;
+padding: 15px;
+margin-bottom: 10px;
 }
 
 h1 {
-  font-size: 28px;
-  margin-top: 10px;
+font-size: 28px;
+margin-top: 10px;
 }
 
 .btn-send {
-  font-size: 16px;
+font-size: 16px;
 }
 
 .btn-send.btn-block {
-  padding: 8px;
+padding: 8px;
 }
 }
 
@@ -118,28 +151,34 @@ h1 {
 
 
 @media only screen and (max-width: 600px) {
-  body {
-      background-image: none;
-  }
+body {
+    background-image: none;
+}
 
-  .container-box {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      padding: 0 20px;
-      box-shadow: none; 
-  }
+.container-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 0 20px;
+    box-shadow: none; 
+}
 
-  .form-container {
-      width: 100%;
-  }
+.form-container {
+    width: 100%;
+}
 
 
-  h2 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 33px;
-      color: #333333;
-      margin-bottom: 30px;
-  }
+h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 33px;
+    color: #333333;
+    margin-bottom: 30px;
+}
+
+
+
+
+
+
 }

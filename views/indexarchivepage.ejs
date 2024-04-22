@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
-    <title>Asset Management</title>
+    <title>AMS – Archives</title>
     <link rel="stylesheet" href="/css/indexarchive.css">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -129,8 +129,10 @@
     </div>
 
 
-<div class="content" id="borrower-content" style="display: none;">
+    <div class="content" id="borrower-content" style="display: none;">
         <h1>Borrower Table</h1>
+        <!-- Borrow Download button -->
+        <button onclick="downloadBorrowerData()" id="borrowprint">Print Table</button>
         <table class="asset-table">
             <thead>
                 <tr>
@@ -148,13 +150,13 @@
         </table>
     </div>
     
-    <!-- Asset Status Report content -->
-    <div class="content" id="report-content" style="display: none;">
+    <div class="content" id="report-content">
         <h1>Asset Status Report</h1>
+        <button onclick="downloadAssetStatusData()" id="printButtonAssetStatus">Print Table</button>
         <table class="report-table">
             <thead>
                 <tr>
-                    <th>Location</th>   
+                    <th>Location</th>
                     <th>Barcode</th>
                     <th>Item Description</th>
                     <th>Issue</th>
@@ -170,6 +172,7 @@
         let currentRoom = '201'; // Ensure currentRoom is defined globally
         const itemsPerPage = 10; // Define itemsPerPage globally
     
+
         function showRoomContent(room) {
             hideAllTabs(); // Hide all other tabs
             document.getElementById('asset-content' + room).style.display = 'block';
@@ -276,7 +279,10 @@
     }
 }
 
-
+async function showAuthUsers() {
+        let usersName = document.getElementById("authUsers");
+        usersName.innerText = await localStorage.getItem('lastName');
+    }
 
     
         document.addEventListener('DOMContentLoaded', function () {
@@ -385,45 +391,65 @@
             });
         });
     
-        function printAssetTable() {
-            // Fetch data from the server
-            fetch('/data/dBoard' + currentRoom)
-                .then(response => response.json())
-                .then(data => {
-                    const tableData = [];
-                    // Assuming data is an array of objects, each representing a row in the table
-                    data.forEach(item => {
-                        tableData.push([item.room, item.location, item.category, item.item_description, item.serial_number, item.unit_cost, item.asset_status]);
-                    });
-    
-                    // Create a new window for printing
-                    const printWindow = window.open('', '_blank');
-                    printWindow.document.write('<html><head><title>Asset Table</title>');
-                    printWindow.document.write('</head><body>');
-                    printWindow.document.write('<h1>Asset Table</h1>');
-                    printWindow.document.write('<table border="1">');
-                    printWindow.document.write('<tr><th>Room</th><th>Location</th><th>Category</th><th>Item Description</th><th>Serial Number</th><th>Unit Cost</th><th>Asset Status</th></tr>');
-    
-                    // Add rows to the table
-                    tableData.forEach(row => {
-                        printWindow.document.write('<tr>');
-                        row.forEach(cell => {
-                            printWindow.document.write(`<td>${cell}</td>`);
-                        });
-                        printWindow.document.write('</tr>');
-                    });
-    
-                    printWindow.document.write('</table>');
-                    printWindow.document.write('</body></html>');
-    
-                    // Close the document after printing
-                    printWindow.document.close();
-                    // Print the window
-                    printWindow.print();
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        }
+        function printAssetTable(room) {
+        // Fetch data from the server based on the specified room
+        fetch('/data/dBoard' + room)
+            .then(response => response.json())
+            .then(data => {
+                // Prepare CSV content
+                const csvContent = [
+                    'Room,Location,Category,Item Description,Serial Number,Unit Cost,Asset Status'
+                ];
 
+                data.forEach(item => {
+                    const rowData = [
+                        item.room,
+                        item.location,
+                        item.category,
+                        item.item_description,
+                        item.serial_number,
+                        item.unit_cost,
+                        item.asset_status
+                    ];
+                    const csvRow = rowData.map(value => `"${value}"`).join(',');
+                    csvContent.push(csvRow);
+                });
+
+                const csvString = csvContent.join('\n');
+
+                // Create a Blob containing the CSV data
+                const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+
+                // Create a temporary anchor element to trigger the download
+                const link = document.createElement('a');
+                if (link.download !== undefined) { // Check browser support for download attribute
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', `asset_table_${room}.csv`);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    console.error('File download is not supported in this browser.');
+                }
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Attach event listeners to the "Print Table" buttons for both rooms
+        const printButton201 = document.querySelector('#asset-content201 .print-table');
+        const printButton202 = document.querySelector('#asset-content202 .print-table');
+
+        printButton201.addEventListener('click', function () {
+            printAssetTable('201');
+        });
+
+        printButton202.addEventListener('click', function () {
+            printAssetTable('202');
+        });
+    });
 
 
 
@@ -511,14 +537,111 @@ function isReportHidden(isDeleted) { // FOR ASSET CONDITION
     return !isDeleted; 
 }
 
+showAuthUsers()
+
+function downloadBorrowerData() {
+        fetch('/assets') // Replace with your backend route to fetch borrower data
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch data. Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Prepare CSV content
+                const csvContent = [
+                    'Name,Email,User Number,Item Description,Barcode,Borrow Date,Return Date,Status'
+                ];
+
+                data.forEach(item => {
+                    const rowData = [
+                        item.name,
+                        item.email,
+                        item.usernum,
+                        item.item_description,
+                        item.barcode,
+                        item.borrow_date,
+                        item.return_date,
+                        item.status
+                    ];
+                    const csvRow = rowData.map(value => `"${value}"`).join(',');
+                    csvContent.push(csvRow);
+                });
+
+                const csvString = csvContent.join('\n');
+
+                // Create a Blob containing the CSV data
+                const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+
+                // Create a temporary anchor element to trigger the download
+                const link = document.createElement('a');
+                link.setAttribute('href', URL.createObjectURL(blob));
+                link.setAttribute('download', 'borrower_data.csv');
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(error => {
+                console.error("Error fetching assets:", error);
+            });
+    }
+
+
+    function downloadAssetStatusData() {
+    fetch('/indexfacultyreportinputdata')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data. Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const csvContent = [
+                'Location,Barcode,Item Description,Issue'
+            ];
+
+            data.forEach(item => {
+                const rowData = [
+                    item.report_location,
+                    item.report_barcode,
+                    item.report_item_description,
+                    item.report_issue
+                ];
+                const csvRow = rowData.map(value => `"${value}"`).join(',');
+                csvContent.push(csvRow);
+            });
+
+            const csvString = csvContent.join('\n');
+
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'asset_status_data.csv');
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                console.error('File download is not supported in this browser.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching report data:', error);
+        });
+}
+
+
+
+
+
+
+
 
     </script>
-    
-    
-
-
-    <!-- Your JavaScript code for fetching data, filtering, pagination, and modals goes here... -->
-
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
