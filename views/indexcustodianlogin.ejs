@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-        
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMS – Custodian Login</title>
     <link rel="stylesheet" href="/css/indexcustodianlogin.css">
 </head>
@@ -21,17 +18,14 @@
                 <input type="adminum" id="adminum" name="adminum" placeholder="Enter User ID" required><br><br>
                 <label for="name">Password:</label>
                 <input type="password" id="password" name="password" placeholder="Enter Password" required><br><br>
-                <button type="submit">Login
-                </button><br><br>
+                <button type="submit">Login</button><br><br>
             </form>
-          
         </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const loginForm = document.getElementById("loginForm");
-            const errorMessage = document.getElementById("errorMessage");
             loginForm.addEventListener("submit", async function(event) {
                 event.preventDefault();
                 const adminum = document.getElementById("adminum").value;
@@ -47,14 +41,11 @@
                     });
 
                     if (response.ok) {
-                        console.log('correct')
                         const jsonResponse = await response.json();
-                        console.log()
-                        await localStorage.setItem("lastName", jsonResponse.auth.last_name);
+                        localStorage.setItem("lastName", jsonResponse.auth.last_name);
                         window.location.href = "/indexcustodianhomepage.ejs";
                     } else {
-                        const errorMessageText = await response.json();
-                        errorMessage.textContent = errorMessageText.error;
+                        alert("Incorrect Email or Password");
                     }
                 } catch (error) {
                     console.error("Error during login:", error);
