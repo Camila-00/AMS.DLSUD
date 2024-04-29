@@ -18,7 +18,11 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="indexcustodianhomepage.ejs">ICTC Asset Management</a>
+            <a class="navbar-brand" href="indexcustodianhomepage.ejs">
+                <img src="./assets/ams_logo.png" alt="ICTC Asset Management Logo" height="50" class="d-inline-block align-top" style="margin-right: -20px;">
+
+            </a>
+
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -34,15 +38,15 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <a href="#" onclick="showRoomContent('201')">Room 201</a>
-        <a href="#" onclick="showRoomContent('202')">Room 202</a>
+        <a href="#" onclick="showRoomContent('201')">ICTC 201</a>
+        <a href="#" onclick="showRoomContent('202')">ICTC 202</a>
         <a href="#" class="borrower-link" onclick="showBorrowerContent()">Borrower</a>
         <a href="#" class="borrower-link" onclick="showReportContent()">Asset Status Condition</a>
     </div>
 
     <!-- Asset content ROOM 201 -->
     <div class="content" id="asset-content201">
-        <h1>ICTC 201 Asset Table</h1>
+        <h1>ICTC 201 Asset Overview</h1>
         <input type="text" id="searchInput201" class="filter-input" placeholder="Filter">
         <button class="print-table">Print Table</button>
 
@@ -86,7 +90,7 @@
 
     <!-- Asset content ROOM 202 -->
     <div class="content" id="asset-content202">
-        <h1>ICTC 202 Asset Table</h1>
+        <h1>ICTC 202 Asset Overview</h1>
         <input type="text" id="searchInput202" class="filter-input" placeholder="Filter">
         <button class="print-table">Print Table</button>
 
@@ -130,7 +134,7 @@
 
 
     <div class="content" id="borrower-content" style="display: none;">
-        <h1>Borrower Table</h1>
+        <h1>Borrower List</h1>
         <!-- Borrow Download button -->
         <button onclick="downloadBorrowerData()" id="borrowprint">Print Table</button>
         <table class="asset-table">

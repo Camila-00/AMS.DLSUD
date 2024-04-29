@@ -503,7 +503,7 @@
        }
        
        .return-button, .archive-button {
-           background-color: rgb(0, 207, 0);
+           background-color: #1db954;
            color: white;
            border: none;
            padding: 5px 20px;
@@ -522,7 +522,7 @@
        }
        
        .return-button:hover, .archive-button:hover {
-           background-color: rgb(0, 158, 0);
+           background-color: #14843a;
        }
        
        .return-button:hover, .archive-button:hover {
@@ -600,7 +600,10 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="indexcustodianhomepage.ejs">ICTC Asset Management</a>
+        <a class="navbar-brand" href="indexcustodianhomepage.ejs">
+            <img src="./assets/ams_logo.png" alt="ICTC Asset Management Logo" height="50" class="d-inline-block align-top" style="margin-right: -20px;">
+
+        </a>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -627,8 +630,8 @@
             <h1>Asset Dashboard</h1>
             <button class="add-button" id="addAssetButton">Add Asset</button>
             <button class="pdd-button" onclick="printDatabaseData()">Print Database Data</button>
-            <button class="rdf-button" onclick="downloadRDF()">RDF Forms</button>
-            <button class="rdf-button" onclick="downloadRTF()">RTF Forms</button>
+            <button class="rdf-button" onclick="window.open('https://forms.gle/QEwgdsrBJGNWfNCu7', '_blank')">RDF Forms</button>
+            <button class="rdf-button" onclick="window.open('https://forms.gle/oMLwXiKHffwqgosW8', '_blank')">RTF Forms</button>   
             <button class="redirect-button" id="redirectButton" onclick="redirect()" target="_blank">Item Availability</button>
 
 
@@ -1624,35 +1627,6 @@ function generateExcel(data) {
   // Trigger download
   downloadLink.click();
 }
-function downloadRDF() { // RDF FORM
-            // Create an anchor element
-            var link = document.createElement('a');
-            // Set the href attribute to the URL of the PDF file
-            link.href = 'https://github.com/Camila-00/AMS.DLSUD/raw/main/RDF-Form.pdf';
-            // Set the download attribute to the desired filename for the downloaded file
-            link.download = 'RDF-Form.pdf';
-            // Append the anchor element to the body
-            document.body.appendChild(link);
-            // Programmatically trigger a click event on the anchor element
-            link.click();
-            // Remove the anchor element from the body
-            document.body.removeChild(link);
-        }
-function downloadRTF() { // RDF FORM
-            // Create an anchor element
-            var link = document.createElement('a');
-            // Set the href attribute to the URL of the PDF file
-            link.href = 'https://github.com/Camila-00/AMS.DLSUD/raw/main/RTF-Form.pdf'; 
-            // Set the download attribute to the desired filename for the downloaded file
-            link.download = 'RDF-Form.pdf';
-            // Append the anchor element to the body
-            document.body.appendChild(link);
-            // Programmatically trigger a click event on the anchor element
-            link.click();
-            // Remove the anchor element from the body
-            document.body.removeChild(link);
-            
-        }
 
         async function fetchItemDescriptionReport() {
     const barcode = document.getElementById("report_barcode").value;
@@ -1745,7 +1719,7 @@ function downloadRTF() { // RDF FORM
 
 <!-- Borrower display table -->
 <div class="content" id="borrower-content" style="display: none; margin-top: 50px;">
-    <h1>Borrower Table</h1>
+    <h1>Borrower List</h1>
     <button class="report-button" onclick="printBorrowerTable()">Print Table</button>
     <table class="borrower-table">
         

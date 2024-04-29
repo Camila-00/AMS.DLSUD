@@ -1,184 +1,152 @@
 
+/* Basic styling - add more as needed */
 body {
-    background: url('../assets/ictc.png') no-repeat center center fixed;
-    background-size: cover;
-    margin: 0;
-  }
-
-
-
-  .send-btn {
-    background-color: #1db954; /* Blue color */
-    color: #fff; /* White text color */
-    border: none; /* Remove border */
-    padding: 10px 20px; /* Adjust padding */
-    width: 100%; /* Make it full width (optional) */
-    transition: background-color 0.2s ease; /* Smooth transition on hover */
-    border-radius: 5px; /* Add rounded corners */
-    margin-bottom: 5px;
-  }
-
-  .logout-btn {
-    background-color: #e74c3c; /* Red color */
-    color: #fff; /* White text color */
-    border: none; /* Remove border */
-    padding: 10px 20px; /* Adjust padding */
-    width: 100%; /* Make it full width (optional) */
-    transition: background-color 0.2s ease; /* Smooth transition on hover */
-    border-radius: 5px; /* Add rounded corners */
-  }
-
-
-  .send-btn:hover {
-    background-color: #178d40; /* Hover color for send button (blue) */
+  margin: 0;
+  background-image: url("../assets/ictc.png");
+  background-size: cover;
+  background-position: -400px;
   }
   
-  .logout-btn:hover {
-    background-color: #ac392d; /* Hover color for logout button (red) */
+  p {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  text-align: center;
+  margin-top: 20px;
+  color: #333333;
   }
-
-
-
   
-  .back-btn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: #fff;
-    cursor: pointer;
+  .container {
+  display: flex;
+  justify-content: flex-end; /* Align container to the right side */
+  align-items: center;
+  height: 100vh;
   }
-
-  .form-container {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-top: 50px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  .login-container {
+  display: flex;
+  flex-direction: row; /* Align elements horizontally */
+  width: 50%; /* Take up 50% of the width of the page */
+  height: 100vh; /* Adjusted to cover the entire viewport height */
   }
-
-  .btn-send {
-background-color: #28a745;
-color: #fff;
-margin-top: 10px; /* Add margin to separate the buttons */
-margin-bottom: 10px; /* Add margin to separate the buttons */
-}
-.btn-send.btn-block {
-padding: 10px; /* Adjust the padding as needed */
-}
-
-.btn-send.btn-block:last-child {
-margin-top: 0; /* Remove top margin for the last button */
-}
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  .login-form {
+  background-color: #ffffff;
+  padding: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  text-align: center;
   }
-
-  .animated {
-    animation: fadeIn 1s ease-in-out;
-  }
-
-  .container-box {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  margin: 20px; /* Adjusted margin */
-}
-
-#successMessage {
-  display: none;
-  margin-top: 10px; /* Adjusted margin */
-}
-
-#errorMessage {
-  display: none;
-  margin-top: 10px; /* Adjusted margin */
-}
-
-.send {
-  background-color: #1DB954;
-}
-
-.send:hover {
-  background-color: #15863d;
-  color: #ffffff;
-}
-
-.logout {
-  background-color: #D95353;
-}
-
-.logout:hover {
-  background-color: #c62c2c;
-  color: #ffffff;;
-}
-
-/* for tablet devices */
-@media only screen and (min-width: 768px) and (max-width: 1024px) {
-
-body {
-  overflow: visible;
-}
-
-.form-container {
-  margin-top: 10px;
-  padding: 15px;
-  margin-bottom: 10px;
-}
-
-h1 {
-  font-size: 28px;
-  margin-top: 10px;
-}
-
-.btn-send {
-  font-size: 16px;
-}
-
-.btn-send.btn-block {
-  padding: 8px;
-}
-}
-
-
-
-
-
-
-@media only screen and (max-width: 600px) {
-  body {
-      background-image: none;
-  }
-
-  .container-box {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      padding: 0 20px;
-      box-shadow: none; 
-  }
-
-  .form-container {
-      width: 100%;
-  }
-
-
   h2 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 33px;
-      color: #333333;
-      margin-bottom: 30px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 36px;
+  margin-bottom: 30px;
+  color: #333333;
   }
-
-
-
-
-
   
-}
+  ::placeholder {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  color: #B3B3B3;
+  }
+  
+  input[type="email"],
+  input[type="password"],
+  button {
+  width: calc(100% - 22px);
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  border: 1px solid #b3b3b3;
+  box-sizing: border-box;
+  }
+  a {
+  text-decoration: none;
+  color: #1db954;
+  }
+  a:hover {
+  text-decoration: none;
+  color: #15863d;
+  }
+  button {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  padding: 10px 20px;
+  border: 20px;
+  border-radius: 4px;
+  background-color: #1db954;
+  color: #fff;
+  cursor: pointer;
+  }
+  
+  button:hover {
+  background-color: #15863d;
+  }
+  .forgot-password {
+  text-align: left;
+  margin-bottom: 20px;
+  margin-left: 10px;
+  }
+  .logo {
+  margin-top: 50px;
+  width: 200px; /* Adjust the width as needed */
+  height: auto; /* Maintain aspect ratio */
+  }
+  
+  label {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  display: block;
+  margin-bottom: 8px;
+  color: #333333;
+  text-align: left;
+  margin-left: 12px;
+  }
+  
+  @media only screen and (max-width: 600px) {
+  body {
+  margin: 0;
+  background-image: none;
+  }
+  
+  .container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 0 20px;
+  box-shadow: none; 
+  }
+  
+  .login-container {
+  width: 100%;
+  }
+  
+  .logo {
+          margin-top: 60px;
+          width: 150px;
+          height: auto;
+      }
+  
+  .login-form {
+  padding: 40px;
+  box-shadow: none;
+  width: 100%;
+  text-align: center;
+  }
+  
+  h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 25px;
+  color: #333333;
+  margin-bottom: 30px;
+  }
+  button {
+  margin-top: -15px;
+  }
+  
+  p {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 15px;
+  text-align: center;
+  margin-top: -25px;
+  color: #333333;
+  }
+  }

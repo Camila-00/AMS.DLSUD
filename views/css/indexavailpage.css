@@ -106,3 +106,13 @@ color: white;
 #welcomeText {
     font-weight: bold;
 }
+
+/* Update h2 style inside .itemsCountContainer */
+.itemsCountContainer h2 {
+    font-weight: normal;
+    font-size: 50px;
+    text-align: center;
+    margin-top: 10px;
+    color: white; /* Set text color to white */
+    font-family: 'Montserrat', sans-serif; /* Set font family to Montserrat */
+}

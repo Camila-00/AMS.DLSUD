@@ -9,6 +9,7 @@
 .navbar-brand {
     font-size: 2rem; /* Adjust the font size as needed */
     font-weight: bold;
+    font-family: Arial, sans-serif;
 }
 
         
@@ -149,20 +150,24 @@
         }
 
         #asset-content201 h1 {
-            margin-top: -50px;
+            margin-top: -70px;
             font-family: Arial, sans-serif;
+            margin-left: 5px;
         }
         #asset-content202 h1 {
-            margin-top: -50px;
+            margin-top: -70px;
             font-family: Arial, sans-serif;
+            margin-left: 5px;
         }
         #borrower-content h1 {
-            margin-top: -50px;
+            margin-top: -70px;
             font-family: Arial, sans-serif;
+            margin-left: 5px;
         }
         #report-content h1 {
-            margin-top: -50px;
+            margin-top: -70px;
             font-family: Arial, sans-serif;
+            margin-left: 5px;
         }
 
         #authUsers {

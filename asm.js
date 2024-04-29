@@ -1025,7 +1025,7 @@ app.get('/alldata', async (req, res) => {
   }
 });
 
-app.get('/availability/items', async (req, res) => {
+app.get('/availability/items', async (req, res) => { // item availability
   try {
       // Check if the database connections are established
       if (!dBoard201Db || !dBoard202Db) {
