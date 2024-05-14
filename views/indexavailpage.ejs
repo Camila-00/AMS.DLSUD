@@ -14,95 +14,82 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="indexcustodianhomepage.ejs">
-            <img src="./assets/ams_logo.png" alt="ICTC Asset Management Logo" height="50" class="d-inline-block align-top" style="margin-right: -20px;">
-        
-        <div class="dropdown">
-            <button class="btn dropdown-toggle" type="button" id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <span id="welcomeText">Welcome, </span><span id="authUsers">Admin</span>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="indexwelcomepage.ejs">Logout</a></li>
-            </ul>
+    <!-- Background container for table -->
+    <div class="itemsCountContainer">
+        <!-- Main table -->
+        <h2>Item Availability</h2>
+        <div class="counts-table">
+            <div class="counts-table-header">
+                <div class="counts-table-category">Category</div>
+                <div class="counts-table-201">ICT 201 Available Items</div>
+                <div class="counts-table-202">ICT 202 Available Items</div>
+            </div>
+            <div id="countsTableBody" class="counts-table-body"></div>
         </div>
     </div>
-</nav>
 
-<!-- Background container for table -->
-<div class="itemsCountContainer">
-    <!-- Main table -->
-    <h2>Item Availability</h2>
-    <div class="counts-table">
-        <div class="counts-table-header">
-            <div class="counts-table-category">Category</div>
-            <div class="counts-table-201">ICT 201 Available Items</div>
-            <div class="counts-table-202">ICT 202 Available Items</div>
-        </div>
-        <div id="countsTableBody" class="counts-table-body"></div>
-    </div>
-</div>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Bootstrap Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- JavaScript -->
-<script>
-    async function showAuthUsers() {
-        let usersName = document.getElementById("authUsers");
-        usersName.innerText = await localStorage.getItem('lastName');
-    }
-
-    // Function to fetch item counts and update the HTML content
-    async function displayItemCounts() {
-    try {
-        const response = await fetch('/availability/items'); // Fetch data from the server
-        const data = await response.json(); // Parse JSON response
-
-        console.log("Received data from server:", data); // Log the received data
-
-        // Get the counts table body
-        const countsTableBody = document.getElementById('countsTableBody');
-
-        // Clear previous data
-        countsTableBody.innerHTML = '';
-
-        // Populate the counts table
-        for (const category in data.counts201) {
-            console.log("Processing category:", category); // Log each category being processed
-
-            const countsTableRow = document.createElement('div');
-            countsTableRow.classList.add('counts-table-row');
-
-            const categoryCell = document.createElement('div');
-            categoryCell.classList.add('counts-table-category');
-            categoryCell.textContent = category;
-            countsTableRow.appendChild(categoryCell);
-
-            const count201Cell = document.createElement('div');
-            count201Cell.classList.add('counts-table-201');
-            count201Cell.textContent = data.counts201[category] || 0;
-            countsTableRow.appendChild(count201Cell);
-
-            const count202Cell = document.createElement('div');
-            count202Cell.classList.add('counts-table-202');
-            count202Cell.textContent = data.counts202[category] || 0;
-            countsTableRow.appendChild(count202Cell);
-
-            countsTableBody.appendChild(countsTableRow);
+    <!-- JavaScript -->
+    <script>
+        async function showAuthUsers() {
+            let usersName = document.getElementById("authUsers");
+            if (usersName) {
+                usersName.innerText = await localStorage.getItem('lastName');
+            }
         }
-    } catch (error) {
-        console.error('Error fetching item counts:', error);
-    }
-}
 
-    showAuthUsers();
-    // Call the function when the page loads
-    displayItemCounts();
-</script>
+        // Function to fetch item counts and update the HTML content
+        async function displayItemCounts() {
+            try {
+                const response = await fetch('/availability/items'); // Fetch data from the server
+                const data = await response.json(); // Parse JSON response
 
+                console.log("Received data from server:", data); // Log the received data
 
+                // Get the counts table body
+                const countsTableBody = document.getElementById('countsTableBody');
+
+                // Clear previous data
+                countsTableBody.innerHTML = '';
+
+                // Merge categories from counts201 and counts202
+                const allCategories = new Set([...Object.keys(data.counts201), ...Object.keys(data.counts202)]);
+
+                // Populate the counts table
+                allCategories.forEach(category => {
+                    console.log("Processing category:", category); // Log each category being processed
+
+                    const countsTableRow = document.createElement('div');
+                    countsTableRow.classList.add('counts-table-row');
+
+                    const categoryCell = document.createElement('div');
+                    categoryCell.classList.add('counts-table-category');
+                    categoryCell.textContent = category;
+                    countsTableRow.appendChild(categoryCell);
+
+                    const count201Cell = document.createElement('div');
+                    count201Cell.classList.add('counts-table-201');
+                    count201Cell.textContent = data.counts201[category] || 0;
+                    countsTableRow.appendChild(count201Cell);
+
+                    const count202Cell = document.createElement('div');
+                    count202Cell.classList.add('counts-table-202');
+                    count202Cell.textContent = data.counts202[category] || 0;
+                    countsTableRow.appendChild(count202Cell);
+
+                    countsTableBody.appendChild(countsTableRow);
+                });
+            } catch (error) {
+                console.error('Error fetching item counts:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showAuthUsers();
+            displayItemCounts();
+        });
+    </script>
 </body>
 </html>

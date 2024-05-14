@@ -578,7 +578,7 @@ app.get('/indexfacultyreportinputdata', async (req, res) => { // BROKEN ITEM REP
   }
 });
 
-app.post('/indexborrowforms', async (req, res) => { //BORROWER FORMS
+app.post('/indexborrowforms', async (req, res) => { 
   const {
     name,
     email,
@@ -588,44 +588,55 @@ app.post('/indexborrowforms', async (req, res) => { //BORROWER FORMS
     borrow_date,
     return_date,
     status,
-  } = req.body; // Use req.body instead of req.query
+  } = req.body;
 
   try {
-    const client = new MongoClient(dbConfig.lending.url); // Use dbConfig.lending.url
+    const client = new MongoClient(dbConfig.lending.url);
 
-    try {
-      await client.connect();
-      const db = client.db(dbConfig.lending.dbName); // Use dbConfig.lending.dbName
-      const collection = db.collection(dbConfig.lending.collectionName); // Use dbConfig.lending.collectionName
+    await client.connect();
+    const lendingDb = client.db(dbConfig.lending.dbName);
+    const lendingCollection = lendingDb.collection(dbConfig.lending.collectionName);
 
-      const assetDocument = {
-        name,
-        email,
-        usernum,
-        item_description,
-        barcode,
-        borrow_date,
-        return_date,
-        status: status || "Pending",
+    const assetDocument = {
+      name,
+      email,
+      usernum,
+      item_description,
+      barcode,
+      borrow_date,
+      return_date,
+      status: status || "Pending",
+    };
+
+    const result = await lendingCollection.insertOne(assetDocument);
+
+    if (result.insertedId) {
+      console.log(`Inserted a document with id: ${result.insertedId}`);
+
+      const updateBorrowedStatus = async (dbUrl, dbName, collectionName, barcode) => {
+        const client = new MongoClient(dbUrl);
+        await client.connect();
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
+        await collection.updateOne(
+          { barcode },
+          { $set: { isBorrowed: true } }
+        );
+        await client.close();
       };
 
-      const serializedAssetDocument = JSON.stringify(assetDocument);
-      const result = await collection.insertOne(JSON.parse(serializedAssetDocument));
-
-
-      console.log(`Inserted a document with id: ${result.insertedId}`);
-      client.close();
-
-      if (result.insertedId) {
-        console.log("Data is registered:");
-        console.log(assetDocument);
+      try {
+        await Promise.all([
+          updateBorrowedStatus(dbConfig.dBoard201.url, dbConfig.dBoard201.dbName, dbConfig.dBoard201.collectionName, barcode),
+          updateBorrowedStatus(dbConfig.dBoard202.url, dbConfig.dBoard202.dbName, dbConfig.dBoard202.collectionName, barcode)
+        ]);
+        console.log("Updated isBorrowed status in dBoard201 and dBoard202 collections.");
 
         const mailOptions = {
           from: 'rpc.assetms@gmail.com',
           to: email,
           subject: 'Asset Borrowed',
           text: `
-          
           Dear ${name},
 
 Thank you for submitting your request to borrow ${item_description}. We have received your request and are currently processing it.
@@ -641,9 +652,7 @@ Thank you for your cooperation.
 Best Regards,
 
 Homer Morallo
-CSIT Laboratory Technician`,
-
-          
+CSIT Laboratory Technician`
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
@@ -658,70 +667,22 @@ CSIT Laboratory Technician`,
           message: "Asset stored successfully.",
           user: { name, email, usernum }
         });
-      } else {
-        console.log("Data is undefined.");
-        res.status(500).json({ message: "Failed to submit asset." });
+      } catch (updateError) {
+        console.error("Error updating isBorrowed status:", updateError);
+        res.status(500).json({ message: "Failed to update isBorrowed status." });
       }
-    } catch (error) {
-      console.error("Error during MongoDB operations:", error);
+    } else {
+      console.log("Data is undefined.");
       res.status(500).json({ message: "Failed to submit asset." });
     }
+
+    await client.close();
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
     res.status(500).json({ message: "Failed to connect to the database." });
   }
 });
 
-app.get('/assets', async (req, res) => { // BORROWER DATA
-  try {
-    // Assuming you don't have a user authentication mechanism,
-    // and you want to fetch all assets without filtering by user
-    if (!lendingDb) {
-      console.log('Lending database connection is not established yet.');
-      return res.status(500).json({ error: 'Lending database connection is not ready.' });
-    }
-
-    const assets = await lendingDb.collection(lendingCollectionName)
-      .find({ _id: { $exists: true, $ne: null } })
-      .toArray();
-
-    res.json(assets);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-// Assume you already have the MongoDB client and database connection set up
-
-app.put('/assetsupdate/:id', async (req, res) => { // BORROWER DATA UPDATE AND ARCHIVE BUTTON
-  const { id } = req.params; // Ensure that this is the correct variable name
-  const updatedAsset = req.body;
-
-  console.log('Received Database ID:', id);
-  console.log('Request Body:', updatedAsset);
-
-  try {
-    const result = await lendingDb.collection(lendingCollectionName).updateOne(
-      { _id: new ObjectId(id) }, // Use ObjectId directly for the _id
-      { $set: updatedAsset } // Update all fields in the document
-    );
-
-    console.log('Database Update Result:', result);
-
-    if (result.modifiedCount === 1) {
-      if (updatedAsset.isDeleted) {
-        res.status(200).json({ message: 'Asset soft deleted successfully' });
-      } else {
-        res.status(200).json({ message: 'Asset updated successfully' });
-      }
-    } else {
-      res.status(404).json({ message: 'Asset not found' });
-    }
-  } catch (err) {
-    console.error('Error updating asset:', err);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
 
 app.get('/assets', async (req, res) => { // BORROWER DATA
   try {
@@ -744,35 +705,93 @@ app.get('/assets', async (req, res) => { // BORROWER DATA
 });
 // Assume you already have the MongoDB client and database connection set up
 
-app.put('/assetsupdate/:id', async (req, res) => { // BORROWER DATA UPDATE AND ARCHIVE BUTTON
-  const { id } = req.params; // Ensure that this is the correct variable name
+// Update asset in the Lending collection
+app.put('/assetsupdate/:id', async (req, res) => {
+  const { id } = req.params;
   const updatedAsset = req.body;
 
   console.log('Received Database ID:', id);
   console.log('Request Body:', updatedAsset);
 
   try {
-    const result = await lendingDb.collection(lendingCollectionName).updateOne(
-      { _id: new ObjectId(id) }, // Use ObjectId directly for the _id
-      { $set: updatedAsset } // Update all fields in the document
+    const client = new MongoClient(dbConfig.lending.url);
+    await client.connect();
+    const lendingDb = client.db(dbConfig.lending.dbName);
+    const lendingCollection = lendingDb.collection(dbConfig.lending.collectionName);
+
+    const result = await lendingCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updatedAsset }
     );
 
     console.log('Database Update Result:', result);
 
     if (result.modifiedCount === 1) {
-      if (updatedAsset.isDeleted) {
-        res.status(200).json({ message: 'Asset soft deleted successfully' });
-      } else {
-        res.status(200).json({ message: 'Asset updated successfully' });
-      }
+      res.status(200).json({ message: 'Asset updated successfully' });
     } else {
       res.status(404).json({ message: 'Asset not found' });
     }
+
+    await client.close();
   } catch (err) {
     console.error('Error updating asset:', err);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+// Update isBorrowed status in dBoard201 and dBoard202 collections
+app.put('/updateBorrowStatus/:barcode', async (req, res) => {
+  const { barcode } = req.params;
+
+  const updateBorrowedStatus = async (dbUrl, dbName, collectionName, barcode) => {
+    const client = new MongoClient(dbUrl);
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName);
+    const result = await collection.updateOne(
+      { barcode },
+      { $unset: { isBorrowed: "" } }
+    );
+    await client.close();
+    return result;
+  };
+
+  try {
+    await Promise.all([
+      updateBorrowedStatus(dbConfig.dBoard201.url, dbConfig.dBoard201.dbName, dbConfig.dBoard201.collectionName, barcode),
+      updateBorrowedStatus(dbConfig.dBoard202.url, dbConfig.dBoard202.dbName, dbConfig.dBoard202.collectionName, barcode)
+    ]);
+    console.log("Updated isBorrowed status in dBoard201 and dBoard202 collections.");
+
+    res.status(200).json({
+      message: "Borrow status updated successfully."
+    });
+  } catch (error) {
+    console.error("Error updating borrow status:", error);
+    res.status(500).json({ message: "Failed to update borrow status." });
+  }
+});
+
+app.get('/assets', async (req, res) => { // BORROWER DATA
+  try {
+    // Assuming you don't have a user authentication mechanism,
+    // and you want to fetch all assets without filtering by user
+    if (!lendingDb) {
+      console.log('Lending database connection is not established yet.');
+      return res.status(500).json({ error: 'Lending database connection is not ready.' });
+    }
+
+    const assets = await lendingDb.collection(lendingCollectionName)
+      .find({ _id: { $exists: true, $ne: null } })
+      .toArray();
+
+    res.json(assets);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+// Assume you already have the MongoDB client and database connection set up
 
 app.get('/item_description', async (req, res) => { // BORROWER FORM AFTER SCANNING ON PLACEHOLDER
   try {
@@ -1025,7 +1044,7 @@ app.get('/alldata', async (req, res) => {
   }
 });
 
-app.get('/availability/items', async (req, res) => { // item availability
+app.get('/availability/items', async (req, res) => {
   try {
       // Check if the database connections are established
       if (!dBoard201Db || !dBoard202Db) {
@@ -1034,8 +1053,19 @@ app.get('/availability/items', async (req, res) => { // item availability
       }
 
       // Fetch data from the MongoDB collections for dBoard201Db and dBoard202Db
-      const data201 = await dBoard201Db.collection(dBoard201DbCollectionName).find({ isDeleted: { $ne: true }}).toArray();
-      const data202 = await dBoard202Db.collection(dBoard202DbCollectionName).find({ isDeleted: { $ne: true }}).toArray();
+      const data201 = await dBoard201Db.collection(dBoard201DbCollectionName).find({
+          $nor: [
+            
+              { isDeleted: true },
+              { isBorrowed: true }
+          ]
+      }).toArray();
+      const data202 = await dBoard202Db.collection(dBoard202DbCollectionName).find({
+          $nor: [
+              { isDeleted: true },
+              { isBorrowed: true }
+          ]
+      }).toArray();
 
       // Count the number of items in each category for each collection
       const counts201 = {};
@@ -1067,8 +1097,6 @@ app.get('/availability/items', async (req, res) => { // item availability
       res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-
 
 connectToDatabases()
   .then(() => {
