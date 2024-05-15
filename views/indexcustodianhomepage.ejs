@@ -958,7 +958,7 @@ function click (){alert("clickable")}
     borrowerContent.style.display = 'block';
 
     // Fetch and populate the borrower table with data from the database
-    fetch('/assets') // Replace this with your backend route to fetch borrower data
+    fetch('/assets') // Replace this with your backend route to fetch borrower data // BORROWER LIST WEBPART 
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Failed to fetch data. Status: ${response.status}`);
@@ -1455,20 +1455,20 @@ function updateReportCounter() {
     });
 }
     
-function returnItem(id) {
+function returnItem(id) { // BORROWER LIST WEBPART ARCHIVE BUTTON
     // Prompt barcode scanning
     promptBarcodeScanning((barcode) => {
         if (barcode) { // Check if barcode is not empty (scanning successful)
-            // Barcode scanning successful
             const currentTime = new Date();
             const formattedTime = currentTime.toLocaleString();
-            
+
             const updatedAsset = {
                 status: formattedTime,
-                barcode: barcode // assuming barcode is captured from scanning
+                barcode: barcode,
+                isBorrowed: false
             }; 
-            
-            // Update the status field with current time and barcode
+
+            // Update the status field with current time, barcode, and isBorrowed status
             fetch(`/assetsupdate/${id}`, {
                 method: 'PUT',
                 headers: {
@@ -1479,8 +1479,22 @@ function returnItem(id) {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data.message);
-                // Reload the page after successful update
-                showBorrowerContent();
+                // Update isBorrowed status in dBoard201 and dBoard202 collections
+                fetch(`/updateBorrowStatus/${barcode}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data.message);
+                    // Reload the page after successful update
+                    showBorrowerContent();
+                })
+                .catch((error) => {
+                    console.error('Error updating borrow status:', error);
+                });
             })
             .catch((error) => {
                 console.error('Error updating asset:', error);
@@ -1490,6 +1504,7 @@ function returnItem(id) {
         }
     });
 }
+
 function promptBarcodeScanning(callback) {  // BORROWER FORMS RETURN PROMPT BARCODE SCAN
     // Simulating barcode scanning prompt
     const barcode = prompt("Scan Barcode:");
@@ -1719,7 +1734,7 @@ function generateExcel(data) {
 
 <!-- Borrower display table -->
 <div class="content" id="borrower-content" style="display: none; margin-top: 50px;">
-    <h1>Borrower List</h1>
+    <h1 style="margin-left: -5px;">Borrower List</h1>
     <button class="report-button" onclick="printBorrowerTable()">Print Table</button>
     <table class="borrower-table">
         
