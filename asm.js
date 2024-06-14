@@ -130,12 +130,17 @@ app.get('/indexcustodianlogin', (req, res) => {
   res.render("indexcustodianlogin", { message: '' });
 });
 
+
 app.get('/indexcustodianhomepage.ejs', (req, res) => {
   res.render("indexcustodianhomepage", { message: '' });
 });
 
 app.get('/indexborrowerlogin.ejs', (req, res) => {
   res.render('indexborrowerlogin'); // Replace 'indexcustodianhomepage' with your actual template name
+});
+
+app.get('/borrowerinfo.ejs', (req, res) => {
+  res.render('borrowerinfo'); // Replace 'indexcustodianhomepage' with your actual template name
 });
 
 app.get('/indexwelcomepage.ejs', (req, res) => {

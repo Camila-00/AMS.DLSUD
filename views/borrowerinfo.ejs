@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICTC Borrower's Information</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/borrowinfo.css">
+    <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
+</head>
+<body>
+    <div class="container form-container">
+        <div class="form-header">
+            <h4>Borrower's Information</h4>
+        </div>
+        <div class="form-body">
+            <div class="step-indicator">
+                <div class="step current-step" data-step="1">
+                    <div class="circle">1</div>
+                    <div class="label">Borrower's Information</div>
+                </div>
+                <div class="step-divider">>></div>
+                <div class="step" data-step="2">
+                    <div class="circle">2</div>
+                    <div class="label">Asset Borrowing</div>
+                </div>
+                <div class="step-divider">>></div>
+                <div class="step" data-step="3">
+                    <div class="circle">3</div>
+                    <div class="label">Schedule Date</div>
+                </div>
+            </div>
+            <div class="step-indicator-divider"></div>
+            <form id="borrowerForm">
+                <!-- Borrower's Information Fields -->
+                <div id="borrowerInfo">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" class="form-control" id="fullName" placeholder="Enter Your Full Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="universityEmail">University E-mail</label>
+                        <input type="email" class="form-control" id="universityEmail" placeholder="Enter Your University Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="studentFaculty">Student/Faculty</label>
+                        <select class="form-control" id="studentFaculty">
+                            <option disabled selected>Choose Information</option>
+                            <option>Student</option>
+                            <option>Faculty</option>
+                        </select>
+                    </div>                    
+                    <div class="form-group">
+                        <label for="studentFacultyNumber">Student/Faculty Number</label>
+                        <input type="text" class="form-control" id="studentFacultyNumber" placeholder="Enter Your Student/Faculty Number">
+                    </div>
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <input type="text" class="form-control" id="department" placeholder="Choose Your Department">
+                    </div>
+                    <div class="form-group">
+                        <label for="cys">CYS (if student)</label>
+                        <input type="text" class="form-control" id="cys" placeholder="Enter Your CYS">
+                    </div>
+                </div>
+                <!-- Asset Borrowing Fields -->
+                <div id="assetBorrowing" class="hidden">
+                    <div class="asset-group">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="asset">Asset</label>
+                                <input type="text" class="form-control" name="asset" placeholder="Choose Asset">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="available">Available</label>
+                                <input type="number" class="form-control" name="available">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <a href="#" id="addAsset" class="text-primary">Add more asset</a>
+                    </div>
+                </div>
+                <!-- Schedule Date Fields -->
+                <div id="scheduleDate" class="hidden">
+                    <div class="form-group">
+                        <label>Date Borrowed & Time:</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control" id="dateBorrowed">
+                            <input type="time" class="form-control" id="timeBorrowed">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Return Date & Time:</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control" id="returnDate">
+                            <input type="time" class="form-control" id="returnTime">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-secondary hidden" id="backButton">Back</button>
+                    <button type="button" class="btn btn-success" id="nextButton">Next</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var currentStep = 1;
+    
+            function updateStepIndicator() {
+                $('.step').each(function() {
+                    var step = $(this).data('step');
+                    if (step < currentStep) {
+                        $(this).removeClass('current-step').addClass('completed');
+                    } else if (step === currentStep) {
+                        $(this).addClass('current-step').removeClass('completed');
+                    } else {
+                        $(this).removeClass('current-step completed');
+                    }
+                });
+            }
+    
+            function showStep(step) {
+                $('#borrowerInfo, #assetBorrowing, #scheduleDate').addClass('hidden');
+                if (step === 1) {
+                    $('#borrowerInfo').removeClass('hidden');
+                    $('#backButton').addClass('hidden');
+                    $('#nextButton').text('Next');
+                } else if (step === 2) {
+                    $('#assetBorrowing').removeClass('hidden');
+                    $('#backButton').removeClass('hidden');
+                    $('#nextButton').text('Next');
+                } else if (step === 3) {
+                    $('#scheduleDate').removeClass('hidden');
+                    $('#backButton').removeClass('hidden');
+                    $('#nextButton').text('Submit');
+                }
+                updateStepIndicator();
+            }
+    
+            $('#nextButton').click(function() {
+                if (currentStep < 3) {
+                    currentStep++;
+                    showStep(currentStep);
+                } else {
+                    $('#borrowerForm').submit();
+                }
+            });
+    
+            $('#backButton').click(function() {
+                if (currentStep > 1) {
+                    currentStep--;
+                    showStep(currentStep);
+                }
+            });
+    
+            $('#addAsset').click(function(e) {
+                e.preventDefault();
+                var assetGroup = $('.asset-group:first').clone();
+                assetGroup.find('input').val('');
+                $('#assetBorrowing').find('.asset-group:last').after(assetGroup);
+            });
+    
+            showStep(currentStep);
+        });
+        </script>
+</body>
+</html>

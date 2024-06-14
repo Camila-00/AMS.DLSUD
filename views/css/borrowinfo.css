@@ -1,0 +1,174 @@
+body {
+    background: url('../assets/ictc.png') no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+}
+
+.form-container {
+    background-color: white;
+    padding: 0;
+ 
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+
+}
+
+.form-header {
+    background-color: #28a745;
+    padding: 10px 20px;
+    color: white;
+    text-align: left;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.form-header h4 {
+    margin: 0;
+}
+
+.form-body {
+    padding: 20px 40px;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #333;
+}
+
+.form-group input,
+.form-group select {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+button {
+    width: 100px;
+    margin: 10px 10px 0 0;
+}
+
+.btn-secondary {
+    border: 1px solid #28a745;
+    color: #28a745;
+    background-color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #e6e6e6;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.hidden {
+    display: none;
+}
+
+.step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Add this line */
+    margin-bottom: 20px;
+}
+
+.step {
+    display: flex;
+    align-items: center;
+}
+
+.step .circle {
+    width: 24px;
+    height: 24px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+}
+
+.step .label {
+    font-weight: bold;
+    color: #28a745;
+    margin-right: 16px;
+}
+
+.step:not(.current-step):not(.completed) .circle,
+.step:not(.current-step):not(.completed) .label {
+    background-color: transparent;
+    color: #999;
+}
+
+.step-divider {
+    font-weight: bold;
+    color: #999;
+    margin-right: 16px;
+}
+
+.step-indicator-divider {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px; /* Adjust as needed */
+}
+
+/* 2nd Page */
+#assetBorrowing {
+    margin-top: 20px; /* Adjust margin as needed */
+}
+
+#assetBorrowing .form-row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#assetBorrowing .form-group {
+    margin-bottom: 15px; /* Adjust margin as needed */
+}
+
+#assetBorrowing label {
+    font-weight: bold;
+}
+
+label[for="available"] {
+    /* Add your styling properties here */
+    font-weight: bold;
+    margin-left: 200px;
+    /* Additional styling properties */
+}
+
+
+#assetBorrowing input[type="text"] {
+    width: 150%; /* Adjust width as needed */
+}
+
+#assetBorrowing input[type="number"] {
+    width: 30%; /* Adjust width as needed */
+    margin-left: 200px;
+}
+
+#assetBorrowing .form-group.col-md-6 {
+    flex: 0 0 50%; /* Make each column take up half of the width */
+    max-width: 50%; /* Ensure columns don't exceed half of the width */
+    padding-right: 15px; /* Adjust padding as needed */
+    padding-left: 15px; /* Adjust padding as needed */
+}
+
+/* Additional CSS for Schedule Date Fields */
+#scheduleDate .form-group {
+    margin-bottom: 20px; /* Add some space between each schedule date field */
+}
+
+/* Add space between date and time input fields */
+#scheduleDate .input-group input[type="time"] {
+    margin-left: 10px; /* Adjust the margin as needed */
+}
