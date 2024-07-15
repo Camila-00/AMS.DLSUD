@@ -143,6 +143,10 @@ app.get('/borrowerinfo.ejs', (req, res) => {
   res.render('borrowerinfo'); // Replace 'indexcustodianhomepage' with your actual template name
 });
 
+app.get('/indexasset', (req, res) => {
+  res.render('indexasset');
+});
+
 app.get('/indexwelcomepage.ejs', (req, res) => {
   res.render('indexwelcomepage'); // Replace 'indexwelcome' with your actual template name
 });

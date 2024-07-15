@@ -101,6 +101,7 @@
                 <div class="form-group">
                     <button type="button" class="btn btn-secondary hidden" id="backButton">Back</button>
                     <button type="button" class="btn btn-success" id="nextButton">Next</button>
+                    <button type="button" class="btn btn-danger hidden" id="exitButton">Exit</button>
                 </div>
             </form>
         </div>
@@ -111,7 +112,7 @@
     <script>
         $(document).ready(function() {
             var currentStep = 1;
-    
+
             function updateStepIndicator() {
                 $('.step').each(function() {
                     var step = $(this).data('step');
@@ -124,25 +125,28 @@
                     }
                 });
             }
-    
+
             function showStep(step) {
                 $('#borrowerInfo, #assetBorrowing, #scheduleDate').addClass('hidden');
                 if (step === 1) {
                     $('#borrowerInfo').removeClass('hidden');
                     $('#backButton').addClass('hidden');
                     $('#nextButton').text('Next');
+                    $('#exitButton').removeClass('hidden');
                 } else if (step === 2) {
                     $('#assetBorrowing').removeClass('hidden');
                     $('#backButton').removeClass('hidden');
                     $('#nextButton').text('Next');
+                    $('#exitButton').addClass('hidden');
                 } else if (step === 3) {
                     $('#scheduleDate').removeClass('hidden');
                     $('#backButton').removeClass('hidden');
                     $('#nextButton').text('Submit');
+                    $('#exitButton').removeClass('hidden');
                 }
                 updateStepIndicator();
             }
-    
+
             $('#nextButton').click(function() {
                 if (currentStep < 3) {
                     currentStep++;
@@ -151,23 +155,29 @@
                     $('#borrowerForm').submit();
                 }
             });
-    
+
             $('#backButton').click(function() {
                 if (currentStep > 1) {
                     currentStep--;
                     showStep(currentStep);
                 }
             });
-    
+
+            $('#exitButton').click(function() {
+                if (confirm("Are you sure you want to exit the form?")) {
+                    window.location.href = "/indexwelcomepage.ejs"; // Redirect to the desired exit URL
+                }
+            });
+
             $('#addAsset').click(function(e) {
                 e.preventDefault();
                 var assetGroup = $('.asset-group:first').clone();
                 assetGroup.find('input').val('');
                 $('#assetBorrowing').find('.asset-group:last').after(assetGroup);
             });
-    
+
             showStep(currentStep);
         });
-        </script>
+    </script>
 </body>
 </html>
