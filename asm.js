@@ -151,6 +151,10 @@ app.get('/indexwelcomepage.ejs', (req, res) => {
   res.render('indexwelcomepage'); // Replace 'indexwelcome' with your actual template name
 });
 
+app.get('/indexavailpage.ejs', (req, res) => {
+  res.render('indexavailpage'); // Replace 'indexwelcome' with your actual template name
+});
+
 app.get('/indexborrowforms', (req, res) => {
   const user = req.session.user || {};  // default to an empty object if user is undefined
   res.render('indexborrowforms', { user });

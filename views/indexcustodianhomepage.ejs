@@ -830,7 +830,7 @@
 
 <script>
 function redirect() {
-        window.location.href = "/indexavailpage"; // Redirect to indexavailpage.ejs
+        window.location.href = "/borrowerinfo.ejs"; // Redirect to indexavailpage.ejs
     }
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -1817,6 +1817,7 @@ function generateExcel(data) {
 <div class="content" id="borrower-content" style="display: none; margin-top: 50px;">
     <h1 style="margin-left: -5px;">Borrower List</h1>
     <button class="report-button" onclick="printBorrowerTable()">Print Table</button>
+    <button class="redirect-button" id="redirectButton" onclick="redirect()" target="_blank">Borrower Info</button>
     <table class="borrower-table">
         
         <thead>
