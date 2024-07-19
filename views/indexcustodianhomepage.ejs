@@ -679,7 +679,7 @@
             <button class="pdd-button" onclick="printDatabaseData()">Print Database Data</button>
             <button class="rdf-button" onclick="window.open('https://forms.gle/QEwgdsrBJGNWfNCu7', '_blank')">RDF Forms</button>
             <button class="rdf-button" onclick="window.open('https://forms.gle/oMLwXiKHffwqgosW8', '_blank')">RTF Forms</button>   
-            <button class="redirect-button" id="redirectButton" onclick="redirect()" target="_blank">Item Availability</button>
+            <button class="redirect-button" id="redirectButton" onclick="redirectavailpage()" target="_blank">Item Availability</button>
 
 
 
@@ -831,6 +831,10 @@
 <script>
 function redirect() {
         window.location.href = "/borrowerinfo.ejs"; // Redirect to indexavailpage.ejs
+    }
+
+    function redirectavailpage() {
+        window.location.href = "/indexavailpage.ejs"; // Redirect to indexavailpage.ejs
     }
 
     document.addEventListener("DOMContentLoaded", function () {
