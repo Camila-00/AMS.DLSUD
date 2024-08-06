@@ -123,13 +123,14 @@ app.use(express.static(path.join(__dirname, 'System')));
 app.use('/css', express.static(path.join(__dirname, 'views', 'css'), { 'extensions': ['css'] }));
 
 
+
 app.get('/', (req, res) => {
-  res.render("indexwelcomepage");
-});
-app.get('/indexcustodianlogin', (req, res) => {
   res.render("indexcustodianlogin", { message: '' });
 });
 
+app.get('/indexcustodianlogin.ejs', (req, res) => {
+  res.render("indexcustodianlogin", { message: '' });
+});
 
 app.get('/indexcustodianhomepage.ejs', (req, res) => {
   res.render("indexcustodianhomepage", { message: '' });

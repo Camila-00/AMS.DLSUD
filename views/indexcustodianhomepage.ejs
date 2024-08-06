@@ -637,7 +637,20 @@
            cursor: not-allowed; 
        }
        
-       
+       .borrowerinfo{
+        background-color: #1db954; /* Same green color as the Print Table button */
+           color: #fff;
+           border: none;
+           border-radius: 5px;
+           padding: 10px 20px; /* Updated padding to 10px top/bottom, 20px left/right */
+           cursor: pointer;
+           transition: background-color 0.3s ease;
+           margin-left: 5px;
+       }
+
+       .borrowerinfo:hover {
+        background-color: #14843a; /* Darker green on hover */
+       }
        
                   </style>
 </head>
@@ -677,8 +690,8 @@
             <h1>Asset Dashboard</h1>
             <button class="add-button" id="addAssetButton">Add Asset</button>
             <button class="pdd-button" onclick="printDatabaseData()">Print Database Data</button>
-            <button class="rdf-button" onclick="window.open('https://forms.gle/QEwgdsrBJGNWfNCu7', '_blank')">RDF Forms</button>
-            <button class="rdf-button" onclick="window.open('https://forms.gle/oMLwXiKHffwqgosW8', '_blank')">RTF Forms</button>   
+            <button class="rdf-button" onclick="window.open('https://forms.gle/QEwgdsrBJGNWfNCu7', '_blank')">RDF Form</button>
+            <button class="rdf-button" onclick="window.open('https://forms.gle/oMLwXiKHffwqgosW8', '_blank')">RTF Form</button>   
             <button class="redirect-button" id="redirectButton" onclick="redirectavailpage()" target="_blank">Item Availability</button>
 
 
@@ -1820,8 +1833,9 @@ function generateExcel(data) {
 <!-- Borrower display table -->
 <div class="content" id="borrower-content" style="display: none; margin-top: 50px;">
     <h1 style="margin-left: -5px;">Borrower List</h1>
+    <button class="borrowerinfo" id="borrowerinfo" onclick="redirect()" target="_blank">Borrower Information Form</button>
     <button class="report-button" onclick="printBorrowerTable()">Print Table</button>
-    <button class="redirect-button" id="redirectButton" onclick="redirect()" target="_blank">Borrower Info</button>
+    
     <table class="borrower-table">
         
         <thead>
