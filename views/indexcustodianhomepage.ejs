@@ -340,66 +340,81 @@
        }
        
        .room-container {
-           display: flex;
-           flex-direction: column;
-           align-items: center;
-           margin: 20px 20px 20px 10px;
-           /* Remove max-height to allow container to expand based on content */
-           width: 100%; /* Adjust width to fill available space */
-           background-color: #f2f2f2;
-           border: 1px solid #ddd;
-           border-radius: 5px;
-           position: relative;
-           /* Remove fixed height to allow container to expand based on content */
-       }
-       
-       .room-row {
-           display: flex;
-           margin-top: 5px;
-           margin-bottom: 5px;
-           flex-direction: row;
-           justify-content: space-around;
-           align-items: center;
-           width: 100%; /* Added to ensure full width */
-       }
-       
-       .room {
-           background-color: #1db954;
-           color: #fff;
-           padding: 10px 20px;
-           margin: 5px;
-           border-radius: 5px;
-           cursor: pointer;
-           transition: background-color 0.3s ease;
-           text-align: center;
-           flex-grow: 1; /* Equal distribution of available space */
-           /* Set a minimum height to ensure consistent button sizes */
-           min-height: 50px; /* Adjust the value as needed */
-           /* Optionally, set a fixed height instead of min-height */
-           /* height: 50px; */
-       }
-       
-       .room:hover {
-           background-color: #18863f;
-           text-decoration: none;
-           color: white;
-       }
-       
-       @keyframes fadeInUp {
-           from {
-               opacity: 0;
-               transform: translateY(20px);
-           }
-           to {
-               opacity: 1;
-               transform: translateY(0);
-           }
-       }
-       
-       /* Apply animation to the room container */
-       .room-container {
-           animation: fadeInUp 0.5s ease-in-out;
-       }
+    width: 1350px; /* Adjusted width for a wider container */
+    height: 300px; /* Set a smaller fixed height */
+    margin: 20px auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow-y: auto; /* Enables vertical scrollbar */
+    font-family: Arial, sans-serif;
+    background-color: #fff; /* Optional: Set background color for better visibility */
+    position: relative; /* Ensures the container is a reference for sticky positioning */
+    margin-right: 5px;
+}
+
+.room-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f5f5f5;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #ddd;
+}
+
+.room-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+.room {
+    flex: 1;
+    text-align: left;
+}
+
+.room a {
+    text-decoration: none;
+    color: #1db954;
+    transition: color 0.3s; /* Smooth transition for text color */
+}
+
+.room a:hover {
+    color: #18863f;
+}
+
+.room-row:hover {
+    background-color: #4CAF50; /* Change background color to green */
+}
+
+.room-row:hover .room a {
+    color: #fff; /* Change text color to white */
+}
+
+/* Custom scrollbar design */
+.room-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.room-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+}
+
+.room-container::-webkit-scrollbar-thumb {
+    background: #1db954;
+    border-radius: 5px;
+}
+
+.room-container::-webkit-scrollbar-thumb:hover {
+    background: #18863f;
+}
+
+
        
        
        
@@ -414,7 +429,7 @@
            flex: 0.5; /* Half the size of the room container */
            margin-left: 10px; /* Add space between the containers */
            margin-top: 20px; /* Add margin at the top for separation */
-           background-color: #333333; /* Light gray background */
+           background-color: #e56053; /* Light gray background */
            border: 1px solid #ddd; /* Border for a simple box */
            border-radius: 5px; /* Rounded corners */
            display: flex;
@@ -427,13 +442,24 @@
            overflow-y: auto; /* Add scroll wheel for overflow */
            position: relative; /* To position the Borrowers Number box */
        }
-       
+
+       .icon-small {
+    width: 110px; /* Set the width of the icon */
+    height: 110px; /* Set the height of the icon */
+    margin-left: 320px; /* Add some space between the counter and the icon */
+    margin-top: -65px;
+    position: absolute; /* To position the Borrowers Number box */
+    z-index: 1; /* Ensure it is on top of other content */
+    filter: invert(19%) sepia(50%) saturate(2500%) hue-rotate(330deg) brightness(73%) contrast(85%);
+}
+
        .borrowers-box p {
            margin-top: 10px;
            font-weight: bold;
            font-size: 20px;
            margin-left: 10px;
            color: white;
+           
        }
        
        .borrowers-counter {
@@ -447,7 +473,7 @@
            flex: 0.5; /* Half the size of the room container */
            margin-left: 10px; /* Add space between the containers */
            margin-top: 20px; /* Add margin at the top for separation */
-           background-color: #333333; /* Light gray background */
+           background-color: #53a5fd; /* Light gray background */
            border: 1px solid #ddd; /* Border for a simple box */
            border-radius: 5px; /* Rounded corners */
            display: flex;
@@ -474,6 +500,27 @@
            margin-left: 10px;
            color: white;
        }
+
+       .icon-small-2 {
+    width: 110px; /* Set the width of the icon */
+    height: 110px; /* Set the height of the icon */
+    margin-left: 330px; /* Add some space between the counter and the icon */
+    margin-top: -65px;
+    position: absolute; /* To position the Borrowers Number box */
+    z-index: 1; /* Ensure it is on top of other content */
+    filter: invert(36%) sepia(9%) saturate(5000%) hue-rotate(190deg) brightness(83%) contrast(84%);
+}
+
+.icon-small-3 {
+    width: 110px; /* Set the width of the icon */
+    height: 110px; /* Set the height of the icon */
+    margin-left: 310px; /* Add some space between the counter and the icon */
+    margin-top: -65px;
+    position: absolute; /* To position the Borrowers Number box */
+    z-index: 1; /* Ensure it is on top of other content */
+    filter: invert(19%) sepia(50%) saturate(2500%) hue-rotate(330deg) brightness(73%) contrast(85%);
+}
+
        
        #report-form-content {
            animation: fadeIn 0.5s ease-in-out;
@@ -590,7 +637,20 @@
            cursor: not-allowed; 
        }
        
-       
+       .borrowerinfo{
+        background-color: #1db954; /* Same green color as the Print Table button */
+           color: #fff;
+           border: none;
+           border-radius: 5px;
+           padding: 10px 20px; /* Updated padding to 10px top/bottom, 20px left/right */
+           cursor: pointer;
+           transition: background-color 0.3s ease;
+           margin-left: 5px;
+       }
+
+       .borrowerinfo:hover {
+        background-color: #14843a; /* Darker green on hover */
+       }
        
                   </style>
 </head>
@@ -630,50 +690,84 @@
             <h1>Asset Dashboard</h1>
             <button class="add-button" id="addAssetButton">Add Asset</button>
             <button class="pdd-button" onclick="printDatabaseData()">Print Database Data</button>
-            <button class="rdf-button" onclick="window.open('https://forms.gle/QEwgdsrBJGNWfNCu7', '_blank')">RDF Forms</button>
-            <button class="rdf-button" onclick="window.open('https://forms.gle/oMLwXiKHffwqgosW8', '_blank')">RTF Forms</button>   
-            <button class="redirect-button" id="redirectButton" onclick="redirect()" target="_blank">Item Availability</button>
+            <button class="rdf-button" onclick="window.open('https://forms.gle/QEwgdsrBJGNWfNCu7', '_blank')">RDF Form</button>
+            <button class="rdf-button" onclick="window.open('https://forms.gle/oMLwXiKHffwqgosW8', '_blank')">RTF Form</button>   
+            <button class="redirect-button" id="redirectButton" onclick="redirectavailpage()" target="_blank">Item Availability</button>
 
 
 
              <!-- Borrowers Number Box -->
              <div class="borrowers-container">
-                <div class="borrowers-box">
-                    <div id="totalassetscount" class="borrowers-counter"></div>
-                    <p>Total Assets</p>
-                </div>
-            
+<div class="borrowers-box">
+    <div id="counter-container">
+        <div id="totalassetscount" class="borrowers-counter"></div>
+        <img src="https://cdn-icons-png.flaticon.com/512/126/126422.png" alt="icon" class="icon-small">
+    </div>
+    <p>Total Assets</p>
+</div>        
                 <div class="borrowers-box-2">
+                    <div id="counter-container-2">
                     <div id="reportcounter" class="borrowers-counter"></div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/1386/1386640.png" alt="icon" class="icon-small-2">
+    </div>
                     <p>Total Reports</p>
                 </div>
             
                 <div class="borrowers-box">
+                    <div id="counter-container-3">
                     <div id="borroweditem" class="borrowers-counter"></div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/71/71200.png" alt="icon" class="icon-small-3">
+    </div>
                     <p>Borrowed Items</p>
                 </div>
             </div>
 
-            <!-- Vertical container for clickable rooms -->
-            <div class="room-container">
-                <div class="room-row">
-                    <a href="indexrooms201.ejs" class="room" target="_blank">ICT 201</a>
-                    <a class="room" href="indexrooms202.ejs" target="_blank">ICT 202</a>
-                    <a class="room" href="#" target="_blank">ICT 203</a>
-                    <a class="room" href="#" target="_blank">ICT 204</a>
-                    <a class="room" href="#" target="_blank">ICT 205</a>
-                    <a class="room" href="#" target="_blank">ICT 206</a>
-                </div>
-                <div class="room-row">
-                    <a class="room" href="#" target="_blank">ICT 207</a>
-                    <a class="room" href="#" target="_blank">ICT 208</a>
-                    <a class="room" href="#" target="_blank">ICT 209</a>
-                    <a class="room" href="#" target="_blank">ICT 210</a>
-                    <a class="room" href="#" target="_blank">ICT 211</a>
-                    <a class="room" href="#" target="_blank">ICT 212</a>
-                    <a class="room" href="#" target="_blank">ICT 213</a>
-                </div>
-            </div>
+
+<!-- Vertical container for clickable rooms -->
+<div class="room-container">
+    <div class="room-header">
+        <div class="header-room">ROOM</div>
+    </div>
+    <div class="room-row">
+        <div class="room"><a href="indexrooms201.ejs" target="_blank">ICT201</a></div>
+    </div>
+    <div class="room-row">
+        <div class="room"><a href="indexrooms202.ejs" target="_blank">ICT202</a></div>
+    </div>
+    <div class="room-row">
+        <div class="room"><a href="#" target="_blank">ICT203</a></div>
+    </div>
+    <div class="room-row">
+        <div class="room"><a href="#" target="_blank">ICT204</a></div>
+    </div>
+    <div class="room-row">
+        <div class="room"><a href="#" target="_blank">ICT205</a></div>
+    </div>
+    <div class="room-row">
+        <div class="room"><a href="#" target="_blank">ICT206</a></div>
+    </div>
+    <div class="room-row">
+        <div class="room"><a href="#" target="_blank">ICT207</a></div>   
+    </div>
+    <div class="room-row">
+        <div class="room"><a href="#" target="_blank">ICT208</a></div>
+    </div>
+    <div class="room-row">
+        <div class="room"><a href="#" target="_blank">ICT209</a></div>
+    </div><div class="room-row">
+        <div class="room"><a href="#" target="_blank">ICT210</a></div>
+    </div>
+    <div class="room-row">
+        <div class="room"><a href="#" target="_blank">ICT211</a></div>
+    </div>
+    <div class="room-row">
+        <div class="room"><a href="#" target="_blank">ICT212</a></div>
+    </div>
+    <div class="room-row">
+        <div class="room"><a href="#" target="_blank">ICT213</a></div>
+    </div>
+</div>
+
               
     </div>
     </div>
@@ -749,7 +843,11 @@
 
 <script>
 function redirect() {
-        window.location.href = "/indexavailpage"; // Redirect to indexavailpage.ejs
+        window.location.href = "/borrowerinfo.ejs"; // Redirect to indexavailpage.ejs
+    }
+
+    function redirectavailpage() {
+        window.location.href = "/indexavailpage.ejs"; // Redirect to indexavailpage.ejs
     }
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -958,45 +1056,60 @@ function click (){alert("clickable")}
     borrowerContent.style.display = 'block';
 
     // Fetch and populate the borrower table with data from the database
-    fetch('/assets') // Replace this with your backend route to fetch borrower data // BORROWER LIST WEBPART 
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Failed to fetch data. Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const borrowerTableBody = document.getElementById('borrower-data-table');
-            borrowerTableBody.innerHTML = ''; // Clear existing data
+    fetch('/assets') // Replace this with your backend route to fetch borrower data
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data. Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        const borrowerTableBody = document.getElementById('borrower-data-table');
+        borrowerTableBody.innerHTML = ''; // Clear existing data
 
-            data.forEach(item => {
-                const row = document.createElement('tr');
+        data.forEach(item => {
+            const row = document.createElement('tr');
 
-                const shouldHide = isHidden(item.barcode) || item.isDeleted;
+            // Determine if the row should be hidden
+            const shouldHide = isHidden(item.barcode) || item.isDeleted;
+            row.style.display = shouldHide ? 'none' : 'table-row'; // Hide if asset is hidden
 
-                row.style.display = shouldHide ? 'none' : 'table-row'; // Hide if asset is hidden
+            // Convert assets array to a summary string
+            const assetCount = item.assets.length;
+            const assetsString = assetCount > 0 
+                ? `<strong>Number of Assets:</strong> ${assetCount}<br>${item.assets.map(asset => `
+                    <strong>Asset:</strong> ${asset.asset}, 
 
-                row.innerHTML = `
-                    <td>${item.name}</td>
-                    <td>${item.email}</td>
-                    <td>${item.usernum}</td>
-                    <td>${item.item_description}</td>
-                    <td>${item.barcode}</td>
-                    <td>${item.borrow_date}</td>
-                    <td>${item.return_date}</td>
-                    <td>${item.status}</td>
-                    <td>
-                        <button class="return-button" onclick="returnItem('${item._id}')">RETURN</button>
-                        <button class="archive-button" onclick="archiveItem(event, '${item._id}')">ARCHIVE</button>
+                `).join('<br>')}`
+                : '<strong>No assets found.</strong>';
 
-                    </td>
-                `;
-                borrowerTableBody.appendChild(row);
-            });
-        })
-        .catch(error => {
-            console.error("Error fetching assets:", error);
+            // Update the row HTML
+            row.innerHTML = `
+                <td>${item.fullName}</td>
+                <td>${item.universityEmail}</td>
+                <td>${item.studentFaculty}</td>
+                <td>${item.studentFacultyNumber}</td>
+                <td>${item.department}</td>
+                <td>${item.cys}</td>
+                <td>${assetsString}</td>
+                <td>${item.dateBorrowed}</td>
+                <td>${item.timeBorrowed}</td>
+                <td>${item.returnDate}</td>
+                <td>${item.returnTime}</td>
+                <td>${item.status}</td>
+                <td>
+                    <button class="return-button" onclick="returnItem('${item._id}')">RETURN</button>
+                    <button class="archive-button" onclick="archiveItem(event, '${item._id}')">ARCHIVE</button>
+                </td>
+            `;
+            borrowerTableBody.appendChild(row);
         });
+    })
+    .catch(error => {
+        console.error("Error fetching assets:", error);
+    });
+
+
 }           
                     // Add an event listener to the "Borrower" link in the sidebar
                 document.querySelector('.borrower-link').addEventListener('click', function (event) {
@@ -1734,19 +1847,25 @@ function generateExcel(data) {
 
 <!-- Borrower display table -->
 <div class="content" id="borrower-content" style="display: none; margin-top: 50px;">
-    <h1>Borrower List</h1>
+    <h1 style="margin-left: -5px;">Borrower List</h1>
+    <button class="borrowerinfo" id="borrowerinfo" onclick="redirect()" target="_blank">Borrower Form</button>
     <button class="report-button" onclick="printBorrowerTable()">Print Table</button>
+    
     <table class="borrower-table">
         
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Email</th>
-                <th>User ID</th>
-                <th>Asset Type</th>
-                <th>Barcode</th>
+                <th>Information</th>
+                <th>ID Number</th>
+                <th>Department</th>
+                <th>Section</th>
+                <th>Asset Borrowed</th>
                 <th>Borrow Date</th>
+                <th>Borrow Time</th>
                 <th>Return Date</th>
+                <th>Return Time</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>

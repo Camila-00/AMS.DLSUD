@@ -15,6 +15,30 @@ const transporter = nodemailer.createTransport({
     pass: 'qodv mbpq swoc zxvc',
   },
 });
+
+// UPDATE AUG 27 BELOW
+function convertTo12Hour(time) {
+  if (typeof time !== 'string') {
+    return ''; // or some default value
+  }
+
+  let [hours, minutes] = time.split(':');
+  let period = 'AM';
+  hours = parseInt(hours);
+
+  if (hours >= 12) {
+    period = 'PM';
+    if (hours > 12) {
+      hours -= 12;
+    }
+  } else if (hours === 0) {
+    hours = 12;
+  }
+
+  return `${hours}:${minutes} ${period}`;
+}
+// UPDATE AUG 27 ABOVE
+
 // Connection URLs and Database Names
 const dbConfig = {
   login: {
@@ -123,10 +147,12 @@ app.use(express.static(path.join(__dirname, 'System')));
 app.use('/css', express.static(path.join(__dirname, 'views', 'css'), { 'extensions': ['css'] }));
 
 
+
 app.get('/', (req, res) => {
-  res.render("indexwelcomepage");
+  res.render("indexcustodianlogin", { message: '' });
 });
-app.get('/indexcustodianlogin', (req, res) => {
+
+app.get('/indexcustodianlogin.ejs', (req, res) => {
   res.render("indexcustodianlogin", { message: '' });
 });
 
@@ -138,8 +164,20 @@ app.get('/indexborrowerlogin.ejs', (req, res) => {
   res.render('indexborrowerlogin'); // Replace 'indexcustodianhomepage' with your actual template name
 });
 
+app.get('/borrowerinfo.ejs', (req, res) => {
+  res.render('borrowerinfo'); // Replace 'indexcustodianhomepage' with your actual template name
+});
+
+app.get('/indexasset', (req, res) => {
+  res.render('indexasset');
+});
+
 app.get('/indexwelcomepage.ejs', (req, res) => {
   res.render('indexwelcomepage'); // Replace 'indexwelcome' with your actual template name
+});
+
+app.get('/indexavailpage.ejs', (req, res) => {
+  res.render('indexavailpage'); // Replace 'indexwelcome' with your actual template name
 });
 
 app.get('/indexborrowforms', (req, res) => {
@@ -1097,6 +1135,111 @@ app.get('/availability/items', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+// UPDATE AUG 27 BELOW
+// Route to handle form submission
+app.post('/submitBorrowerInfo', async (req, res) => {
+  try {
+    const borrowerData = req.body;
+    const collection = lendingDb.collection(lendingCollectionName);
+
+    const assets = [];
+    if (Array.isArray(borrowerData.asset)) {
+      for (let i = 0; i < borrowerData.asset.length; i++) {
+        if (borrowerData.asset[i] && typeof borrowerData.available[i] !== 'undefined') {
+          assets.push({
+            asset: borrowerData.asset[i],
+            available: borrowerData.available[i],
+          });
+        }
+      }
+    } else if (borrowerData.asset) {
+      assets.push({
+        asset: borrowerData.asset,
+        available: borrowerData.available || true,
+      });
+    }
+
+    const dataToSave = {
+      fullName: borrowerData.fullName || '',
+      universityEmail: borrowerData.universityEmail || '',
+      studentFaculty: borrowerData.studentFaculty || '',
+      studentFacultyNumber: borrowerData.studentFacultyNumber || '',
+      department: borrowerData.department || '',
+      cys: borrowerData.cys || '',
+      assets: assets,
+      dateBorrowed: borrowerData.dateBorrowed || '',
+      timeBorrowed: convertTo12Hour(borrowerData.timeBorrowed || ''),
+      returnDate: borrowerData.returnDate || '',
+      returnTime: convertTo12Hour(borrowerData.returnTime || ''),
+      status: borrowerData.status || "Pending",
+    };
+
+    await collection.insertOne(dataToSave);
+
+    // Send the email after successfully saving the data
+    const mailOptions = {
+      from: 'rpc.assetms@gmail.com',
+      to: borrowerData.universityEmail,
+      subject: 'Asset Borrowed',
+      text: `
+      Dear ${borrowerData.fullName},
+
+      Thank you for submitting your request to borrow ${assets.length} asset/s. We have received your request and are currently processing it.
+
+      To proceed further, kindly go to ICT 209 / ITD Office and look for Mr. Homer Morallo. Present this email as proof of your request, and Mr. Morallo will assist you in finalizing the borrowing process.
+
+      The item is needed to be returned on ${borrowerData.returnDate} at ${borrowerData.returnTime}.
+
+      For further questions or need for assistance, please don't hesitate to contact us at (046) 481 1900 local (3134).
+
+      Thank you for your cooperation.
+
+      Best Regards,
+
+      Homer Morallo
+      CSIT Laboratory Technician`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+        return res.status(500).json({ success: false, message: 'Error sending email.' });
+      } else {
+        console.log("Email sent:", info.response);
+        return res.json({ success: true, message: 'Form data received and saved.', notification: 'Data has been successfully submitted and saved. An email confirmation has been sent.' });
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'An error occurred while saving the data.' });
+  }
+});
+
+
+
+app.get('/getItemByBarcode', function(req, res) {
+  var barcode = req.query.barcode;
+  dBoard201DbCollectionName.findOne({ barcode: barcode })
+      .then(item => {
+          if (item) {
+              res.json({
+                  description: item.description,
+                  available: item.available
+              });
+          } else {
+              res.status(404).send('Item not found');
+          }
+      })
+      .catch(err => {
+          console.error(err);
+          res.status(500).send('Error fetching item');
+      });
+});
+
+
+
 
 connectToDatabases()
   .then(() => {
