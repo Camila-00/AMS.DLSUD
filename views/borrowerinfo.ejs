@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/borrowinfo.css">
     <link rel="icon" href="./assets/DLSUDLOGO.png" type="image/x-icon">
+    <style>
+        .hidden { display: none; }
+    </style>
 </head>
 <body>
     <div class="container form-container">
@@ -29,56 +32,71 @@
                     <div class="circle">3</div>
                     <div class="label">Schedule Date</div>
                 </div>
+                <div class="step-divider">>></div>
+                <div class="step" data-step="4">
+                    <div class="circle">4</div>
+                    <div class="label">Summary</div>
+                </div>
             </div>
             <div class="step-indicator-divider"></div>
-            <form id="borrowerForm">
+            <form id="borrowerForm" method="post" action="/submitBorrowerInfo">
                 <!-- Borrower's Information Fields -->
                 <div id="borrowerInfo">
                     <div class="form-group">
                         <label for="fullName">Full Name</label>
-                        <input type="text" class="form-control" id="fullName" placeholder="Enter Your Full Name">
+                        <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Enter Your Full Name">
                     </div>
                     <div class="form-group">
                         <label for="universityEmail">University E-mail</label>
-                        <input type="email" class="form-control" id="universityEmail" placeholder="Enter Your University Email">
+                        <input type="email" class="form-control" id="universityEmail" name="universityEmail" placeholder="Enter Your University Email">
                     </div>
                     <div class="form-group">
                         <label for="studentFaculty">Student/Faculty</label>
-                        <select class="form-control" id="studentFaculty">
+                        <select class="form-control" id="studentFaculty" name="studentFaculty">
                             <option disabled selected>Choose Information</option>
-                            <option>Student</option>
-                            <option>Faculty</option>
+                            <option value="Student">Student</option>
+                            <option value="Faculty">Faculty</option>
                         </select>
                     </div>                    
                     <div class="form-group">
                         <label for="studentFacultyNumber">Student/Faculty Number</label>
-                        <input type="text" class="form-control" id="studentFacultyNumber" placeholder="Enter Your Student/Faculty Number">
+                        <input type="text" class="form-control" id="studentFacultyNumber" name="studentFacultyNumber" placeholder="Enter Your Student/Faculty Number (Please add 20 first before entering your Number)">
                     </div>
                     <div class="form-group">
                         <label for="department">Department</label>
-                        <input type="text" class="form-control" id="department" placeholder="Choose Your Department">
+                        <input type="text" class="form-control" id="department" name="department" placeholder="Choose Your Department">
                     </div>
                     <div class="form-group">
                         <label for="cys">CYS (if student)</label>
-                        <input type="text" class="form-control" id="cys" placeholder="Enter Your CYS">
+                        <input type="text" class="form-control" id="cys" name="cys" placeholder="Enter Your CYS">
                     </div>
                 </div>
                 <!-- Asset Borrowing Fields -->
                 <div id="assetBorrowing" class="hidden">
-                    <div class="asset-group">
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="asset">Asset</label>
-                                <input type="text" class="form-control" name="asset" placeholder="Choose Asset">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="available">Available</label>
-                                <input type="number" class="form-control" name="available">
+                    <div class="form-group">
+                        <label for="barcode">Scan Barcode</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control barcode-input" name="barcode" id="barcodeInput" placeholder="Scan Barcode">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-primary" id="displayBarcodeButton">Display</button>
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Box to Display List of Scanned Barcodes -->
                     <div class="form-group">
-                        <a href="#" id="addAsset" class="text-primary">Add more asset</a>
+                        <ul id="scannedBarcodeList" class="list-group" style="max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+                            <!-- List of scanned barcodes will be appended here -->
+                        </ul>
+                    </div>
+                    
+                    <div class="form-group">
+                        <p id="barcodeName" style="font-weight: bold; color: #28a745;"></p> <!-- Placeholder for scanned barcode name -->
+                    </div>
+                    <div class="form-group">
+                        <ul id="scannedItems" class="list-group">
+                            <!-- Scanned items will be appended here -->
+                        </ul>
                     </div>
                 </div>
                 <!-- Schedule Date Fields -->
@@ -86,26 +104,36 @@
                     <div class="form-group">
                         <label>Date Borrowed & Time:</label>
                         <div class="input-group">
-                            <input type="date" class="form-control" id="dateBorrowed">
-                            <input type="time" class="form-control" id="timeBorrowed">
+                            <input type="date" class="form-control" id="dateBorrowed" name="dateBorrowed">
+                            <input type="time" class="form-control" id="timeBorrowed" name="timeBorrowed">
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Return Date & Time:</label>
                         <div class="input-group">
-                            <input type="date" class="form-control" id="returnDate">
-                            <input type="time" class="form-control" id="returnTime">
+                            <input type="date" class="form-control" id="returnDate" name="returnDate">
+                            <input type="time" class="form-control" id="returnTime" name="returnTime">
                         </div>
                     </div>
                 </div>
+                <!-- Summary Display -->
+                <div id="summary" class="hidden">
+                    <h3>Summary</h3>
+                    <div id="summaryContent"></div>
+                    <div class="form-group mt-3">
+                        <button type="button" class="btn btn-secondary" id="backSummaryButton">Back</button>
+                        <button type="button" class="btn btn-success" id="submitSummaryButton">Submit</button>
+                    </div>
+                </div>
+                <!-- Navigation Buttons -->
                 <div class="form-group">
                     <button type="button" class="btn btn-secondary hidden" id="backButton">Back</button>
                     <button type="button" class="btn btn-success" id="nextButton">Next</button>
-                    <button type="button" class="btn btn-danger hidden" id="exitButton">Exit</button>
                 </div>
             </form>
         </div>
     </div>
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -127,32 +155,164 @@
             }
 
             function showStep(step) {
-                $('#borrowerInfo, #assetBorrowing, #scheduleDate').addClass('hidden');
+                $('#borrowerInfo, #assetBorrowing, #scheduleDate, #summary').addClass('hidden');
                 if (step === 1) {
                     $('#borrowerInfo').removeClass('hidden');
                     $('#backButton').addClass('hidden');
-                    $('#nextButton').text('Next');
-                    $('#exitButton').removeClass('hidden');
+                    $('#nextButton').removeClass('hidden').text('Next');
+                    $('#submitSummaryButton').addClass('hidden');
                 } else if (step === 2) {
                     $('#assetBorrowing').removeClass('hidden');
                     $('#backButton').removeClass('hidden');
-                    $('#nextButton').text('Next');
-                    $('#exitButton').addClass('hidden');
+                    $('#nextButton').removeClass('hidden').text('Next');
+                    $('#submitSummaryButton').addClass('hidden');
                 } else if (step === 3) {
                     $('#scheduleDate').removeClass('hidden');
                     $('#backButton').removeClass('hidden');
-                    $('#nextButton').text('Submit');
-                    $('#exitButton').removeClass('hidden');
+                    $('#nextButton').removeClass('hidden').text('Next');
+                    $('#submitSummaryButton').addClass('hidden');
+                } else if (step === 4) {
+                    displaySummary();
+                    $('#summary').removeClass('hidden');
+                    $('#backButton').addClass('hidden');
+                    $('#nextButton').addClass('hidden');
+                    $('#submitSummaryButton').removeClass('hidden');
                 }
                 updateStepIndicator();
             }
 
-            $('#nextButton').click(function() {
-                if (currentStep < 3) {
+            function displaySummary() {
+                var summaryContent = '<h3 style="font-weight: bold;">Borrower Information</h3>';
+
+                // Gather borrower information
+                var fullName = $('#fullName').val();
+                var universityEmail = $('#universityEmail').val();
+                var studentFaculty = $('#studentFaculty option:selected').text();
+                var studentFacultyNumber = $('#studentFacultyNumber').val();
+                var department = $('#department').val();
+                var cys = $('#cys').val();
+
+                // Add the gathered information to the summary content
+                summaryContent += '<p><span style="font-weight: bold;">Full Name:</span> ' + fullName + '</p>';
+                summaryContent += '<p><span style="font-weight: bold;">University Email:</span> ' + universityEmail + '</p>';
+                summaryContent += '<p><span style="font-weight: bold;">Student/Faculty:</span> ' + studentFaculty + '</p>';
+                summaryContent += '<p><span style="font-weight: bold;">Student/Faculty Number:</span> ' + studentFacultyNumber + '</p>';
+                summaryContent += '<p><span style="font-weight: bold;">Department:</span> ' + department + '</p>';
+                summaryContent += '<p><span style="font-weight: bold;">CYS:</span> ' + cys + '</p>';
+
+                // Add a horizontal rule
+                summaryContent += '<hr>';
+
+                // Gather schedule date information
+                var dateBorrowed = $('#dateBorrowed').val();
+                var formattedDateBorrowed = formatDateWorded(dateBorrowed);
+                var timeBorrowed = convertTo12Hour($('#timeBorrowed').val());
+                var returnDate = $('#returnDate').val();
+                var formattedReturnDate = formatDateWorded(returnDate);
+                var returnTime = convertTo12Hour($('#returnTime').val());
+
+                summaryContent += '<h3 style="font-weight: bold;">Schedule Date</h3>';
+                summaryContent += '<p><span style="font-weight: bold;">Date Borrowed:</span> ' + formattedDateBorrowed + '</p>';
+                summaryContent += '<p><span style="font-weight: bold;">Time Borrowed:</span> ' + timeBorrowed + '</p>';
+                summaryContent += '<p><span style="font-weight: bold;">Return Date:</span> ' + formattedReturnDate + '</p>';
+                summaryContent += '<p><span style="font-weight: bold;">Return Time:</span> ' + returnTime + '</p>';
+
+                // Add another horizontal rule
+                summaryContent += '<hr>';
+
+                // Add Scanned Barcode Information
+                var scannedBarcodes = [];
+                $('#scannedBarcodeList li').each(function() {
+                    scannedBarcodes.push($(this).text());
+                });
+
+                summaryContent += '<h3 style="font-weight: bold;">Asset Borrowing</h3>';
+                if (scannedBarcodes.length > 0) {
+                    summaryContent += '<p><span style="font-weight: bold;">Number of Barcodes Scanned:</span> ' + scannedBarcodes.length + '</p>';
+                    summaryContent += '<p><span style="font-weight: bold;">Scanned Barcodes:</span></p><ul>';
+                    scannedBarcodes.forEach(function(barcode) {
+                        summaryContent += '<li><span style="font-weight: bold;">' + barcode + '</span></li>';
+                    });
+                    summaryContent += '</ul>';
+                } else {
+                    summaryContent += '<p><span style="font-weight: bold;">No barcodes scanned.</span></p>';
+                }
+
+                $('#summaryContent').html(summaryContent);
+            }
+
+            function convertTo12Hour(timeString) {
+                if (!timeString) return '';
+                var [hours, minutes] = timeString.split(':');
+                var period = 'AM';
+
+                hours = parseInt(hours);
+                if (hours >= 12) {
+                    period = 'PM';
+                    if (hours > 12) {
+                        hours -= 12;
+                    }
+                } else if (hours === 0) {
+                    hours = 12;
+                }
+
+                return hours + ':' + minutes + ' ' + period;
+            }
+
+            function formatDateWorded(dateString) {
+                var date = new Date(dateString);
+                var options = { year: 'numeric', month: 'long', day: 'numeric' };
+                return date.toLocaleDateString('en-US', options);
+            }
+
+            function submitFormData() {
+    var formData = {
+        fullName: $('#fullName').val(),
+        universityEmail: $('#universityEmail').val(),
+        studentFaculty: $('#studentFaculty').val(),
+        studentFacultyNumber: $('#studentFacultyNumber').val(),
+        department: $('#department').val(),
+        cys: $('#cys').val(),
+        dateBorrowed: $('#dateBorrowed').val(),
+        timeBorrowed: $('#timeBorrowed').val(),
+        returnDate: $('#returnDate').val(),
+        returnTime: $('#returnTime').val(),
+        asset: [],
+        available: [],
+        status: "Pending"
+    };
+
+    $('#scannedBarcodeList li').each(function() {
+        formData.asset.push($(this).text());
+        formData.available.push(true); // Assuming all assets are available when scanned
+    });
+
+    $.ajax({
+        url: '/submitBorrowerInfo',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function(response) {
+            if (response.success) {
+                alert(response.notification || 'Form submitted successfully!');
+                // Optionally, you can reset the form or redirect the user to another page
+                location.reload();
+            } else {
+                alert('An error occurred: ' + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert('An error occurred: ' + error);
+        }
+    });
+}
+
+
+            $('#nextButton').click(function(e) {
+                e.preventDefault();
+                if (currentStep < 4) {
                     currentStep++;
                     showStep(currentStep);
-                } else {
-                    $('#borrowerForm').submit();
                 }
             });
 
@@ -163,17 +323,35 @@
                 }
             });
 
-            $('#exitButton').click(function() {
-                if (confirm("Are you sure you want to exit the form?")) {
-                    window.location.href = "/indexcustodianhomepage.ejs"; // Redirect to the desired exit URL
+            $('#backSummaryButton').click(function() {
+                currentStep = 3;
+                showStep(currentStep);
+            });
+
+            $('#studentFaculty').change(function() {
+                var selectedValue = $(this).val();
+                var studentFacultyNumberInput = $('#studentFacultyNumber');
+                if (selectedValue === 'student') {
+                    if (!studentFacultyNumberInput.val().startsWith('20')) {
+                        studentFacultyNumberInput.val('20' + studentFacultyNumberInput.val());
+                    }
+                } else {
+                    studentFacultyNumberInput.val(studentFacultyNumberInput.val().replace(/^20/, ''));
                 }
             });
 
-            $('#addAsset').click(function(e) {
-                e.preventDefault();
-                var assetGroup = $('.asset-group:first').clone();
-                assetGroup.find('input').val('');
-                $('#assetBorrowing').find('.asset-group:last').after(assetGroup);
+            // Handle form submission with AJAX
+            $('#submitSummaryButton').click(function() {
+                submitFormData();
+            });
+
+            $('#displayBarcodeButton').click(function() {
+                var barcode = $('#barcodeInput').val();
+                if (barcode) {
+                    var listItem = '<li class="list-group-item">' + barcode + '</li>';
+                    $('#scannedBarcodeList').append(listItem);
+                    $('#barcodeInput').val('');
+                }
             });
 
             showStep(currentStep);

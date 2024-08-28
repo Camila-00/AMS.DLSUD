@@ -306,26 +306,30 @@
        
        
        /* Borrower table styling */
-       #borrower-content table {
-           width: 100%;
-           border-collapse: collapse;
-           margin-top: 20px;
-           box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-           overflow-x: auto;
-           animation: fadeIn 0.5s ease-in-out;
-       }
-       
-       #borrower-content th,
-       #borrower-content td {
-           padding: 15px; /* Increased padding for better readability */
-           text-align: left;
-           border-bottom: 1px solid #ddd;
-           font-size: 12px;
-       }
-       
-       #borrower-content th {
-           background-color: #f2f2f2;
-       }
+
+
+#borrower-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+#borrower-content th,
+#borrower-content td {
+    padding: 7px; /* Reduced padding to save space */
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 12px;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+#borrower-content th {
+    background-color: #f2f2f2;
+}
+
        
        /* Borrower content animation */
        @keyframes fadeIn {
@@ -1056,45 +1060,60 @@ function click (){alert("clickable")}
     borrowerContent.style.display = 'block';
 
     // Fetch and populate the borrower table with data from the database
-    fetch('/assets') // Replace this with your backend route to fetch borrower data // BORROWER LIST WEBPART 
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Failed to fetch data. Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const borrowerTableBody = document.getElementById('borrower-data-table');
-            borrowerTableBody.innerHTML = ''; // Clear existing data
+    fetch('/assets') // Replace this with your backend route to fetch borrower data
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data. Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        const borrowerTableBody = document.getElementById('borrower-data-table');
+        borrowerTableBody.innerHTML = ''; // Clear existing data
 
-            data.forEach(item => {
-                const row = document.createElement('tr');
+        data.forEach(item => {
+            const row = document.createElement('tr');
 
-                const shouldHide = isHidden(item.barcode) || item.isDeleted;
+            // Determine if the row should be hidden
+            const shouldHide = isHidden(item.barcode) || item.isDeleted;
+            row.style.display = shouldHide ? 'none' : 'table-row'; // Hide if asset is hidden
 
-                row.style.display = shouldHide ? 'none' : 'table-row'; // Hide if asset is hidden
+            // Convert assets array to a summary string
+            const assetCount = item.assets.length;
+            const assetsString = assetCount > 0 
+                ? `<strong>Number of Assets:</strong> ${assetCount}<br>${item.assets.map(asset => `
+                    <strong>Asset:</strong> ${asset.asset}, 
 
-                row.innerHTML = `
-                    <td>${item.name}</td>
-                    <td>${item.email}</td>
-                    <td>${item.usernum}</td>
-                    <td>${item.item_description}</td>
-                    <td>${item.barcode}</td>
-                    <td>${item.borrow_date}</td>
-                    <td>${item.return_date}</td>
-                    <td>${item.status}</td>
-                    <td>
-                        <button class="return-button" onclick="returnItem('${item._id}')">RETURN</button>
-                        <button class="archive-button" onclick="archiveItem(event, '${item._id}')">ARCHIVE</button>
+                `).join('<br>')}`
+                : '<strong>No assets found.</strong>';
 
-                    </td>
-                `;
-                borrowerTableBody.appendChild(row);
-            });
-        })
-        .catch(error => {
-            console.error("Error fetching assets:", error);
+            // Update the row HTML
+            row.innerHTML = `
+                <td>${item.fullName}</td>
+                <td>${item.universityEmail}</td>
+                <td>${item.studentFaculty}</td>
+                <td>${item.studentFacultyNumber}</td>
+                <td>${item.department}</td>
+                <td>${item.cys}</td>
+                <td>${assetsString}</td>
+                <td>${item.dateBorrowed}</td>
+                <td>${item.timeBorrowed}</td>
+                <td>${item.returnDate}</td>
+                <td>${item.returnTime}</td>
+                <td>${item.status}</td>
+                <td>
+                    <button class="return-button" onclick="returnItem('${item._id}')">RETURN</button>
+                    <button class="archive-button" onclick="archiveItem(event, '${item._id}')">ARCHIVE</button>
+                </td>
+            `;
+            borrowerTableBody.appendChild(row);
         });
+    })
+    .catch(error => {
+        console.error("Error fetching assets:", error);
+    });
+
+
 }           
                     // Add an event listener to the "Borrower" link in the sidebar
                 document.querySelector('.borrower-link').addEventListener('click', function (event) {
@@ -1842,11 +1861,15 @@ function generateExcel(data) {
             <tr>
                 <th>Name</th>
                 <th>Email</th>
-                <th>User ID</th>
-                <th>Asset Type</th>
-                <th>Barcode</th>
+                <th>Information</th>
+                <th>ID Number</th>
+                <th>Department</th>
+                <th>Section</th>
+                <th>Asset Borrowed</th>
                 <th>Borrow Date</th>
+                <th>Borrow Time</th>
                 <th>Return Date</th>
+                <th>Return Time</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>

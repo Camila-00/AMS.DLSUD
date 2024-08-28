@@ -142,11 +142,15 @@
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>User Number</th>
-                    <th>Item Description</th>
-                    <th>Barcode</th>
+                    <th>Information</th>
+                    <th>ID Number</th>
+                    <th>Department</th>
+                    <th>Section</th>
+                    <th>Asset Borrowed</th>
                     <th>Borrow Date</th>
+                    <th>Borrow Time</th>
                     <th>Return Date</th>
+                    <th>Return Time</th>
                     <th>Status</th>
                 </tr>
             </thead>
@@ -481,15 +485,28 @@ async function showAuthUsers() {
 
                 row.style.display = shouldHide ? 'none' : 'table-row'; // Hide if asset is hidden
 
+                // Convert assets array to a summary string
+            const assetCount = item.assets.length;
+            const assetsString = assetCount > 0 
+                ? `<strong>Number of Assets:</strong> ${assetCount}<br>${item.assets.map(asset => `
+                    <strong>Asset:</strong> ${asset.asset}, 
+
+                `).join('<br>')}`
+                : '<strong>No assets found.</strong>';
+
                 row.innerHTML = `
-                    <td>${item.name}</td>
-                    <td>${item.email}</td>
-                    <td>${item.usernum}</td>
-                    <td>${item.item_description}</td>
-                    <td>${item.barcode}</td>
-                    <td>${item.borrow_date}</td>
-                    <td>${item.return_date}</td>
-                    <td>${item.status}</td>
+                    <td>${item.fullName}</td>
+                    <td>${item.universityEmail}</td>
+                <td>${item.studentFaculty}</td>
+                <td>${item.studentFacultyNumber}</td>
+                <td>${item.department}</td>
+                <td>${item.cys}</td>
+                <td>${assetsString}</td>
+                <td>${item.dateBorrowed}</td>
+                <td>${item.timeBorrowed}</td>
+                <td>${item.returnDate}</td>
+                <td>${item.returnTime}</td>
+                <td>${item.status}</td>
                 `;
                 borrowerTableBody.appendChild(row);
             });
