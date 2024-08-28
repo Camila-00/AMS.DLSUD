@@ -1217,25 +1217,79 @@ app.post('/submitBorrowerInfo', async (req, res) => {
   }
 });
 
+// UPDATE AUG 28, 2024
 
+app.get('/fetchBorrowerDetails', async (req, res) => {
+  try {
+      const barcode = req.query.barcode;
+      console.log("Received barcode: " + barcode); // Log the received barcode
+      const collection = lendingDb.collection(lendingCollectionName);
 
-app.get('/getItemByBarcode', function(req, res) {
-  var barcode = req.query.barcode;
-  dBoard201DbCollectionName.findOne({ barcode: barcode })
-      .then(item => {
+      const borrower = await collection.findOne({ studentFacultyNumber: barcode });
+      console.log("Query result: ", borrower); // Log the query result
+
+      if (borrower) {
+          res.json({
+              success: true,
+              data: {
+                  fullName: borrower.fullName,
+                  universityEmail: borrower.universityEmail,
+                  studentFaculty: borrower.studentFaculty,
+                  department: borrower.department,
+                  cys: borrower.cys
+              }
+          });
+      } else {
+          res.json({ success: false, message: 'No data found for the barcode.' });
+      }
+  } catch (error) {
+      console.error('Error fetching borrower details:', error);
+      res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+app.get('/fetchItemDetails', async (req, res) => {
+  try {
+      const barcode = req.query.barcode;
+      console.log("Received barcode: " + barcode); // Log the received barcode
+
+      // List of all collections to search
+      const collections = [
+          'dBoard201', 'dBoard202', 'dBoard203', 'dBoard204', 'dBoard205',
+          'dBoard206', 'dBoard207', 'dBoard208', 'dBoard209', 'dBoard210',
+          'dBoard211', 'dBoard212', 'dBoard213'
+      ];
+
+      let item = null;
+
+      // Iterate over each collection to find the item
+      for (let i = 0; i < collections.length; i++) {
+          const collectionName = collections[i];
+          const collection = dBoard201Db.collection(collectionName); // Replace `db` with your MongoDB database connection
+
+          item = await collection.findOne({ barcode: barcode });
+
           if (item) {
-              res.json({
-                  description: item.description,
-                  available: item.available
-              });
-          } else {
-              res.status(404).send('Item not found');
+              break; // Stop searching if the item is found
           }
-      })
-      .catch(err => {
-          console.error(err);
-          res.status(500).send('Error fetching item');
-      });
+      }
+
+      console.log("Query result: ", item); // Log the query result
+
+      if (item) {
+          res.json({
+              success: true,
+              data: {
+                  item_description: item.item_description
+              }
+          });
+      } else {
+          res.json({ success: false, message: 'No item found for this barcode.' });
+      }
+  } catch (error) {
+      console.error('Error fetching item details:', error);
+      res.status(500).json({ success: false, message: 'Server error.' });
+  }
 });
 
 
