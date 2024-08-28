@@ -91,8 +91,9 @@
                     </div>
                     
                     <div class="form-group">
-                        <p id="barcodeName" style="font-weight: bold; color: #28a745;"></p> <!-- Placeholder for scanned barcode name -->
+                        <p id="barcodeName" style="font-weight: bold; color: #28a745; border: 1px solid #ddd; padding: 10px; background-color: #f8f9fa; border-radius: 5px;"></p>
                     </div>
+                    
                     <div class="form-group">
                         <ul id="scannedItems" class="list-group">
                             <!-- Scanned items will be appended here -->
@@ -140,6 +141,7 @@
     <script>
         $(document).ready(function() {
             var currentStep = 1;
+            
 
             function updateStepIndicator() {
                 $('.step').each(function() {
@@ -153,6 +155,22 @@
                     }
                 });
             }
+
+            function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
+$('#studentFacultyNumber').on('input', debounce(function() {
+    var barcode = $(this).val();
+    if (barcode.length >= 10) { // Assuming a minimum length for the barcode
+        fetchDetails(barcode);
+    }
+}, 300)); // Adjust debounce time as needed
+
 
             function showStep(step) {
                 $('#borrowerInfo, #assetBorrowing, #scheduleDate, #summary').addClass('hidden');
@@ -346,13 +364,97 @@
             });
 
             $('#displayBarcodeButton').click(function() {
-                var barcode = $('#barcodeInput').val();
-                if (barcode) {
-                    var listItem = '<li class="list-group-item">' + barcode + '</li>';
-                    $('#scannedBarcodeList').append(listItem);
-                    $('#barcodeInput').val('');
+        var barcode = $('#barcodeInput').val();
+        if (barcode) {
+            // Append barcode to list
+            var listItem = '<li class="list-group-item">' + barcode + '</li>';
+            $('#scannedBarcodeList').append(listItem);
+
+            // Fetch item details
+            fetchItemDetails(barcode);
+
+            // Clear the barcode input field
+            $('#barcodeInput').val('');
+        }
+    });
+
+function fetchItemDetails(barcode) {
+    $.ajax({
+            url: '/fetchItemDetails',
+            type: 'GET',
+            data: { barcode: barcode },
+            success: function(response) {
+                if (response.success) {
+                    $('#barcodeName').text(response.data.item_description); // Display item description
+                } else {
+                    $('#barcodeName').text('No item found for this barcode.');
                 }
-            });
+            },
+            error: function(xhr, status, error) {
+                $('#barcodeName').text('Error fetching data.');
+        }
+    });
+}
+
+
+            // Detect when barcode is scanned in Student/Faculty Number field
+    $('#studentFacultyNumber').on('input', function() {
+        var barcode = $(this).val();
+        
+        if (barcode.length >= 10) { // Assuming a minimum length for the barcode
+            // Fetch details using AJAX
+            fetchDetails(barcode);
+        }
+    });
+
+    function fetchDetails(barcode) {
+    barcode = barcode.trim(); // Trim any extra spaces
+    console.log("Scanned Barcode: " + barcode); // Log scanned barcode
+    $.ajax({
+        url: '/fetchBorrowerDetails',
+        type: 'GET',
+        data: { barcode: barcode },
+        success: function(response) {
+            console.log(response); // Log the server response
+            if (response.success) {
+                $('#fullName').val(response.data.fullName);
+                $('#universityEmail').val(response.data.universityEmail);
+                $('#studentFaculty').val(response.data.studentFaculty);
+                $('#department').val(response.data.department);
+                $('#cys').val(response.data.cys);
+            } else {
+                $('#fullName').val('');
+                $('#universityEmail').val('');
+                $('#studentFaculty').val('');
+                $('#department').val('');
+                $('#cys').val('');
+
+                alert('No data found for the scanned barcode.');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.log("Error fetching data: ", error); // Log any errors
+            alert('Error fetching data: ' + error);
+        }
+    });
+}
+
+
+function clearFormFields() {
+    $('#fullName').val('');
+    $('#universityEmail').val('');
+    $('#studentFaculty').val('');
+    $('#department').val('');
+    $('#cys').val('');
+}
+
+$('#studentFacultyNumber').off('input').on('input', debounce(function() {
+    var barcode = $(this).val();
+    if (barcode.length >= 10) { // Assuming a minimum length for the barcode
+        fetchDetails(barcode);
+    }
+}, 300)); // Adjust debounce time as needed
+
 
             showStep(currentStep);
         });
