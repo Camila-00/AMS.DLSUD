@@ -83,7 +83,6 @@
                         </div>
                     </div>
                     
-                    <!-- Box to Display List of Scanned Barcodes -->
                     <div class="form-group">
                         <ul id="scannedBarcodeList" class="list-group" style="max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                             <!-- List of scanned barcodes will be appended here -->
@@ -364,19 +363,29 @@ $('#studentFacultyNumber').on('input', debounce(function() {
             });
 
             $('#displayBarcodeButton').click(function() {
-        var barcode = $('#barcodeInput').val();
-        if (barcode) {
-            // Append barcode to list
-            var listItem = '<li class="list-group-item">' + barcode + '</li>';
-            $('#scannedBarcodeList').append(listItem);
+    var barcode = $('#barcodeInput').val();
+    if (barcode) {
+        // Append barcode to list with Remove button
+        var listItem = `
+            <li class="list-group-item">
+                ${barcode}
+                <button type="button" class="btn btn-danger btn-sm float-right ml-2 removeButton">Remove</button>
+            </li>`;
+        $('#scannedBarcodeList').append(listItem);
 
-            // Fetch item details
-            fetchItemDetails(barcode);
+        // Fetch item details
+        fetchItemDetails(barcode);
 
-            // Clear the barcode input field
-            $('#barcodeInput').val('');
-        }
-    });
+        // Clear the barcode input field
+        $('#barcodeInput').val('');
+    }
+});
+
+// Handle click event on Remove buttons
+$(document).on('click', '.removeButton', function() {
+    $(this).parent().remove(); // Remove the parent list item
+});
+
 
 function fetchItemDetails(barcode) {
     $.ajax({
@@ -417,29 +426,24 @@ function fetchItemDetails(barcode) {
         success: function(response) {
             console.log(response); // Log the server response
             if (response.success) {
+                // Populate form fields with existing data
                 $('#fullName').val(response.data.fullName);
                 $('#universityEmail').val(response.data.universityEmail);
                 $('#studentFaculty').val(response.data.studentFaculty);
                 $('#department').val(response.data.department);
-                $('#cys').val(response.data.cys);
+                $('#cys').val(response.data.cys); // remove if ever, baka mag move up ng grade siyempre maging repetitive yung data
             } else {
-                $('#fullName').val('');
-                $('#universityEmail').val('');
-                $('#studentFaculty').val('');
-                $('#department').val('');
-                $('#cys').val('');
-
-                alert('No data found for the scanned barcode.');
+                // If no data is found, clear the fields (for first-time user)
+                // clearFormFields();
             }
         },
         error: function(xhr, status, error) {
             console.log("Error fetching data: ", error); // Log any errors
-            alert('Error fetching data: ' + error);
         }
     });
 }
 
-
+// Clear form fields function
 function clearFormFields() {
     $('#fullName').val('');
     $('#universityEmail').val('');
@@ -454,6 +458,7 @@ $('#studentFacultyNumber').off('input').on('input', debounce(function() {
         fetchDetails(barcode);
     }
 }, 300)); // Adjust debounce time as needed
+
 
 
             showStep(currentStep);
